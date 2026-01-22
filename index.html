@@ -4,19 +4,20 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Emporium24k | Cadastro de Revendedores — Semijoias</title>
-  <meta name="description" content="Cadastro de revendedores de semijoias. Preencha o formulário para análise e retorno via WhatsApp." />
+  <meta name="description" content="Cadastro de revendedores de semijoias. Preencha o formulário para análise e envio via WhatsApp." />
 
   <style>
     :root{
       --bg:#0b0b0d;
+      --panel:#121218;
       --text:rgba(255,255,255,.92);
       --muted:rgba(255,255,255,.62);
       --line:rgba(255,255,255,.10);
       --gold:#d4b15f;
       --gold2:#f0df9a;
+      --shadow: 0 22px 70px rgba(0,0,0,.55);
       --radius:18px;
       --max:980px;
-      --shadow: 0 22px 70px rgba(0,0,0,.55);
     }
     *{box-sizing:border-box}
     body{
@@ -133,6 +134,7 @@
       font-size: 12px;
       max-width: 70ch;
     }
+
     .progress{
       width: 210px;
       max-width: 100%;
@@ -170,6 +172,7 @@
     .grid1{grid-template-columns: 1fr;}
     .field{display:flex; flex-direction:column; gap: 6px;}
     label{font-size: 12px; color: rgba(255,255,255,.78);}
+
     input, select, textarea{
       width:100%;
       padding: 12px 12px;
@@ -181,8 +184,22 @@
       font-size: 14px;
     }
     textarea{min-height: 110px; resize: vertical;}
-    .help{font-size: 12px; color: rgba(255,255,255,.52); line-height:1.45;}
 
+    /* ✅ FIX DO DROPDOWN (select/options) */
+    select{
+      color-scheme: dark; /* força UI em modo escuro onde suportado */
+      background-color: rgba(0,0,0,.22);
+      color: rgba(255,255,255,.92);
+    }
+    option{
+      background-color: #0b0b0d; /* fundo escuro para a lista */
+      color: #ffffff;           /* texto claro */
+    }
+    option:disabled{
+      color: rgba(255,255,255,.55);
+    }
+
+    .help{font-size: 12px; color: rgba(255,255,255,.52); line-height:1.45;}
     .checkboxRow{
       display:flex; gap:10px; align-items:flex-start;
       padding: 12px;
@@ -228,7 +245,6 @@
     }
     .btnPrimary:hover{background: linear-gradient(135deg, #f6e7ad, #d9b85b);}
     .btnGhost{background: transparent; border:1px solid rgba(255,255,255,.12); color: rgba(255,255,255,.84);}
-
     .btn[disabled]{opacity:.55; cursor:not-allowed; transform:none !important;}
 
     .smallNote{
@@ -289,7 +305,7 @@
             <small>Cadastro de Revendedores • Semijoias</small>
           </div>
         </div>
-        <div class="pill">Formulário de cadastro</div>
+        <div class="pill">Processo de cadastro</div>
       </div>
     </div>
   </div>
@@ -298,9 +314,7 @@
     <div class="wrap">
       <div class="hero">
         <h1>Cadastro de Revendedores de Semijoias</h1>
-        <p>
-          Preencha o formulário para análise. Ao finalizar, você será direcionado ao WhatsApp com suas informações organizadas para envio.
-        </p>
+        <p>Preencha o formulário para análise. Ao finalizar, você será direcionado ao WhatsApp com as informações organizadas para envio.</p>
 
         <div class="heroGrid">
           <div class="heroCard">
@@ -331,7 +345,7 @@
         <div class="panelHead">
           <div>
             <h2>Questionário de Cadastro</h2>
-            <p class="sub">Responda com atenção. Ao final, o botão será liberado para envio no WhatsApp.</p>
+            <p class="sub">Responda com atenção. No final o botão será liberado para envio no WhatsApp.</p>
           </div>
           <div class="progress" aria-label="Progresso do questionário">
             <div class="bar" id="bar"></div>
@@ -344,13 +358,13 @@
 
           <!-- STEP 1 -->
           <div class="step" data-step="1">
-            <div class="stepTitle">Etapa 1/4 — Dados básicos</div>
+            <div class="stepTitle">Etapa 1/5 — Dados básicos</div>
             <div class="stepHint">Preencha seus dados para contato e análise do cadastro.</div>
 
             <div class="grid">
               <div class="field">
                 <label for="nome">Nome completo *</label>
-                <input id="nome" type="text" autocomplete="name" placeholder="Ex: Luiz de Andrade" required>
+                <input id="nome" type="text" autocomplete="name" placeholder="Ex: Maria Silva" required>
               </div>
 
               <div class="field">
@@ -360,7 +374,7 @@
 
               <div class="field">
                 <label for="whatsapp">WhatsApp (DDD + número) *</label>
-                <input id="whatsapp" type="tel" inputmode="numeric" placeholder="Ex: 41998******" required>
+                <input id="whatsapp" type="tel" inputmode="numeric" placeholder="Ex: 41998518452" required>
                 <div class="help">Digite apenas números.</div>
               </div>
 
@@ -388,7 +402,7 @@
 
           <!-- STEP 2 -->
           <div class="step" data-step="2" style="display:none;">
-            <div class="stepTitle">Etapa 2/4 — Interesse e origem</div>
+            <div class="stepTitle">Etapa 2/5 — Interesse e origem</div>
             <div class="stepHint">Conte rapidamente seu objetivo e como chegou até nós.</div>
 
             <div class="grid grid1">
@@ -446,7 +460,7 @@
 
           <!-- STEP 3 -->
           <div class="step" data-step="3" style="display:none;">
-            <div class="stepTitle">Etapa 3/4 — Confirmações</div>
+            <div class="stepTitle">Etapa 3/5 — Confirmações</div>
             <div class="stepHint">Responda para concluir o cadastro.</div>
 
             <div class="grid">
@@ -502,8 +516,60 @@
 
           <!-- STEP 4 -->
           <div class="step" data-step="4" style="display:none;">
-            <div class="stepTitle">Etapa 4/4 — Verificação</div>
-            <div class="stepHint">Resolva o captcha numérico. O botão de envio será liberado ao concluir.</div>
+            <div class="stepTitle">Etapa 4/5 — Perfil e capacidade</div>
+            <div class="stepHint">Responda para concluirmos a análise do seu cadastro.</div>
+
+            <div class="grid">
+              <div class="field">
+                <label for="restricao">Você possui restrição no seu nome? *</label>
+                <select id="restricao" required>
+                  <option value="" selected disabled>Selecione</option>
+                  <option>Sim</option>
+                  <option>Não</option>
+                  <option>Não sei</option>
+                </select>
+              </div>
+
+              <div class="field">
+                <label for="empregoFixo">Você possui um emprego fixo? *</label>
+                <select id="empregoFixo" required>
+                  <option value="" selected disabled>Selecione</option>
+                  <option>Sim, CLT</option>
+                  <option>Sim, autônomo(a)</option>
+                  <option>Não, estou desempregado(a)</option>
+                  <option>Sou empresário(a)</option>
+                  <option>Prefiro não informar</option>
+                </select>
+              </div>
+
+              <div class="field">
+                <label for="perfilCliente">Qual o perfil dos clientes que você pretende vender? *</label>
+                <select id="perfilCliente" required>
+                  <option value="" selected disabled>Selecione</option>
+                  <option>Pessoas mais simples, foco em preço acessível</option>
+                  <option>Classe média, presentes e uso diário</option>
+                  <option>Público premium, peças de maior valor</option>
+                  <option>Vendas variadas / ainda não definido</option>
+                  <option>Empresas / brindes / presentes corporativos</option>
+                </select>
+              </div>
+
+              <div class="field">
+                <label for="facilidadeSocial">Você tem facilidade em usar WhatsApp e Instagram para fazer vendas? *</label>
+                <select id="facilidadeSocial" required>
+                  <option value="" selected disabled>Selecione</option>
+                  <option>Sim, uso com frequência</option>
+                  <option>Tenho noção básica</option>
+                  <option>Tenho dificuldade, mas quero aprender</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <!-- STEP 5 -->
+          <div class="step" data-step="5" style="display:none;">
+            <div class="stepTitle">Etapa 5/5 — Verificação</div>
+            <div class="stepHint">Resolva o captcha numérico e finalize o envio.</div>
 
             <div class="grid">
               <div class="field">
@@ -560,7 +626,7 @@
     const MIN_AGE = 18;
 
     let currentStep = 1;
-    const totalSteps = 4;
+    const totalSteps = 5;
 
     const $ = (id) => document.getElementById(id);
     const errorBox = $("errorBox");
@@ -679,6 +745,13 @@
       }
 
       if(step === 4){
+        requiredSelect($("restricao"), "Restrição no nome");
+        requiredSelect($("empregoFixo"), "Emprego fixo");
+        requiredSelect($("perfilCliente"), "Perfil de clientes");
+        requiredSelect($("facilidadeSocial"), "Facilidade com WhatsApp/Instagram");
+      }
+
+      if(step === 5){
         const ans = Number(requiredText($("captchaAnswer"), "Captcha"));
         if(ans !== capExpected) throw new Error("Captcha incorreto. Tente novamente.");
         if(!$("lgpd").checked) throw new Error("Marque a autorização para contato e análise.");
@@ -705,6 +778,11 @@
       const endereco = ($("endereco").value || "").trim();
       const compromisso = ($("compromisso").value || "").trim();
 
+      const restricao = ($("restricao").value || "").trim();
+      const empregoFixo = ($("empregoFixo").value || "").trim();
+      const perfilCliente = ($("perfilCliente").value || "").trim();
+      const facilidadeSocial = ($("facilidadeSocial").value || "").trim();
+
       const lines = [
         "CADASTRO — REVENDEDOR(A) DE SEMIJOIAS",
         "",
@@ -727,7 +805,13 @@
         `instagram (ou rede): ${instagram}`,
         `referência (nome + contato): ${referencia}`,
         `bairro + cidade/estado: ${endereco}`,
-        `quando pretende iniciar: ${compromisso}`
+        `quando pretende iniciar: ${compromisso}`,
+        "",
+        "4) PERFIL E CAPACIDADE",
+        `restrição no nome: ${restricao}`,
+        `emprego fixo: ${empregoFixo}`,
+        `perfil de clientes: ${perfilCliente}`,
+        `facilidade WhatsApp/Instagram: ${facilidadeSocial}`
       ];
 
       return lines.join("\n");
@@ -747,13 +831,13 @@
           return;
         }
 
-        validateAllUpTo(4);
+        validateAllUpTo(5);
         showOk("Tudo certo. Agora você já pode enviar no WhatsApp.");
         sendBtn.disabled = false;
 
       } catch(err){
         showError(err.message || "Verifique os campos e tente novamente.");
-        if(currentStep === 4) setCaptcha();
+        if(currentStep === 5) setCaptcha();
         sendBtn.disabled = true;
       }
     });
@@ -762,14 +846,13 @@
       if(currentStep > 1) showStep(currentStep - 1);
     });
 
-    // UX: revalida ao mexer no captcha/check
     ["captchaAnswer","lgpd"].forEach(id=>{
       const el = $(id);
       if(!el) return;
       const handler = () => {
-        if(currentStep !== 4) return;
+        if(currentStep !== 5) return;
         try{
-          validateAllUpTo(4);
+          validateAllUpTo(5);
           sendBtn.disabled = false;
           hideAlerts();
         } catch {
@@ -782,9 +865,8 @@
 
     sendBtn.addEventListener("click", () => {
       try{
-        validateAllUpTo(4);
-        const msg = buildWhatsMessage();
-        openWhatsApp(msg);
+        validateAllUpTo(5);
+        openWhatsApp(buildWhatsMessage());
       } catch(err){
         showError(err.message || "Verifique os campos e tente novamente.");
         setCaptcha();
