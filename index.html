@@ -35,6 +35,65 @@
     a{color:inherit; text-decoration:none}
     .wrap{width:min(var(--max), calc(100% - 40px)); margin:0 auto;}
 
+    /* ==========================
+       FUNDO: “alianças caindo”
+       ========================== */
+    .bgRings{
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      pointer-events: none;
+      overflow: hidden;
+      /* bem discreto */
+      filter: saturate(1.05) contrast(1.05);
+    }
+    .bgRings::before{
+      /* vignette extra pra ficar elegante */
+      content:"";
+      position:absolute;
+      inset:-2px;
+      background:
+        radial-gradient(1200px 600px at 50% 0%, rgba(212,177,95,.10), transparent 55%),
+        radial-gradient(900px 700px at 50% 100%, rgba(0,0,0,.55), transparent 60%),
+        radial-gradient(900px 700px at 0% 50%, rgba(0,0,0,.45), transparent 60%),
+        radial-gradient(900px 700px at 100% 50%, rgba(0,0,0,.45), transparent 60%);
+      opacity:.9;
+    }
+    .ring{
+      position:absolute;
+      top:-140px;
+      left:var(--x);
+      width:var(--s);
+      height:var(--s);
+      opacity: var(--o);
+      transform: translate3d(0,0,0) rotate(var(--r));
+      will-change: transform, opacity;
+      z-index: 0;
+      /* blur levinho pra “profundidade” */
+      filter: drop-shadow(0 18px 30px rgba(0,0,0,.45)) blur(.1px);
+      animation:
+        fall var(--d) linear var(--delay) infinite,
+        sway calc(var(--d) * .55) ease-in-out var(--delay) infinite,
+        spin calc(var(--d) * .75) linear var(--delay) infinite;
+    }
+    @keyframes fall{
+      0%   { transform: translate3d(0, -120px, 0) rotate(var(--r)); opacity:0; }
+      8%   { opacity: var(--o); }
+      92%  { opacity: var(--o); }
+      100% { transform: translate3d(0, calc(100vh + 220px), 0) rotate(calc(var(--r) + 240deg)); opacity:0; }
+    }
+    @keyframes sway{
+      0%,100% { margin-left: 0px; }
+      50%     { margin-left: var(--sx); }
+    }
+    @keyframes spin{
+      0%   { rotate: 0deg; }
+      100% { rotate: 360deg; }
+    }
+
+    /* garante que o conteúdo fique acima do fundo */
+    .top, header, section, footer { position: relative; z-index: 1; }
+
     /* TOP BAR */
     .top{
       position:sticky; top:0; z-index:50;
@@ -57,13 +116,11 @@
       box-shadow: 0 18px 55px rgba(212,177,95,.10);
       position:relative;
     }
-    /* Logo image */
     .brandMark img{
       width:100%; height:100%;
       object-fit:cover;
       display:block;
     }
-    /* Fallback badge (quando não tem logo.png) */
     .brandMark.fallback{
       background: linear-gradient(135deg, rgba(240,223,154,.95), rgba(212,177,95,.92));
       border-color: rgba(240,223,154,.35);
@@ -89,8 +146,8 @@
       white-space:nowrap;
     }
 
-    /* HERO — (compactado pra sumir o “buracão”) */
-    header{padding:26px 0 14px;} /* ↓ antes era grande */
+    /* HERO */
+    header{padding:26px 0 14px;}
     .hero{
       border-radius: 26px;
       border:1px solid rgba(255,255,255,.10);
@@ -99,7 +156,7 @@
         radial-gradient(780px 300px at 90% 30%, rgba(240,223,154,.14), transparent 60%),
         rgba(255,255,255,.05);
       box-shadow: 0 24px 80px rgba(0,0,0,.55);
-      padding: 20px 22px; /* ↓ antes era maior */
+      padding: 20px 22px;
     }
     .hero h1{
       margin:0 0 8px;
@@ -118,7 +175,7 @@
       display:flex;
       gap:10px;
       flex-wrap:wrap;
-      margin-top: 12px; /* ↓ */
+      margin-top: 12px;
     }
     .trustPill{
       font-size:12px;
@@ -131,7 +188,7 @@
     }
 
     /* PANEL */
-    section{padding: 10px 0 36px;} /* ↓ reduz o espaço grande */
+    section{padding: 10px 0 36px;}
     .panel{
       border-radius: 26px;
       border:1px solid rgba(255,255,255,.10);
@@ -140,7 +197,7 @@
       overflow:hidden;
     }
     .panelHead{
-      padding: 16px 20px; /* ↓ */
+      padding: 16px 20px;
       border-bottom: 1px solid rgba(255,255,255,.08);
       background: rgba(0,0,0,.22);
       display:flex; justify-content:space-between; gap:12px; align-items:center; flex-wrap:wrap;
@@ -228,7 +285,6 @@
     }
     textarea{min-height: 110px; resize: vertical;}
 
-    /* Dropdown legível */
     select{ color-scheme: dark; background-color: rgba(0,0,0,.26); color: rgba(255,255,255,.92); }
     option{ background-color: #0b0b0d; color: #ffffff; }
     option:disabled{ color: rgba(255,255,255,.55); }
@@ -327,12 +383,14 @@
 </head>
 
 <body>
+  <!-- Fundo com “alianças caindo” -->
+  <div class="bgRings" id="bgRings" aria-hidden="true"></div>
+
   <div class="top">
     <div class="wrap">
       <div class="row">
         <div class="brand">
           <div class="brandMark" id="brandMark" aria-hidden="true">
-            <!-- Se existir logo.png, aparece. Se não existir, cai no fallback pelo JS -->
             <img id="brandLogo" src="logo.png" alt="Emporium24k" />
           </div>
           <div>
@@ -591,7 +649,6 @@
       if(!img || !mark) return;
 
       img.addEventListener("error", () => {
-        // se logo.png não existir, aplica fallback dourado
         mark.classList.add("fallback");
         img.style.display = "none";
       });
@@ -801,7 +858,6 @@
           return;
         }
 
-        // Finalizar no Step 5
         validateAllUpTo(5);
         showOk("Tudo certo. Agora você já pode enviar no WhatsApp.");
         sendBtn.disabled = false;
@@ -852,6 +908,80 @@
     });
 
     showStep(1);
+
+    /* ==========================
+       GERA “alianças 3D caindo”
+       ========================== */
+    (function fallingRings(){
+      const host = document.getElementById("bgRings");
+      if(!host) return;
+
+      // SVG simples com aparência 3D (gradiente + brilho) — bem discreto
+      const ringSVG = `
+        <svg viewBox="0 0 120 120" width="100%" height="100%" aria-hidden="true">
+          <defs>
+            <radialGradient id="g1" cx="35%" cy="25%" r="75%">
+              <stop offset="0%" stop-color="#f8efbf" stop-opacity="1"/>
+              <stop offset="35%" stop-color="#f0df9a" stop-opacity="1"/>
+              <stop offset="70%" stop-color="#d4b15f" stop-opacity="1"/>
+              <stop offset="100%" stop-color="#9a7a2e" stop-opacity="1"/>
+            </radialGradient>
+            <linearGradient id="shine" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0%" stop-color="#ffffff" stop-opacity=".65"/>
+              <stop offset="30%" stop-color="#ffffff" stop-opacity=".10"/>
+              <stop offset="100%" stop-color="#ffffff" stop-opacity="0"/>
+            </linearGradient>
+          </defs>
+
+          <!-- anel -->
+          <path d="M60 14
+                   C36 14 18 32 18 56
+                   C18 80 36 98 60 98
+                   C84 98 102 80 102 56
+                   C102 32 84 14 60 14
+                   Z
+                   M60 30
+                   C74 30 86 42 86 56
+                   C86 70 74 82 60 82
+                   C46 82 34 70 34 56
+                   C34 42 46 30 60 30
+                   Z"
+                fill="url(#g1)" opacity=".95"/>
+
+          <!-- brilho -->
+          <path d="M32 42 C42 28, 60 22, 78 30 C70 26, 52 26, 40 40 Z"
+                fill="url(#shine)" opacity=".35"/>
+
+          <!-- sombra interna suave -->
+          <circle cx="60" cy="56" r="30" fill="none" stroke="#000" stroke-opacity=".22" stroke-width="4"/>
+        </svg>
+      `;
+
+      const COUNT = 12; // discreto
+      for(let i=0;i<COUNT;i++){
+        const el = document.createElement("div");
+        el.className = "ring";
+
+        const x = Math.random()*100;                 // %
+        const s = 28 + Math.random()*34;             // px
+        const d = 10 + Math.random()*10;             // seconds
+        const delay = Math.random()*-d;              // start already “running”
+        const o = 0.08 + Math.random()*0.10;         // opacity bem baixa
+        const r = Math.floor(Math.random()*360);     // deg
+        const sx = (Math.random() < 0.5 ? -1 : 1) * (8 + Math.random()*18); // px sway
+
+        el.style.setProperty("--x", x + "vw");
+        el.style.setProperty("--s", s + "px");
+        el.style.setProperty("--d", d + "s");
+        el.style.setProperty("--delay", delay + "s");
+        el.style.setProperty("--o", o.toFixed(3));
+        el.style.setProperty("--r", r + "deg");
+        el.style.setProperty("--sx", sx.toFixed(0) + "px");
+
+        el.innerHTML = ringSVG;
+        host.appendChild(el);
+      }
+    })();
   </script>
 </body>
 </html>
