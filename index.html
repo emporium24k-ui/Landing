@@ -44,11 +44,9 @@
       z-index: 0;
       pointer-events: none;
       overflow: hidden;
-      /* bem discreto */
       filter: saturate(1.05) contrast(1.05);
     }
     .bgRings::before{
-      /* vignette extra pra ficar elegante */
       content:"";
       position:absolute;
       inset:-2px;
@@ -61,7 +59,7 @@
     }
     .ring{
       position:absolute;
-      top:-140px;
+      top:-160px;
       left:var(--x);
       width:var(--s);
       height:var(--s);
@@ -69,7 +67,6 @@
       transform: translate3d(0,0,0) rotate(var(--r));
       will-change: transform, opacity;
       z-index: 0;
-      /* blur levinho pra “profundidade” */
       filter: drop-shadow(0 18px 30px rgba(0,0,0,.45)) blur(.1px);
       animation:
         fall var(--d) linear var(--delay) infinite,
@@ -77,10 +74,10 @@
         spin calc(var(--d) * .75) linear var(--delay) infinite;
     }
     @keyframes fall{
-      0%   { transform: translate3d(0, -120px, 0) rotate(var(--r)); opacity:0; }
+      0%   { transform: translate3d(0, -140px, 0) rotate(var(--r)); opacity:0; }
       8%   { opacity: var(--o); }
       92%  { opacity: var(--o); }
-      100% { transform: translate3d(0, calc(100vh + 220px), 0) rotate(calc(var(--r) + 240deg)); opacity:0; }
+      100% { transform: translate3d(0, calc(100vh + 260px), 0) rotate(calc(var(--r) + 240deg)); opacity:0; }
     }
     @keyframes sway{
       0%,100% { margin-left: 0px; }
@@ -911,49 +908,82 @@
 
     /* ==========================
        GERA “alianças 3D caindo”
+       (agora com diamante)
        ========================== */
     (function fallingRings(){
       const host = document.getElementById("bgRings");
       if(!host) return;
 
-      // SVG simples com aparência 3D (gradiente + brilho) — bem discreto
+      // ✅ Anel com “solitário” (diamante) em cima — bem discreto
       const ringSVG = `
-        <svg viewBox="0 0 120 120" width="100%" height="100%" aria-hidden="true">
+        <svg viewBox="0 0 120 140" width="100%" height="100%" aria-hidden="true">
           <defs>
-            <radialGradient id="g1" cx="35%" cy="25%" r="75%">
-              <stop offset="0%" stop-color="#f8efbf" stop-opacity="1"/>
+            <!-- ouro -->
+            <radialGradient id="goldFill" cx="35%" cy="25%" r="78%">
+              <stop offset="0%" stop-color="#fff4c9" stop-opacity="1"/>
               <stop offset="35%" stop-color="#f0df9a" stop-opacity="1"/>
               <stop offset="70%" stop-color="#d4b15f" stop-opacity="1"/>
-              <stop offset="100%" stop-color="#9a7a2e" stop-opacity="1"/>
+              <stop offset="100%" stop-color="#8a6a22" stop-opacity="1"/>
             </radialGradient>
-            <linearGradient id="shine" x1="0" y1="0" x2="1" y2="1">
-              <stop offset="0%" stop-color="#ffffff" stop-opacity=".65"/>
-              <stop offset="30%" stop-color="#ffffff" stop-opacity=".10"/>
+
+            <!-- brilho do ouro -->
+            <linearGradient id="goldShine" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0%" stop-color="#ffffff" stop-opacity=".70"/>
+              <stop offset="32%" stop-color="#ffffff" stop-opacity=".10"/>
               <stop offset="100%" stop-color="#ffffff" stop-opacity="0"/>
             </linearGradient>
+
+            <!-- diamante -->
+            <linearGradient id="dia" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0%" stop-color="#ffffff" stop-opacity="1"/>
+              <stop offset="35%" stop-color="#eaf3ff" stop-opacity="1"/>
+              <stop offset="70%" stop-color="#b7d6ff" stop-opacity=".95"/>
+              <stop offset="100%" stop-color="#7fb5ff" stop-opacity=".90"/>
+            </linearGradient>
+
+            <!-- sparkle -->
+            <radialGradient id="spark" cx="50%" cy="50%" r="60%">
+              <stop offset="0%" stop-color="#ffffff" stop-opacity=".95"/>
+              <stop offset="55%" stop-color="#ffffff" stop-opacity=".22"/>
+              <stop offset="100%" stop-color="#ffffff" stop-opacity="0"/>
+            </radialGradient>
           </defs>
 
-          <!-- anel -->
-          <path d="M60 14
-                   C36 14 18 32 18 56
-                   C18 80 36 98 60 98
-                   C84 98 102 80 102 56
-                   C102 32 84 14 60 14
-                   Z
-                   M60 30
-                   C74 30 86 42 86 56
-                   C86 70 74 82 60 82
-                   C46 82 34 70 34 56
-                   C34 42 46 30 60 30
-                   Z"
-                fill="url(#g1)" opacity=".95"/>
+          <!-- diamante (no topo) -->
+          <g transform="translate(60 24)">
+            <!-- suporte -->
+            <path d="M-10 18 L0 6 L10 18 L6 20 L0 14 L-6 20 Z"
+                  fill="url(#goldFill)" opacity=".92"/>
+            <!-- pedra -->
+            <polygon points="0,0 12,12 0,24 -12,12" fill="url(#dia)" opacity=".95"/>
+            <polygon points="0,4 7,12 0,20 -7,12" fill="#ffffff" opacity=".22"/>
+            <!-- brilho/sparkle -->
+            <circle cx="16" cy="6" r="7" fill="url(#spark)" opacity=".45"/>
+            <path d="M16 0 L16 12 M10 6 L22 6" stroke="#ffffff" stroke-opacity=".55" stroke-width="1.4" />
+          </g>
 
-          <!-- brilho -->
-          <path d="M32 42 C42 28, 60 22, 78 30 C70 26, 52 26, 40 40 Z"
-                fill="url(#shine)" opacity=".35"/>
+          <!-- anel -->
+          <path d="M60 38
+                   C34 38 16 56 16 82
+                   C16 108 34 126 60 126
+                   C86 126 104 108 104 82
+                   C104 56 86 38 60 38
+                   Z
+                   M60 56
+                   C74 56 86 68 86 82
+                   C86 96 74 108 60 108
+                   C46 108 34 96 34 82
+                   C34 68 46 56 60 56
+                   Z"
+                fill="url(#goldFill)" opacity=".94"/>
+
+          <!-- brilho do anel -->
+          <path d="M30 70 C42 52, 62 48, 82 58 C70 54, 54 56, 40 68 Z"
+                fill="url(#goldShine)" opacity=".32"/>
 
           <!-- sombra interna suave -->
-          <circle cx="60" cy="56" r="30" fill="none" stroke="#000" stroke-opacity=".22" stroke-width="4"/>
+          <circle cx="60" cy="82" r="30" fill="none" stroke="#000" stroke-opacity=".22" stroke-width="4"/>
+
         </svg>
       `;
 
@@ -963,7 +993,7 @@
         el.className = "ring";
 
         const x = Math.random()*100;                 // %
-        const s = 28 + Math.random()*34;             // px
+        const s = 30 + Math.random()*36;             // px
         const d = 10 + Math.random()*10;             // seconds
         const delay = Math.random()*-d;              // start already “running”
         const o = 0.08 + Math.random()*0.10;         // opacity bem baixa
