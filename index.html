@@ -1,1397 +1,924 @@
-diff --git a/index.html b/index.html
-index 5457a7b7bb98153dec952541162af50a54c33462..0bd35a42b2d26eff9052d99ea5b1f47e347a628d 100644
---- a/index.html
-+++ b/index.html
-@@ -1,426 +1,495 @@
- <!doctype html>
- <html lang="pt-BR">
- <head>
-   <meta charset="utf-8" />
-   <meta name="viewport" content="width=device-width, initial-scale=1" />
-   <title>Emporium24k | Cadastro de Revendedores — Semijoias</title>
--  <meta name="description" content="Cadastro de revendedores de semijoias. Preencha o formulário para análise e envio via WhatsApp." />
-+  <meta name="description" content="Cadastro de revendedores de semijoias. Preencha o formulário para análise e envio por e-mail." />
- 
-   <style>
-     :root{
-       --bg:#0b0b0d;
-       --panel:#121218;
-       --text:rgba(255,255,255,.92);
-       --muted:rgba(255,255,255,.62);
-       --line:rgba(255,255,255,.10);
-       --gold:#d4b15f;
-       --gold2:#f0df9a;
-       --shadow: 0 22px 70px rgba(0,0,0,.55);
-       --radius:18px;
-       --max:980px;
-     }
-     *{box-sizing:border-box}
--    body{
--      margin:0;
--      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial;
--      background:
--        radial-gradient(900px 520px at 10% 0%, rgba(212,177,95,.16), transparent 55%),
--        radial-gradient(760px 520px at 90% 10%, rgba(240,223,154,.10), transparent 60%),
--        linear-gradient(180deg, #070708, #0b0b0d 35%, #070708 100%);
--      color:var(--text);
--      overflow-x:hidden;
--    }
-+    body{
-+      margin:0;
-+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial;
-+      font-size: 15px;
-+      line-height: 1.6;
-+      background:
-+        radial-gradient(900px 520px at 10% 0%, rgba(212,177,95,.18), transparent 55%),
-+        radial-gradient(760px 520px at 90% 10%, rgba(240,223,154,.14), transparent 60%),
-+        linear-gradient(180deg, #070708, #0b0b0d 35%, #070708 100%);
-+      color:var(--text);
-+      overflow-x:hidden;
-+    }
-     a{color:inherit; text-decoration:none}
-     .wrap{width:min(var(--max), calc(100% - 40px)); margin:0 auto;}
- 
--    .top{
--      position:sticky; top:0; z-index:50;
--      backdrop-filter: blur(14px);
--      background: rgba(10,10,12,.55);
--      border-bottom:1px solid rgba(255,255,255,.08);
--    }
-+    .top{
-+      position:sticky; top:0; z-index:50;
-+      backdrop-filter: blur(14px);
-+      background: rgba(10,10,12,.55);
-+      border-bottom:1px solid rgba(255,255,255,.08);
-+    }
-     .top .row{
-       display:flex; align-items:center; justify-content:space-between;
-       gap:12px; padding:12px 0;
-       flex-wrap:wrap;
-     }
-     .brand{display:flex; align-items:center; gap:12px;}
-     .logo{
-       width:38px; height:38px; border-radius:14px;
-       background: linear-gradient(135deg, var(--gold2), var(--gold));
-       border:1px solid rgba(255,255,255,.12);
-       box-shadow: 0 18px 55px rgba(212,177,95,.14);
-     }
-     .brand b{letter-spacing:.12em; font-size:12px; color:rgba(240,223,154,.95)}
-     .brand small{display:block; color:rgba(255,255,255,.55); margin-top:2px; font-size:12px}
-     .pill{
-       font-size:12px;
-       padding:8px 10px;
-       border-radius:999px;
-       border:1px solid rgba(212,177,95,.30);
-       background:rgba(212,177,95,.10);
-       color:rgba(240,223,154,.92);
-       white-space:nowrap;
-     }
- 
--    header{padding:44px 0 18px;}
--    .hero{
--      border-radius: 26px;
--      border:1px solid rgba(255,255,255,.10);
--      background:
--        radial-gradient(740px 240px at 15% 0%, rgba(212,177,95,.20), transparent 60%),
--        radial-gradient(760px 320px at 90% 30%, rgba(240,223,154,.12), transparent 60%),
--        rgba(255,255,255,.04);
--      box-shadow: var(--shadow);
--      padding: 22px;
--    }
--    .hero h1{
--      margin:0 0 10px;
--      font-size: clamp(22px, 2.6vw, 30px);
--      letter-spacing: -.01em;
--      font-weight: 800;
--    }
--    .hero p{
--      margin:0;
--      color: var(--muted);
--      font-size: 14px;
--      line-height: 1.6;
--      max-width: 76ch;
--    }
-+    header{padding:48px 0 24px;}
-+    .hero{
-+      border-radius: 28px;
-+      border:1px solid rgba(255,255,255,.10);
-+      background:
-+        radial-gradient(760px 260px at 15% 0%, rgba(212,177,95,.22), transparent 60%),
-+        radial-gradient(780px 320px at 90% 30%, rgba(240,223,154,.16), transparent 60%),
-+        rgba(255,255,255,.05);
-+      box-shadow: 0 24px 80px rgba(0,0,0,.55);
-+      padding: 26px;
-+    }
-+    .hero h1{
-+      margin:0 0 10px;
-+      font-size: clamp(26px, 2.8vw, 36px);
-+      letter-spacing: -.01em;
-+      font-weight: 800;
-+    }
-+    .hero p{
-+      margin:0;
-+      color: rgba(255,255,255,.80);
-+      font-size: 15px;
-+      line-height: 1.7;
-+      max-width: 76ch;
-+    }
-     .heroGrid{
-       display:grid;
-       grid-template-columns: 1.2fr .8fr;
-       gap:16px;
-       align-items:start;
-       margin-top: 16px;
-     }
--    .heroCard{
--      border-radius: 18px;
--      border:1px solid rgba(255,255,255,.10);
--      background: rgba(0,0,0,.18);
--      padding: 16px;
--    }
--    .heroCard h3{
--      margin:0 0 8px;
--      font-size: 14px;
--      color: rgba(255,255,255,.90);
--    }
--    .heroCard ul{
--      margin:0;
--      padding-left: 18px;
--      color: rgba(255,255,255,.62);
--      font-size: 13px;
--      line-height: 1.55;
--    }
-+    .heroCard{
-+      border-radius: 18px;
-+      border:1px solid rgba(255,255,255,.10);
-+      background: rgba(8,8,12,.40);
-+      padding: 16px 18px;
-+    }
-+    .heroCard h3{
-+      margin:0 0 8px;
-+      font-size: 14px;
-+      color: rgba(255,255,255,.90);
-+    }
-+    .heroCard ul{
-+      margin:0;
-+      padding-left: 18px;
-+      color: rgba(255,255,255,.74);
-+      font-size: 13px;
-+      line-height: 1.6;
-+    }
-+    .trustRow{
-+      display:flex;
-+      gap:12px;
-+      flex-wrap:wrap;
-+      margin-top: 16px;
-+    }
-+    .trustPill{
-+      font-size:12px;
-+      padding:8px 12px;
-+      border-radius:999px;
-+      border:1px solid rgba(255,255,255,.12);
-+      background: rgba(0,0,0,.30);
-+      color: rgba(255,255,255,.86);
-+      box-shadow: inset 0 0 0 1px rgba(255,255,255,.03);
-+    }
- 
-     section{padding: 22px 0 46px;}
--    .panel{
--      border-radius: 26px;
--      border:1px solid rgba(255,255,255,.10);
--      background: rgba(255,255,255,.04);
--      box-shadow: var(--shadow);
--      overflow:hidden;
--    }
--    .panelHead{
--      padding: 18px 20px;
--      border-bottom: 1px solid rgba(255,255,255,.08);
--      background: rgba(0,0,0,.14);
--      display:flex; justify-content:space-between; gap:12px; align-items:center; flex-wrap:wrap;
--    }
--    .panelHead h2{margin:0; font-size:16px;}
--    .panelHead .sub{
--      margin:0;
--      color: rgba(255,255,255,.58);
--      font-size: 12px;
--      max-width: 70ch;
--    }
-+    .panel{
-+      border-radius: 26px;
-+      border:1px solid rgba(255,255,255,.10);
-+      background: rgba(255,255,255,.05);
-+      box-shadow: 0 22px 70px rgba(0,0,0,.50);
-+      overflow:hidden;
-+    }
-+    .panelHead{
-+      padding: 18px 20px;
-+      border-bottom: 1px solid rgba(255,255,255,.08);
-+      background: rgba(0,0,0,.22);
-+      display:flex; justify-content:space-between; gap:12px; align-items:center; flex-wrap:wrap;
-+    }
-+    .panelHead h2{margin:0; font-size:17px;}
-+    .panelHead .sub{
-+      margin:0;
-+      color: rgba(255,255,255,.72);
-+      font-size: 13px;
-+      max-width: 70ch;
-+    }
-+    .panelMeta{
-+      display:flex;
-+      align-items:center;
-+      gap:10px;
-+      flex-wrap:wrap;
-+      font-size: 12px;
-+      color: rgba(255,255,255,.70);
-+    }
-+    .panelMeta span{
-+      padding: 6px 10px;
-+      border-radius: 999px;
-+      border:1px solid rgba(255,255,255,.10);
-+      background: rgba(0,0,0,.28);
-+    }
- 
-     .progress{
-       width: 210px;
-       max-width: 100%;
-       height: 10px;
-       border-radius: 999px;
-       border:1px solid rgba(255,255,255,.10);
-       background: rgba(0,0,0,.18);
-       overflow:hidden;
-     }
-     .bar{
-       height:100%;
-       width: 0%;
-       background: linear-gradient(135deg, var(--gold2), var(--gold));
-     }
- 
-     .content{padding: 18px 20px;}
--    .stepTitle{
--      margin: 0 0 6px;
--      font-size: 15px;
--      font-weight: 800;
--      letter-spacing: -.01em;
--    }
--    .stepHint{
--      margin:0 0 14px;
--      color: rgba(255,255,255,.62);
--      font-size: 13px;
--      line-height: 1.55;
--    }
-+    .stepTitle{
-+      margin: 0 0 6px;
-+      font-size: 16px;
-+      font-weight: 800;
-+      letter-spacing: -.01em;
-+    }
-+    .stepHint{
-+      margin:0 0 14px;
-+      color: rgba(255,255,255,.70);
-+      font-size: 13px;
-+      line-height: 1.6;
-+    }
- 
-     .grid{
-       display:grid;
-       grid-template-columns: 1fr 1fr;
-       gap: 12px;
-     }
-     .grid1{grid-template-columns: 1fr;}
-     .field{display:flex; flex-direction:column; gap: 6px;}
--    label{font-size: 12px; color: rgba(255,255,255,.78);}
--
--    input, select, textarea{
--      width:100%;
--      padding: 12px 12px;
--      border-radius: 14px;
--      border:1px solid rgba(255,255,255,.12);
--      background: rgba(0,0,0,.22);
--      color: var(--text);
--      outline:none;
--      font-size: 14px;
--    }
-+    label{font-size: 12px; color: rgba(255,255,255,.78);}
-+
-+    input, select, textarea{
-+      width:100%;
-+      padding: 12px 12px;
-+      border-radius: 14px;
-+      border:1px solid rgba(255,255,255,.12);
-+      background: rgba(0,0,0,.26);
-+      color: var(--text);
-+      outline:none;
-+      font-size: 14px;
-+    }
-+    input:focus, select:focus, textarea:focus{
-+      border-color: rgba(240,223,154,.55);
-+      box-shadow: 0 0 0 3px rgba(240,223,154,.18);
-+    }
-+    .field.invalid input,
-+    .field.invalid select,
-+    .field.invalid textarea{
-+      border-color: rgba(255,90,90,.55);
-+      box-shadow: 0 0 0 3px rgba(255,90,90,.12);
-+    }
-     textarea{min-height: 110px; resize: vertical;}
- 
-     /* ✅ FIX DO DROPDOWN (select/options) */
-     select{
-       color-scheme: dark;
-       background-color: rgba(0,0,0,.22);
-       color: rgba(255,255,255,.92);
-     }
-     option{
-       background-color: #0b0b0d;
-       color: #ffffff;
-     }
-     option:disabled{
-       color: rgba(255,255,255,.55);
-     }
- 
--    .help{font-size: 12px; color: rgba(255,255,255,.52); line-height:1.45;}
--    .checkboxRow{
--      display:flex; gap:10px; align-items:flex-start;
--      padding: 12px;
--      border-radius: 16px;
--      border:1px solid rgba(255,255,255,.10);
--      background: rgba(0,0,0,.16);
--      margin-top: 10px;
--    }
-+    .help{font-size: 12px; color: rgba(255,255,255,.62); line-height:1.5;}
-+    .checkboxRow{
-+      display:flex; gap:10px; align-items:flex-start;
-+      padding: 12px;
-+      border-radius: 16px;
-+      border:1px solid rgba(255,255,255,.10);
-+      background: rgba(0,0,0,.22);
-+      margin-top: 10px;
-+    }
-+    .checkboxRow.invalid{
-+      border-color: rgba(255,90,90,.55);
-+      box-shadow: 0 0 0 3px rgba(255,90,90,.10);
-+    }
-     .checkboxRow input{width:auto; margin-top: 3px;}
--    .checkboxRow span{color: rgba(255,255,255,.68); font-size: 13px; line-height:1.5;}
-+    .checkboxRow span{color: rgba(255,255,255,.70); font-size: 13px; line-height:1.55;}
- 
-     .actions{
-       display:flex;
-       gap:10px;
-       flex-wrap:wrap;
-       margin-top: 14px;
-       align-items:center;
-       justify-content: space-between;
-     }
--    .btn{
--      display:inline-flex;
--      align-items:center;
--      justify-content:center;
--      gap:10px;
--      padding: 12px 16px;
--      border-radius: 14px;
--      border:1px solid rgba(255,255,255,.14);
--      background: rgba(255,255,255,.06);
--      color: var(--text);
--      font-weight: 800;
--      font-size: 14px;
--      cursor:pointer;
--      transition: transform .15s ease, background .15s ease, border-color .15s ease, opacity .15s ease;
--      user-select:none;
--      white-space: nowrap;
--    }
-+    .btn{
-+      display:inline-flex;
-+      align-items:center;
-+      justify-content:center;
-+      gap:10px;
-+      padding: 12px 16px;
-+      border-radius: 14px;
-+      border:1px solid rgba(255,255,255,.14);
-+      background: rgba(255,255,255,.06);
-+      color: var(--text);
-+      font-weight: 800;
-+      font-size: 14px;
-+      cursor:pointer;
-+      transition: transform .15s ease, background .15s ease, border-color .15s ease, opacity .15s ease;
-+      user-select:none;
-+      white-space: nowrap;
-+    }
-     .btn:hover{transform: translateY(-1px); background: rgba(255,255,255,.08); border-color: rgba(255,255,255,.18);}
-     .btnPrimary{
-       border:none;
-       color:#000;
-       background: linear-gradient(135deg, var(--gold2), var(--gold));
-       box-shadow: 0 18px 55px rgba(212,177,95,.14);
-     }
-     .btnPrimary:hover{background: linear-gradient(135deg, #f6e7ad, #d9b85b);}
-     .btnGhost{background: transparent; border:1px solid rgba(255,255,255,.12); color: rgba(255,255,255,.84);}
-     .btn[disabled]{opacity:.55; cursor:not-allowed; transform:none !important;}
- 
--    .smallNote{
--      color: rgba(255,255,255,.52);
--      font-size: 12px;
--      line-height: 1.4;
--      max-width: 70ch;
--    }
--
--    .error{
--      margin-top: 10px;
--      padding: 12px 12px;
--      border-radius: 14px;
--      border:1px solid rgba(255,90,90,.22);
--      background: rgba(255,90,90,.10);
--      color: rgba(255,255,255,.90);
--      font-size: 13px;
--      display:none;
--      line-height: 1.45;
--    }
--    .ok{
--      margin-top: 10px;
--      padding: 12px 12px;
--      border-radius: 14px;
--      border:1px solid rgba(90,255,160,.18);
--      background: rgba(90,255,160,.08);
--      color: rgba(255,255,255,.90);
--      font-size: 13px;
--      display:none;
--      line-height: 1.45;
--    }
--
--    footer{
--      padding: 22px 0 34px;
--      color: rgba(255,255,255,.55);
--      font-size: 12px;
--      border-top: 1px solid rgba(255,255,255,.08);
--      margin-top: 22px;
--    }
-+    .smallNote{
-+      color: rgba(255,255,255,.64);
-+      font-size: 12px;
-+      line-height: 1.5;
-+      max-width: 70ch;
-+    }
-+    .privacy{
-+      font-size: 12px;
-+      color: rgba(255,255,255,.64);
-+      margin-top: 10px;
-+      line-height: 1.6;
-+    }
-+    .privacy a{
-+      color: rgba(240,223,154,.92);
-+      text-decoration: underline;
-+    }
-+
-+    .error{
-+      margin-top: 10px;
-+      padding: 12px 12px;
-+      border-radius: 14px;
-+      border:1px solid rgba(255,90,90,.22);
-+      background: rgba(255,90,90,.10);
-+      color: rgba(255,255,255,.90);
-+      font-size: 13px;
-+      display:none;
-+      line-height: 1.55;
-+    }
-+    .ok{
-+      margin-top: 10px;
-+      padding: 12px 12px;
-+      border-radius: 14px;
-+      border:1px solid rgba(90,255,160,.18);
-+      background: rgba(90,255,160,.08);
-+      color: rgba(255,255,255,.90);
-+      font-size: 13px;
-+      display:none;
-+      line-height: 1.55;
-+    }
-+
-+    footer{
-+      padding: 22px 0 34px;
-+      color: rgba(255,255,255,.60);
-+      font-size: 12px;
-+      border-top: 1px solid rgba(255,255,255,.08);
-+      margin-top: 22px;
-+    }
-     .footerRow{display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;}
- 
--    @media (max-width: 860px){
--      .heroGrid{grid-template-columns: 1fr;}
--      .grid{grid-template-columns: 1fr;}
--      .progress{width: 100%;}
--    }
-+    @media (max-width: 860px){
-+      .heroGrid{grid-template-columns: 1fr;}
-+      .grid{grid-template-columns: 1fr;}
-+      .progress{width: 100%;}
-+      .trustRow{justify-content:flex-start;}
-+    }
-   </style>
- </head>
- 
- <body>
-   <div class="top">
-     <div class="wrap">
-       <div class="row">
-         <div class="brand">
-           <div class="logo" aria-hidden="true"></div>
-           <div>
-             <b>EMPORIUM24K</b>
-             <small>Cadastro de Revendedores • Semijoias</small>
-           </div>
-         </div>
-         <div class="pill">Processo de cadastro</div>
-       </div>
-     </div>
-   </div>
- 
-   <header>
-     <div class="wrap">
--      <div class="hero">
--        <h1>Cadastro de Revendedores de Semijoias</h1>
--        <p>Preencha o formulário para análise. Ao finalizar, você será direcionado ao WhatsApp com as informações organizadas para envio (quando elegível).</p>
-+      <div class="hero">
-+        <h1>Cadastro de Revendedores de Semijoias</h1>
-+        <p>Preencha o formulário para análise. Ao finalizar, você será direcionado ao e-mail com as informações organizadas para envio (quando elegível).</p>
-+        <div class="trustRow" aria-label="Indicadores de confiança">
-+          <span class="trustPill">✅ Processo rápido (2–3 min)</span>
-+          <span class="trustPill">🔒 Dados usados apenas para análise</span>
-+          <span class="trustPill">📩 Retorno pelo e-mail informado</span>
-+        </div>
- 
-         <div class="heroGrid">
-           <div class="heroCard">
-             <h3>Após o envio</h3>
-             <ul>
-               <li>Recebemos seus dados.</li>
-               <li>Analisamos o perfil e retornamos com próximos passos.</li>
--              <li>O retorno acontece no WhatsApp informado.</li>
-+              <li>O retorno acontece no e-mail informado.</li>
-             </ul>
-           </div>
- 
-           <div class="heroCard">
-             <h3>Requisitos</h3>
-             <ul>
-               <li>Ter 18 anos ou mais.</li>
--              <li>WhatsApp ativo.</li>
-+              <li>E-mail ativo.</li>
-               <li>Compromisso com vendas e atendimento.</li>
-             </ul>
-           </div>
-         </div>
-       </div>
-     </div>
-   </header>
- 
-   <section>
-     <div class="wrap">
-       <div class="panel">
--        <div class="panelHead">
--          <div>
--            <h2>Questionário de Cadastro</h2>
--            <p class="sub">Responda com atenção. No final, o envio no WhatsApp depende da elegibilidade do perfil.</p>
--          </div>
-+        <div class="panelHead">
-+          <div>
-+            <h2>Questionário de Cadastro</h2>
-+            <p class="sub">Responda com atenção. No final, o envio por e-mail depende da elegibilidade do perfil.</p>
-+            <div class="panelMeta">
-+              <span>Tempo estimado: 2–3 min</span>
-+              <span>5 etapas</span>
-+              <span>Critérios: experiência, canais e disponibilidade</span>
-+            </div>
-+          </div>
-           <div class="progress" aria-label="Progresso do questionário">
-             <div class="bar" id="bar"></div>
-           </div>
-         </div>
- 
-         <div class="content">
--          <div class="error" id="errorBox"></div>
--          <div class="ok" id="okBox"></div>
-+          <div class="error" id="errorBox" aria-live="polite"></div>
-+          <div class="ok" id="okBox" aria-live="polite"></div>
- 
-           <!-- STEP 1 -->
-           <div class="step" data-step="1">
-             <div class="stepTitle">Etapa 1/5 — Dados básicos</div>
-             <div class="stepHint">Preencha seus dados para contato e análise do cadastro.</div>
- 
-             <div class="grid">
-               <div class="field">
-                 <label for="nome">Nome completo *</label>
-                 <input id="nome" type="text" autocomplete="name" placeholder="Ex: Maria Silva" required>
-               </div>
- 
-               <div class="field">
-                 <label for="idade">Idade (18+) *</label>
-                 <input id="idade" type="number" min="18" max="99" placeholder="Ex: 25" required>
-               </div>
- 
--              <div class="field">
--                <label for="whatsapp">WhatsApp (DDD + número) *</label>
--                <input id="whatsapp" type="tel" inputmode="numeric" placeholder="Ex: 41998518452" required>
--                <div class="help">Digite apenas números.</div>
--              </div>
-+              <div class="field">
-+                <label for="email">E-mail *</label>
-+                <input id="email" type="email" autocomplete="email" placeholder="Ex: nome@dominio.com" required>
-+                <div class="help">Usaremos este e-mail para retorno e contato.</div>
-+              </div>
- 
-               <div class="field">
-                 <label for="casado">Você é casado(a)? *</label>
-                 <select id="casado" required>
-                   <option value="" selected disabled>Selecione</option>
-                   <option>Sim</option>
-                   <option>Não</option>
-                   <option>Prefiro não informar</option>
-                 </select>
-               </div>
- 
-               <div class="field" style="grid-column:1/-1;">
-                 <label for="cidade">Cidade / Estado *</label>
-                 <input id="cidade" type="text" placeholder="Ex: Curitiba - PR" required>
-               </div>
-             </div>
- 
--            <div class="checkboxRow">
--              <input id="consent" type="checkbox" required>
--              <span>Confirmo que as informações acima são verdadeiras e aceito ser contatado via WhatsApp para retorno da análise.</span>
--            </div>
--          </div>
-+            <div class="checkboxRow">
-+              <input id="consent" type="checkbox" required>
-+              <span>Confirmo que as informações acima são verdadeiras e aceito ser contatado via e-mail para retorno da análise.</span>
-+            </div>
-+            <div class="privacy">
-+              Seus dados serão usados apenas para análise do cadastro e contato. Leia nossa <a href="#" aria-label="Política de privacidade">política de privacidade</a>.
-+            </div>
-+          </div>
- 
-           <!-- STEP 2 -->
-           <div class="step" data-step="2" style="display:none;">
-             <div class="stepTitle">Etapa 2/5 — Interesse e origem</div>
-             <div class="stepHint">Conte rapidamente seu objetivo e como chegou até nós.</div>
- 
-             <div class="grid grid1">
-               <div class="field">
-                 <label for="motivo">Por que você se interessou em se tornar revendedor(a) de semijoias? *</label>
-                 <textarea id="motivo" placeholder="Ex: Quero renda extra, já vendo online e quero aumentar catálogo..." required></textarea>
-               </div>
- 
-               <div class="grid">
-                 <div class="field">
-                   <label for="origem">Como nos encontrou? *</label>
-                   <select id="origem" required>
-                     <option value="" selected disabled>Selecione</option>
-                     <option>Instagram / Reels</option>
-                     <option>Anúncio (Meta Ads)</option>
-                     <option>Google</option>
-                     <option>Indicação</option>
-                     <option>WhatsApp</option>
-                     <option>Outro</option>
-                   </select>
-                 </div>
-@@ -437,53 +506,53 @@
-                   <select id="experiencia" required>
-                     <option value="" selected disabled>Selecione</option>
-                     <option>Não, seria minha primeira vez</option>
-                     <option>Sim, já vendi produtos (geral)</option>
-                     <option>Sim, já vendi semijoias/joias</option>
-                   </select>
-                 </div>
- 
-                 <div class="field">
-                   <label for="canal">Onde pretende vender? *</label>
-                   <select id="canal" required>
-                     <option value="" selected disabled>Selecione</option>
-                     <option>Instagram</option>
-                     <option>WhatsApp (status/grupos)</option>
-                     <option>Marketplace</option>
-                     <option>Loja física</option>
-                     <option>Vendas presenciais</option>
-                     <option>Mais de um canal</option>
-                   </select>
-                 </div>
-               </div>
-             </div>
-           </div>
- 
-           <!-- STEP 3 -->
--          <div class="step" data-step="3" style="display:none;">
--            <div class="stepTitle">Etapa 3/5 — Potencial de vendas</div>
--            <div class="stepHint">Perguntas objetivas para prever desempenho e compromisso.</div>
-+          <div class="step" data-step="3" style="display:none;">
-+            <div class="stepTitle">Etapa 3/5 — Potencial de vendas</div>
-+            <div class="stepHint">Perguntas objetivas para prever desempenho, disponibilidade e canais de venda.</div>
- 
-             <div class="grid">
-               <div class="field">
-                 <label for="ocupacao">Ocupação atual *</label>
-                 <select id="ocupacao" required>
-                   <option value="" selected disabled>Selecione</option>
-                   <option>Sou empresário(a) / empreendo</option>
-                   <option>Sou autônomo(a) e já faço vendas</option>
-                   <option>Sou CLT</option>
-                   <option>Sou estudante (18+)</option>
-                   <option>Estou desempregado(a)</option>
-                   <option>Prefiro não informar</option>
-                 </select>
-               </div>
- 
-               <div class="field">
-                 <label for="tempo">Tempo por semana disponível para vendas *</label>
-                 <select id="tempo" required>
-                   <option value="" selected disabled>Selecione</option>
-                   <option>1–3 horas</option>
-                   <option>4–7 horas</option>
-                   <option>8–14 horas</option>
-                   <option>15+ horas</option>
-                 </select>
-               </div>
-@@ -535,299 +604,335 @@
-               </div>
- 
-               <div class="field">
-                 <label for="compromisso">Quando pretende iniciar? *</label>
-                 <select id="compromisso" required>
-                   <option value="" selected disabled>Selecione</option>
-                   <option>Em até 2 semanas</option>
-                   <option>Em até 1 mês</option>
-                   <option>Sem prazo definido</option>
-                 </select>
-               </div>
-             </div>
- 
-             <div class="checkboxRow">
-               <input id="antiFraude" type="checkbox" required>
-               <span>Declaro que as informações são verdadeiras e que não utilizarei dados de terceiros.</span>
-             </div>
-           </div>
- 
-           <!-- STEP 4 -->
-           <div class="step" data-step="4" style="display:none;">
-             <div class="stepTitle">Etapa 4/5 — Perfil e capacidade</div>
-             <div class="stepHint">Responda para concluirmos a análise do seu cadastro.</div>
- 
-             <div class="grid">
--              <div class="field">
--                <label for="cpfRegular">Seu CPF está regular para compras online? *</label>
--                <select id="cpfRegular" required>
--                  <option value="" selected disabled>Selecione</option>
--                  <option>Sim</option>
--                  <option>Não</option>
--                  <option>Não sei</option>
--                </select>
--              </div>
--
--              <div class="field">
--                <label for="empregoFixo">Você possui um emprego fixo? *</label>
--                <select id="empregoFixo" required>
--                  <option value="" selected disabled>Selecione</option>
--                  <option>Sim, CLT</option>
--                  <option>Sim, autônomo(a)</option>
--                  <option>Não, estou desempregado(a)</option>
--                  <option>Sou empresário(a)</option>
--                  <option>Prefiro não informar</option>
--                </select>
--              </div>
-+              <div class="field">
-+                <label for="cpfRegular">Seu CPF está regular para compras online? *</label>
-+                <select id="cpfRegular" required>
-+                  <option value="" selected disabled>Selecione</option>
-+                  <option>Sim</option>
-+                  <option>Não</option>
-+                  <option>Não sei</option>
-+                </select>
-+                <div class="help">Usamos essa informação para validar possíveis compras no atacado.</div>
-+              </div>
-+
-+              <div class="field">
-+                <label for="empregoFixo">Você possui um emprego fixo? *</label>
-+                <select id="empregoFixo" required>
-+                  <option value="" selected disabled>Selecione</option>
-+                  <option>Sim, CLT</option>
-+                  <option>Sim, autônomo(a)</option>
-+                  <option>Não, estou desempregado(a)</option>
-+                  <option>Sou empresário(a)</option>
-+                  <option>Prefiro não informar</option>
-+                </select>
-+                <div class="help">Ajuda a entender disponibilidade de tempo e rotina.</div>
-+              </div>
- 
-               <div class="field">
-                 <label for="perfilCliente">Qual o perfil dos clientes que você pretende vender? *</label>
-                 <select id="perfilCliente" required>
-                   <option value="" selected disabled>Selecione</option>
-                   <option>Público de preço acessível</option>
-                   <option>Classe média (presentes e uso diário)</option>
-                   <option>Público premium (peças de maior valor)</option>
-                   <option>Vendas variadas / ainda não definido</option>
-                   <option>Empresas / brindes / presentes corporativos</option>
-                 </select>
-               </div>
- 
-               <div class="field">
-                 <label for="facilidadeSocial">Você tem facilidade em usar WhatsApp e Instagram para fazer vendas? *</label>
-                 <select id="facilidadeSocial" required>
-                   <option value="" selected disabled>Selecione</option>
-                   <option>Sim, uso com frequência</option>
-                   <option>Tenho noção básica</option>
-                   <option>Tenho dificuldade, mas quero aprender</option>
-                 </select>
-               </div>
-             </div>
-           </div>
- 
-           <!-- STEP 5 -->
-           <div class="step" data-step="5" style="display:none;">
-             <div class="stepTitle">Etapa 5/5 — Verificação</div>
--            <div class="stepHint">Resolva o captcha numérico e finalize. Dependendo do perfil, o envio no WhatsApp pode ser liberado.</div>
-+            <div class="stepHint">Resolva o captcha numérico e finalize. Dependendo do perfil, o envio por e-mail pode ser liberado.</div>
- 
-             <!-- Resultado por pontuação -->
-             <div class="ok" id="resultBox" style="display:none;"></div>
- 
-             <div class="grid" style="margin-top:12px;">
-               <div class="field">
-                 <label for="captchaAnswer">Captcha numérico *</label>
-                 <input id="captchaAnswer" type="number" inputmode="numeric" placeholder="Resposta" required>
-                 <div class="help" id="captchaQuestion">Carregando captcha...</div>
-               </div>
- 
-               <div class="field">
-                 <label>Envio</label>
-                 <div class="help" id="resultHint">
-                   O botão será liberado após o captcha e todas as confirmações.
-                 </div>
-               </div>
-             </div>
- 
-             <div class="checkboxRow">
-               <input id="lgpd" type="checkbox" required>
-               <span>Autorizo o contato e a análise do cadastro com as informações fornecidas.</span>
-             </div>
- 
-             <div style="margin-top:14px;">
--              <button class="btn btnPrimary" id="sendBtn" type="button" disabled>
--                Enviar no WhatsApp
--              </button>
--              <div class="help" style="margin-top:8px;">
--                Se seu perfil estiver elegível, o botão será liberado após o captcha.
--              </div>
--            </div>
--          </div>
-+              <button class="btn btnPrimary" id="sendBtn" type="button" disabled>
-+                Enviar por e-mail
-+              </button>
-+              <div class="help" style="margin-top:8px;">
-+                Se seu perfil estiver elegível, o botão será liberado após o captcha.
-+              </div>
-+            </div>
-+          </div>
- 
-           <div class="actions">
-             <div class="smallNote" id="stepNote">Campos com * são obrigatórios.</div>
-             <div style="display:flex; gap:10px; flex-wrap:wrap;">
-               <button class="btn btnGhost" id="backBtn" type="button" style="display:none;">Voltar</button>
-               <button class="btn btnPrimary" id="nextBtn" type="button">Continuar</button>
-             </div>
-           </div>
- 
-         </div>
-       </div>
- 
-       <footer>
--        <div class="wrap footerRow">
--          <div><b>Emporium24k</b> • Cadastro de Revendedores — Semijoias</div>
--          <div>Triagem + WhatsApp (quando elegível)</div>
--        </div>
-+        <div class="wrap footerRow">
-+          <div><b>Emporium24k</b> • Cadastro de Revendedores — Semijoias</div>
-+          <div>Triagem + e-mail (quando elegível)</div>
-+        </div>
-       </footer>
-     </div>
-   </section>
- 
-   <script>
--    const EMP_WHATS = "5541998518452";
-+    const EMP_EMAIL = "emporium24k@gmail.com";
-     const MIN_AGE = 18;
- 
-     // Faixas de decisão
-     const SCORE_REPROVADO_MAX = 14;   // 0..14
-     const SCORE_QUALIFICAR_MAX = 29;  // 15..29
-     // 30+ = APROVADO
- 
-     let currentStep = 1;
-     const totalSteps = 5;
- 
-     const $ = (id) => document.getElementById(id);
-     const errorBox = $("errorBox");
-     const okBox = $("okBox");
-     const bar = $("bar");
-     const nextBtn = $("nextBtn");
-     const backBtn = $("backBtn");
-     const sendBtn = $("sendBtn");
-     const stepNote = $("stepNote");
-     const resultBox = $("resultBox");
-     const resultHint = $("resultHint");
- 
-     let capA = 0, capB = 0, capExpected = 0;
- 
-     function setCaptcha(){
-       capA = Math.floor(2 + Math.random()*8);
-       capB = Math.floor(2 + Math.random()*8);
-       const op = Math.random() < 0.6 ? "+" : "*";
-       capExpected = (op === "+") ? (capA + capB) : (capA * capB);
-       $("captchaQuestion").textContent = `Resolva: ${capA} ${op} ${capB} = ?`;
-       $("captchaAnswer").value = "";
-       sendBtn.disabled = true;
-     }
- 
--    function showError(msg){
--      okBox.style.display = "none";
--      errorBox.textContent = msg;
--      errorBox.style.display = "block";
--      errorBox.scrollIntoView({behavior:"smooth", block:"center"});
--    }
-+    function showError(msg){
-+      clearInvalid();
-+      okBox.style.display = "none";
-+      errorBox.textContent = msg;
-+      errorBox.style.display = "block";
-+      errorBox.scrollIntoView({behavior:"smooth", block:"center"});
-+    }
- 
-     function showOk(msg){
-       errorBox.style.display = "none";
-       okBox.textContent = msg;
-       okBox.style.display = "block";
-     }
- 
--    function hideAlerts(){
--      errorBox.style.display = "none";
--      okBox.style.display = "none";
--    }
-+    function hideAlerts(){
-+      errorBox.style.display = "none";
-+      okBox.style.display = "none";
-+    }
-+
-+    function clearInvalid(){
-+      document.querySelectorAll(".field.invalid").forEach(field => field.classList.remove("invalid"));
-+      document.querySelectorAll(".checkboxRow.invalid").forEach(row => row.classList.remove("invalid"));
-+    }
- 
-     function updateProgress(){
-       const pct = Math.round((currentStep-1) / (totalSteps-1) * 100);
-       bar.style.width = `${pct}%`;
-     }
- 
-     function showStep(n){
-       document.querySelectorAll(".step").forEach(step => {
-         step.style.display = (Number(step.dataset.step) === n) ? "block" : "none";
-       });
- 
-       currentStep = n;
-       updateProgress();
-       hideAlerts();
- 
-       backBtn.style.display = (currentStep > 1) ? "inline-flex" : "none";
- 
-       if(currentStep < totalSteps){
-         nextBtn.style.display = "inline-flex";
-         nextBtn.textContent = "Continuar";
-         stepNote.textContent = "Campos com * são obrigatórios.";
-       } else {
-         nextBtn.textContent = "Finalizar";
-         stepNote.textContent = "Conclua a verificação para finalizar.";
-         setCaptcha();
-         sendBtn.disabled = true;
-         applyFinalBehavior(); // ✅ decide o que aparece no final
-       }
- 
-       window.scrollTo({top: 0, behavior: "smooth"});
-     }
- 
--    function digitsOnly(str){ return (str || "").replace(/\D/g, ""); }
--
--    function requiredText(el, name){
--      const v = (el.value || "").trim();
--      if(!v) throw new Error(`Preencha o campo: ${name}.`);
--      return v;
--    }
--
--    function requiredSelect(el, name){
--      const v = el.value;
--      if(!v) throw new Error(`Selecione: ${name}.`);
--      return v;
--    }
-+    function requiredText(el, name){
-+      const v = (el.value || "").trim();
-+      if(!v){
-+        markInvalid(el);
-+        throw new Error(`Preencha o campo: ${name}.`);
-+      }
-+      return v;
-+    }
-+
-+    function requiredSelect(el, name){
-+      const v = el.value;
-+      if(!v){
-+        markInvalid(el);
-+        throw new Error(`Selecione: ${name}.`);
-+      }
-+      return v;
-+    }
- 
-     function validateAllUpTo(step){
-       for(let s=1; s<=step; s++) validateStep(s);
-     }
- 
-     function validateStep(step){
-       if(step === 1){
--        requiredText($("nome"), "Nome completo");
--        const idade = Number(requiredText($("idade"), "Idade"));
--        if(Number.isNaN(idade) || idade < MIN_AGE) throw new Error("Idade inválida. Cadastro apenas para maiores de 18.");
--        const w = digitsOnly(requiredText($("whatsapp"), "WhatsApp"));
--        if(w.length < 10 || w.length > 13) throw new Error("WhatsApp inválido. Digite DDD + número (apenas números).");
--        requiredSelect($("casado"), "Você é casado(a)?");
--        requiredText($("cidade"), "Cidade / Estado");
--        if(!$("consent").checked) throw new Error("Confirme o consentimento para contato.");
--      }
-+        requiredText($("nome"), "Nome completo");
-+        const idade = Number(requiredText($("idade"), "Idade"));
-+        if(Number.isNaN(idade) || idade < MIN_AGE){
-+          markInvalid($("idade"));
-+          throw new Error("Idade inválida. Cadastro apenas para maiores de 18.");
-+        }
-+        requiredText($("email"), "E-mail");
-+        requiredSelect($("casado"), "Você é casado(a)?");
-+        requiredText($("cidade"), "Cidade / Estado");
-+        if(!$("consent").checked){
-+          markInvalid($("consent"));
-+          throw new Error("Confirme o consentimento para contato.");
-+        }
-+      }
- 
-       if(step === 2){
-         requiredText($("motivo"), "Motivo do interesse");
-         requiredSelect($("origem"), "Como nos encontrou");
-         requiredSelect($("experiencia"), "Experiência em vendas");
-         requiredSelect($("canal"), "Canal de vendas");
-       }
- 
-       if(step === 3){
-         requiredSelect($("ocupacao"), "Ocupação atual");
-         requiredSelect($("tempo"), "Tempo por semana");
-         requiredSelect($("contatos"), "Contatos no WhatsApp");
-         requiredSelect($("grupos"), "Participação em grupos");
-         requiredSelect($("metaMes"), "Meta do 1º mês");
-         requiredSelect($("abordagem"), "Conforto em abordar");
-         requiredSelect($("compromisso"), "Quando pretende iniciar");
--        if(!$("antiFraude").checked) throw new Error("Confirme a declaração.");
--      }
-+        if(!$("antiFraude").checked){
-+          markInvalid($("antiFraude"));
-+          throw new Error("Confirme a declaração.");
-+        }
-+      }
- 
-       if(step === 4){
-         requiredSelect($("cpfRegular"), "CPF regular para compras online");
-         requiredSelect($("empregoFixo"), "Emprego fixo");
-         requiredSelect($("perfilCliente"), "Perfil de clientes");
-         requiredSelect($("facilidadeSocial"), "Facilidade com WhatsApp/Instagram");
-       }
- 
--      if(step === 5){
--        const ans = Number(requiredText($("captchaAnswer"), "Captcha"));
--        if(ans !== capExpected) throw new Error("Captcha incorreto. Tente novamente.");
--        if(!$("lgpd").checked) throw new Error("Marque a autorização para contato e análise.");
--      }
--    }
-+      if(step === 5){
-+        const ans = Number(requiredText($("captchaAnswer"), "Captcha"));
-+        if(ans !== capExpected){
-+          markInvalid($("captchaAnswer"));
-+          throw new Error("Captcha incorreto. Tente novamente.");
-+        }
-+        if(!$("lgpd").checked){
-+          markInvalid($("lgpd"));
-+          throw new Error("Marque a autorização para contato e análise.");
-+        }
-+      }
-+    }
-+
-+    function markInvalid(el){
-+      const field = el.closest(".field");
-+      if(field){
-+        field.classList.add("invalid");
-+        return;
-+      }
-+      const row = el.closest(".checkboxRow");
-+      if(row) row.classList.add("invalid");
-+    }
- 
-     // ---- SCORING ----
-     function calcScore(){
-       let score = 0;
-       const notes = [];
- 
-       const canal = ($("canal").value || "").trim();
-       const experiencia = ($("experiencia").value || "").trim();
-       const origem = ($("origem").value || "").trim();
-       const origemDetalhe = ($("origemDetalhe").value || "").trim();
- 
-       const ocupacao = ($("ocupacao").value || "").trim();
-       const tempo = ($("tempo").value || "").trim();
-       const contatos = ($("contatos").value || "").trim();
-       const grupos = ($("grupos").value || "").trim();
-       const metaMes = ($("metaMes").value || "").trim();
-       const abordagem = ($("abordagem").value || "").trim();
-       const compromisso = ($("compromisso").value || "").trim();
- 
-       const cpfRegular = ($("cpfRegular").value || "").trim();
-       const empregoFixo = ($("empregoFixo").value || "").trim();
-       const perfilCliente = ($("perfilCliente").value || "").trim();
-       const facilidadeSocial = ($("facilidadeSocial").value || "").trim();
- 
-       const ocupacaoPoints = {
-@@ -939,164 +1044,165 @@
- 
-       return { score, notes };
-     }
- 
-     function getStatus(score){
-       const canal = ($("canal").value || "").trim();
-       if(canal === "Loja física") return "APROVADO";
- 
-       if(score <= SCORE_REPROVADO_MAX) return "REPROVADO";
-       if(score <= SCORE_QUALIFICAR_MAX) return "QUALIFICAR";
-       return "APROVADO";
-     }
- 
-     function applyFinalBehavior(){
-       const { score } = calcScore();
-       const status = getStatus(score);
- 
-       // Sempre mostra a caixa de resultado na etapa final
-       resultBox.style.display = "block";
-       resultBox.className = "ok";
- 
-       if(status === "REPROVADO"){
-         sendBtn.style.display = "none";
-         sendBtn.disabled = true;
- 
--        resultBox.textContent = "Recebemos seus dados. Se o perfil for aprovado, entraremos em contato pelo WhatsApp informado.";
--        resultHint.textContent = "Obrigado! Sua inscrição foi registrada para análise.";
--        return;
--      }
-+        resultBox.textContent = "Recebemos seus dados. Se o perfil for aprovado, entraremos em contato pelo e-mail informado.";
-+        resultHint.textContent = "Obrigado! Sua inscrição foi registrada para análise.";
-+        return;
-+      }
- 
-       // QUALIFICAR / APROVADO
-       sendBtn.style.display = "inline-flex";
- 
-       if(status === "QUALIFICAR"){
--        resultBox.textContent = "Seu perfil está em análise. Para agilizar, envie seus dados no WhatsApp.";
--        resultHint.textContent = "Após o envio, nossa equipe analisa e retorna no seu WhatsApp.";
--      } else {
--        resultBox.textContent = "Seu perfil tem alta compatibilidade. Envie agora no WhatsApp para avançarmos com prioridade.";
--        resultHint.textContent = "Envie no WhatsApp para receber os próximos passos com prioridade.";
--      }
--    }
-+        resultBox.textContent = "Seu perfil está em análise. Para agilizar, envie seus dados por e-mail.";
-+        resultHint.textContent = "Após o envio, nossa equipe analisa e retorna no seu e-mail.";
-+      } else {
-+        resultBox.textContent = "Seu perfil tem alta compatibilidade. Envie agora por e-mail para avançarmos com prioridade.";
-+        resultHint.textContent = "Envie por e-mail para receber os próximos passos com prioridade.";
-+      }
-+    }
- 
-     function buildWhatsMessage(){
-       const nome = ($("nome").value || "").trim();
-       const idade = ($("idade").value || "").trim();
--      const whatsapp = digitsOnly(($("whatsapp").value || "").trim());
-+      const email = ($("email").value || "").trim();
-       const casado = ($("casado").value || "").trim();
-       const cidade = ($("cidade").value || "").trim();
- 
-       const motivo = ($("motivo").value || "").trim();
-       const origem = ($("origem").value || "").trim();
-       const origemDetalhe = ($("origemDetalhe").value || "").trim();
-       const experiencia = ($("experiencia").value || "").trim();
-       const canal = ($("canal").value || "").trim();
- 
-       const ocupacao = ($("ocupacao").value || "").trim();
-       const tempo = ($("tempo").value || "").trim();
-       const contatos = ($("contatos").value || "").trim();
-       const grupos = ($("grupos").value || "").trim();
-       const metaMes = ($("metaMes").value || "").trim();
-       const abordagem = ($("abordagem").value || "").trim();
-       const compromisso = ($("compromisso").value || "").trim();
- 
-       const cpfRegular = ($("cpfRegular").value || "").trim();
-       const empregoFixo = ($("empregoFixo").value || "").trim();
-       const perfilCliente = ($("perfilCliente").value || "").trim();
-       const facilidadeSocial = ($("facilidadeSocial").value || "").trim();
- 
-       const { score, notes } = calcScore();
-       const status = getStatus(score);
- 
-       let headline = "CADASTRO — REVENDEDOR(A) DE SEMIJOIAS";
-       if(status === "QUALIFICAR") headline = "CADASTRO — QUALIFICAÇÃO (REVENDA SEMIJOIAS)";
-       if(status === "APROVADO") headline = "CADASTRO — APROVADO PRIORIDADE (REVENDA SEMIJOIAS)";
- 
-       const lines = [
-         headline,
-         "",
-         `STATUS: ${status}`,
-         `SCORE: ${score}`,
-         notes.length ? `OBS: ${notes.join(" | ")}` : "OBS: -",
-         "",
-         "1) DADOS BÁSICOS",
-         `nome: ${nome}`,
-         `idade: ${idade}`,
--        `whatsapp: ${whatsapp}`,
-+        `email: ${email}`,
-         `casado(a): ${casado}`,
-         `cidade/estado: ${cidade}`,
-         "",
-         "2) INTERESSE E ORIGEM",
-         `motivo: ${motivo}`,
-         `como nos encontrou: ${origem}${origemDetalhe ? " | detalhe: " + origemDetalhe : ""}`,
-         `experiência: ${experiencia}`,
-         `onde pretende vender: ${canal}`,
-         "",
-         "3) POTENCIAL DE VENDAS",
-         `ocupação atual: ${ocupacao}`,
-         `tempo disponível/semana: ${tempo}`,
-         `contatos no WhatsApp: ${contatos}`,
-         `participa de grupos: ${grupos}`,
-         `meta 1º mês: ${metaMes}`,
-         `conforto em abordar: ${abordagem}`,
-         `quando pretende iniciar: ${compromisso}`,
-         "",
-         "4) PERFIL E CAPACIDADE",
-         `CPF regular p/ compras online: ${cpfRegular}`,
-         `emprego fixo: ${empregoFixo}`,
-         `perfil de clientes: ${perfilCliente}`,
-         `facilidade WhatsApp/Instagram: ${facilidadeSocial}`,
-       ];
- 
-       return lines.join("\n");
-     }
- 
--    function openWhatsApp(message){
--      const url = `https://wa.me/${EMP_WHATS}?text=${encodeURIComponent(message)}`;
--      window.open(url, "_blank", "noopener,noreferrer");
--    }
-+    function openEmail(message){
-+      const subject = "Cadastro de Revendedor(a) - Emporium24k";
-+      const url = `mailto:${EMP_EMAIL}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(message)}`;
-+      window.location.href = url;
-+    }
- 
-     nextBtn.addEventListener("click", () => {
-       try{
-         validateStep(currentStep);
- 
-         if(currentStep < totalSteps){
-           showStep(currentStep + 1);
-           return;
-         }
- 
-         // Finalizar no Step 5
-         validateAllUpTo(5);
-         applyFinalBehavior();
- 
-         const { score } = calcScore();
-         const status = getStatus(score);
- 
-         if(status !== "REPROVADO"){
--          showOk("Tudo certo. Agora você já pode enviar no WhatsApp.");
--          sendBtn.disabled = false;
--        } else {
-+          showOk("Tudo certo. Agora você já pode enviar por e-mail.");
-+          sendBtn.disabled = false;
-+        } else {
-           showOk("Tudo certo. Sua inscrição foi registrada para análise.");
-           sendBtn.disabled = true;
-         }
- 
-       } catch(err){
-         showError(err.message || "Verifique os campos e tente novamente.");
-         if(currentStep === 5) setCaptcha();
-         sendBtn.disabled = true;
-       }
-     });
- 
-     backBtn.addEventListener("click", () => {
-       if(currentStep > 1) showStep(currentStep - 1);
-     });
- 
-     ["captchaAnswer","lgpd"].forEach(id=>{
-       const el = $(id);
-       if(!el) return;
-       const handler = () => {
-         if(currentStep !== 5) return;
-         try{
-           validateAllUpTo(5);
-           applyFinalBehavior();
- 
-           const { score } = calcScore();
-@@ -1107,41 +1213,37 @@
-           } else {
-             sendBtn.disabled = true;
-           }
-           hideAlerts();
-         } catch {
-           sendBtn.disabled = true;
-         }
-       };
-       el.addEventListener("input", handler);
-       el.addEventListener("change", handler);
-     });
- 
-     sendBtn.addEventListener("click", () => {
-       try{
-         validateAllUpTo(5);
- 
-         const { score } = calcScore();
-         const status = getStatus(score);
- 
-         if(status === "REPROVADO"){
-           applyFinalBehavior();
-           showOk("Recebemos seus dados. Se aprovado, entraremos em contato.");
-           return;
-         }
- 
--        openWhatsApp(buildWhatsMessage());
--      } catch(err){
--        showError(err.message || "Verifique os campos e tente novamente.");
--        setCaptcha();
--        sendBtn.disabled = true;
--      }
--    });
--
--    $("whatsapp").addEventListener("blur", () => {
--      $("whatsapp").value = digitsOnly($("whatsapp").value);
--    });
-+        openEmail(buildWhatsMessage());
-+      } catch(err){
-+        showError(err.message || "Verifique os campos e tente novamente.");
-+        setCaptcha();
-+        sendBtn.disabled = true;
-+      }
-+    });
- 
-     showStep(1);
-   </script>
- </body>
- </html>
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Emporium24k | Cadastro de Revendedores — Semijoias</title>
+  <meta name="description" content="Cadastro de revendedores de semijoias. Preencha o formulário para análise e envio por e-mail." />
+
+  <style>
+    :root{
+      --bg:#0b0b0d;
+      --panel:rgba(255,255,255,.05);
+      --text:rgba(255,255,255,.92);
+      --muted:rgba(255,255,255,.62);
+      --line:rgba(255,255,255,.10);
+      --gold:#d4b15f;
+      --gold2:#f0df9a;
+      --shadow: 0 22px 70px rgba(0,0,0,.55);
+      --max:980px;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial;
+      font-size: 15px;
+      line-height: 1.6;
+      background:
+        radial-gradient(900px 520px at 10% 0%, rgba(212,177,95,.18), transparent 55%),
+        radial-gradient(760px 520px at 90% 10%, rgba(240,223,154,.14), transparent 60%),
+        linear-gradient(180deg, #070708, #0b0b0d 35%, #070708 100%);
+      color:var(--text);
+      overflow-x:hidden;
+    }
+    a{color:inherit; text-decoration:none}
+    .wrap{width:min(var(--max), calc(100% - 40px)); margin:0 auto;}
+
+    .top{
+      position:sticky; top:0; z-index:50;
+      backdrop-filter: blur(14px);
+      background: rgba(10,10,12,.55);
+      border-bottom:1px solid rgba(255,255,255,.08);
+    }
+    .top .row{
+      display:flex; align-items:center; justify-content:space-between;
+      gap:12px; padding:12px 0; flex-wrap:wrap;
+    }
+    .brand{display:flex; align-items:center; gap:12px;}
+    .brandMark{
+      width:42px; height:42px; border-radius:14px;
+      border:1px solid rgba(255,255,255,.12);
+      background: rgba(0,0,0,.25);
+      display:flex; align-items:center; justify-content:center;
+      overflow:hidden;
+      box-shadow: 0 18px 55px rgba(212,177,95,.10);
+    }
+    .brandMark img{width:100%; height:100%; object-fit:cover; display:block;}
+    .brand b{letter-spacing:.12em; font-size:12px; color:rgba(240,223,154,.95)}
+    .brand small{display:block; color:rgba(255,255,255,.55); margin-top:2px; font-size:12px}
+    .pill{
+      font-size:12px;
+      padding:8px 10px;
+      border-radius:999px;
+      border:1px solid rgba(212,177,95,.30);
+      background:rgba(212,177,95,.10);
+      color:rgba(240,223,154,.92);
+      white-space:nowrap;
+    }
+
+    header{padding:48px 0 24px;}
+    .hero{
+      border-radius: 28px;
+      border:1px solid rgba(255,255,255,.10);
+      background:
+        radial-gradient(760px 260px at 15% 0%, rgba(212,177,95,.22), transparent 60%),
+        radial-gradient(780px 320px at 90% 30%, rgba(240,223,154,.16), transparent 60%),
+        rgba(255,255,255,.05);
+      box-shadow: 0 24px 80px rgba(0,0,0,.55);
+      padding: 26px;
+    }
+    .hero h1{
+      margin:0 0 10px;
+      font-size: clamp(26px, 2.8vw, 36px);
+      letter-spacing: -.01em;
+      font-weight: 800;
+    }
+    .hero p{
+      margin:0;
+      color: rgba(255,255,255,.80);
+      font-size: 15px;
+      line-height: 1.7;
+      max-width: 76ch;
+    }
+    .trustRow{
+      display:flex;
+      gap:12px;
+      flex-wrap:wrap;
+      margin-top: 16px;
+    }
+    .trustPill{
+      font-size:12px;
+      padding:8px 12px;
+      border-radius:999px;
+      border:1px solid rgba(255,255,255,.12);
+      background: rgba(0,0,0,.30);
+      color: rgba(255,255,255,.86);
+      box-shadow: inset 0 0 0 1px rgba(255,255,255,.03);
+    }
+    .heroGrid{
+      display:grid;
+      grid-template-columns: 1.2fr .8fr;
+      gap:16px;
+      align-items:start;
+      margin-top: 16px;
+    }
+    .heroCard{
+      border-radius: 18px;
+      border:1px solid rgba(255,255,255,.10);
+      background: rgba(8,8,12,.40);
+      padding: 16px 18px;
+    }
+    .heroCard h3{margin:0 0 8px; font-size:14px; color: rgba(255,255,255,.90);}
+    .heroCard ul{margin:0; padding-left:18px; color: rgba(255,255,255,.74); font-size:13px; line-height:1.6;}
+
+    section{padding: 22px 0 46px;}
+    .panel{
+      border-radius: 26px;
+      border:1px solid rgba(255,255,255,.10);
+      background: rgba(255,255,255,.05);
+      box-shadow: 0 22px 70px rgba(0,0,0,.50);
+      overflow:hidden;
+    }
+    .panelHead{
+      padding: 18px 20px;
+      border-bottom: 1px solid rgba(255,255,255,.08);
+      background: rgba(0,0,0,.22);
+      display:flex; justify-content:space-between; gap:12px; align-items:center; flex-wrap:wrap;
+    }
+    .panelHead h2{margin:0; font-size:17px;}
+    .panelHead .sub{margin:0; color: rgba(255,255,255,.72); font-size:13px; max-width:70ch;}
+    .panelMeta{
+      display:flex; align-items:center; gap:10px; flex-wrap:wrap;
+      font-size: 12px; color: rgba(255,255,255,.70);
+      margin-top:10px;
+    }
+    .panelMeta span{
+      padding: 6px 10px;
+      border-radius: 999px;
+      border:1px solid rgba(255,255,255,.10);
+      background: rgba(0,0,0,.28);
+    }
+
+    .progress{
+      width: 210px; max-width:100%;
+      height: 10px; border-radius:999px;
+      border:1px solid rgba(255,255,255,.10);
+      background: rgba(0,0,0,.18);
+      overflow:hidden;
+    }
+    .bar{height:100%; width:0%; background: linear-gradient(135deg, var(--gold2), var(--gold));}
+
+    .content{padding: 18px 20px;}
+    .stepTitle{margin:0 0 6px; font-size:16px; font-weight:800; letter-spacing:-.01em;}
+    .stepHint{margin:0 0 14px; color: rgba(255,255,255,.70); font-size:13px; line-height:1.6;}
+
+    .grid{display:grid; grid-template-columns:1fr 1fr; gap:12px;}
+    .grid1{grid-template-columns:1fr;}
+    .field{display:flex; flex-direction:column; gap:6px;}
+    label{font-size:12px; color:rgba(255,255,255,.78);}
+
+    input, select, textarea{
+      width:100%;
+      padding: 12px 12px;
+      border-radius: 14px;
+      border:1px solid rgba(255,255,255,.12);
+      background: rgba(0,0,0,.26);
+      color: var(--text);
+      outline:none;
+      font-size: 14px;
+    }
+    input:focus, select:focus, textarea:focus{
+      border-color: rgba(240,223,154,.55);
+      box-shadow: 0 0 0 3px rgba(240,223,154,.18);
+    }
+    .field.invalid input,
+    .field.invalid select,
+    .field.invalid textarea{
+      border-color: rgba(255,90,90,.55);
+      box-shadow: 0 0 0 3px rgba(255,90,90,.12);
+    }
+    textarea{min-height:110px; resize:vertical;}
+
+    /* dropdown legível */
+    select{ color-scheme: dark; background-color: rgba(0,0,0,.26); color: rgba(255,255,255,.92); }
+    option{ background-color:#0b0b0d; color:#fff; }
+    option:disabled{ color: rgba(255,255,255,.55); }
+
+    .help{font-size:12px; color: rgba(255,255,255,.62); line-height:1.5;}
+
+    .checkboxRow{
+      display:flex; gap:10px; align-items:flex-start;
+      padding:12px;
+      border-radius:16px;
+      border:1px solid rgba(255,255,255,.10);
+      background: rgba(0,0,0,.22);
+      margin-top:10px;
+    }
+    .checkboxRow.invalid{
+      border-color: rgba(255,90,90,.55);
+      box-shadow: 0 0 0 3px rgba(255,90,90,.10);
+    }
+    .checkboxRow input{width:auto; margin-top:3px;}
+    .checkboxRow span{color: rgba(255,255,255,.70); font-size:13px; line-height:1.55;}
+
+    .actions{
+      display:flex; gap:10px; flex-wrap:wrap;
+      margin-top:14px; align-items:center; justify-content:space-between;
+    }
+    .btn{
+      display:inline-flex; align-items:center; justify-content:center;
+      gap:10px; padding:12px 16px; border-radius:14px;
+      border:1px solid rgba(255,255,255,.14);
+      background: rgba(255,255,255,.06);
+      color: var(--text);
+      font-weight:800; font-size:14px; cursor:pointer;
+      transition: transform .15s ease, background .15s ease, border-color .15s ease, opacity .15s ease;
+      user-select:none; white-space:nowrap;
+    }
+    .btn:hover{transform: translateY(-1px); background: rgba(255,255,255,.08); border-color: rgba(255,255,255,.18);}
+    .btnPrimary{
+      border:none; color:#000;
+      background: linear-gradient(135deg, var(--gold2), var(--gold));
+      box-shadow: 0 18px 55px rgba(212,177,95,.14);
+    }
+    .btnPrimary:hover{background: linear-gradient(135deg, #f6e7ad, #d9b85b);}
+    .btnGhost{background: transparent; border:1px solid rgba(255,255,255,.12); color: rgba(255,255,255,.84);}
+    .btn[disabled]{opacity:.55; cursor:not-allowed; transform:none !important;}
+
+    .smallNote{color: rgba(255,255,255,.64); font-size:12px; line-height:1.5; max-width:70ch;}
+
+    .privacy{
+      font-size:12px;
+      color: rgba(255,255,255,.64);
+      margin-top:10px;
+      line-height:1.6;
+    }
+    .privacy a{color: rgba(240,223,154,.92); text-decoration: underline;}
+
+    .error,.ok{
+      margin-top:10px;
+      padding:12px;
+      border-radius:14px;
+      font-size:13px;
+      display:none;
+      line-height:1.55;
+    }
+    .error{border:1px solid rgba(255,90,90,.22); background: rgba(255,90,90,.10);}
+    .ok{border:1px solid rgba(90,255,160,.18); background: rgba(90,255,160,.08);}
+
+    footer{
+      padding:22px 0 34px;
+      color: rgba(255,255,255,.60);
+      font-size:12px;
+      border-top: 1px solid rgba(255,255,255,.08);
+      margin-top:22px;
+    }
+    .footerRow{display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;}
+
+    @media (max-width: 860px){
+      .heroGrid{grid-template-columns:1fr;}
+      .grid{grid-template-columns:1fr;}
+      .progress{width:100%;}
+    }
+  </style>
+</head>
+
+<body>
+  <div class="top">
+    <div class="wrap">
+      <div class="row">
+        <div class="brand">
+          <div class="brandMark" aria-hidden="true">
+            <img src="logo.png" alt="Emporium24k">
+          </div>
+          <div>
+            <b>EMPORIUM24K</b>
+            <small>Cadastro de Revendedores • Semijoias</small>
+          </div>
+        </div>
+        <div class="pill">Processo de cadastro</div>
+      </div>
+    </div>
+  </div>
+
+  <header>
+    <div class="wrap">
+      <div class="hero">
+        <h1>Cadastro de Revendedores de Semijoias</h1>
+        <p>Preencha o formulário para análise. Ao finalizar, você será direcionado ao seu e-mail com os dados organizados para enviar para a Emporium24k.</p>
+
+        <div class="trustRow" aria-label="Indicadores de confiança">
+          <span class="trustPill">✅ Processo rápido (2–3 min)</span>
+          <span class="trustPill">🔒 Dados usados apenas para análise</span>
+          <span class="trustPill">📩 Envio por e-mail</span>
+        </div>
+
+        <div class="heroGrid">
+          <div class="heroCard">
+            <h3>Após o envio</h3>
+            <ul>
+              <li>Recebemos seus dados por e-mail.</li>
+              <li>Analisamos o perfil e retornamos com próximos passos.</li>
+              <li>O retorno acontece pelo WhatsApp informado.</li>
+            </ul>
+          </div>
+
+          <div class="heroCard">
+            <h3>Requisitos</h3>
+            <ul>
+              <li>Ter 18 anos ou mais.</li>
+              <li>WhatsApp ativo.</li>
+              <li>Compromisso com vendas e atendimento.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <section>
+    <div class="wrap">
+      <div class="panel">
+        <div class="panelHead">
+          <div>
+            <h2>Questionário de Cadastro</h2>
+            <p class="sub">Responda com atenção. Ao final, o botão será liberado para enviar os dados por e-mail.</p>
+            <div class="panelMeta">
+              <span>Tempo estimado: 2–3 min</span>
+              <span>5 etapas</span>
+              <span>Critérios: experiência, canais e disponibilidade</span>
+            </div>
+          </div>
+          <div class="progress" aria-label="Progresso do questionário">
+            <div class="bar" id="bar"></div>
+          </div>
+        </div>
+
+        <div class="content">
+          <div class="error" id="errorBox" aria-live="polite"></div>
+          <div class="ok" id="okBox" aria-live="polite"></div>
+
+          <!-- STEP 1 -->
+          <div class="step" data-step="1">
+            <div class="stepTitle">Etapa 1/5 — Dados básicos</div>
+            <div class="stepHint">Preencha seus dados para contato e análise do cadastro.</div>
+
+            <div class="grid">
+              <div class="field">
+                <label for="nome">Nome completo *</label>
+                <input id="nome" type="text" autocomplete="name" placeholder="Ex: Maria Silva" required>
+              </div>
+
+              <div class="field">
+                <label for="idade">Idade (18+) *</label>
+                <input id="idade" type="number" min="18" max="99" placeholder="Ex: 25" required>
+              </div>
+
+              <div class="field">
+                <label for="whatsapp">WhatsApp (DDD + número) *</label>
+                <input id="whatsapp" type="tel" inputmode="numeric" placeholder="Ex: 41998518452" required>
+                <div class="help">Digite apenas números.</div>
+              </div>
+
+              <div class="field">
+                <label for="casado">Você é casado(a)? *</label>
+                <select id="casado" required>
+                  <option value="" selected disabled>Selecione</option>
+                  <option>Sim</option>
+                  <option>Não</option>
+                  <option>Prefiro não informar</option>
+                </select>
+              </div>
+
+              <div class="field" style="grid-column:1/-1;">
+                <label for="cidade">Cidade / Estado *</label>
+                <input id="cidade" type="text" placeholder="Ex: Curitiba - PR" required>
+              </div>
+            </div>
+
+            <div class="checkboxRow">
+              <input id="consent" type="checkbox" required>
+              <span>Confirmo que as informações acima são verdadeiras e aceito ser contatado para retorno da análise.</span>
+            </div>
+
+            <div class="privacy">
+              Seus dados serão usados apenas para análise do cadastro e contato.
+              <a href="#" onclick="return false;">Política de privacidade</a>.
+            </div>
+          </div>
+
+          <!-- STEP 2 -->
+          <div class="step" data-step="2" style="display:none;">
+            <div class="stepTitle">Etapa 2/5 — Interesse e origem</div>
+            <div class="stepHint">Conte rapidamente seu objetivo e como chegou até nós.</div>
+
+            <div class="grid grid1">
+              <div class="field">
+                <label for="motivo">Por que você se interessou em se tornar revendedor(a) de semijoias? *</label>
+                <textarea id="motivo" placeholder="Ex: Quero renda extra, já vendo online e quero aumentar catálogo..." required></textarea>
+              </div>
+
+              <div class="grid">
+                <div class="field">
+                  <label for="origem">Como nos encontrou? *</label>
+                  <select id="origem" required>
+                    <option value="" selected disabled>Selecione</option>
+                    <option>Instagram / Reels</option>
+                    <option>Anúncio (Meta Ads)</option>
+                    <option>Google</option>
+                    <option>Indicação</option>
+                    <option>WhatsApp</option>
+                    <option>Outro</option>
+                  </select>
+                </div>
+
+                <div class="field">
+                  <label for="origemDetalhe">Se foi indicação/Outro, quem indicou ou qual fonte?</label>
+                  <input id="origemDetalhe" type="text" placeholder="Ex: Indicação do João / Perfil Y">
+                </div>
+              </div>
+
+              <div class="grid">
+                <div class="field">
+                  <label for="experiencia">Você já vendeu algo antes? *</label>
+                  <select id="experiencia" required>
+                    <option value="" selected disabled>Selecione</option>
+                    <option>Não, seria minha primeira vez</option>
+                    <option>Sim, já vendi produtos (geral)</option>
+                    <option>Sim, já vendi semijoias/joias</option>
+                  </select>
+                </div>
+
+                <div class="field">
+                  <label for="canal">Onde pretende vender? *</label>
+                  <select id="canal" required>
+                    <option value="" selected disabled>Selecione</option>
+                    <option>Instagram</option>
+                    <option>WhatsApp (status/grupos)</option>
+                    <option>Marketplace</option>
+                    <option>Loja física</option>
+                    <option>Vendas presenciais</option>
+                    <option>Mais de um canal</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- STEP 3 -->
+          <div class="step" data-step="3" style="display:none;">
+            <div class="stepTitle">Etapa 3/5 — Rotina e potencial</div>
+            <div class="stepHint">Perguntas objetivas para entender disponibilidade e organização.</div>
+
+            <div class="grid">
+              <div class="field">
+                <label for="ocupacao">Ocupação atual *</label>
+                <input id="ocupacao" type="text" placeholder="Ex: CLT, autônomo, estudante..." required>
+              </div>
+
+              <div class="field">
+                <label for="tempo">Tempo por semana disponível para vendas *</label>
+                <select id="tempo" required>
+                  <option value="" selected disabled>Selecione</option>
+                  <option>1–3 horas</option>
+                  <option>4–7 horas</option>
+                  <option>8–14 horas</option>
+                  <option>15+ horas</option>
+                </select>
+              </div>
+
+              <div class="field">
+                <label for="instagram">Instagram (ou rede principal) *</label>
+                <input id="instagram" type="text" placeholder="Ex: @seuperfil (ou link) — se não tiver, escreva: não tenho" required>
+              </div>
+
+              <div class="field">
+                <label for="referencia">Referência (nome + contato) *</label>
+                <input id="referencia" type="text" placeholder="Ex: Maria (41 9xxxx-xxxx)" required>
+              </div>
+            </div>
+
+            <div class="grid grid1" style="margin-top:12px;">
+              <div class="field">
+                <label for="endereco">Bairro + Cidade/Estado *</label>
+                <input id="endereco" type="text" placeholder="Ex: Bairro Alto — Curitiba/PR" required>
+              </div>
+
+              <div class="field">
+                <label for="compromisso">Quando pretende iniciar? *</label>
+                <select id="compromisso" required>
+                  <option value="" selected disabled>Selecione</option>
+                  <option>Em até 2 semanas</option>
+                  <option>Em até 1 mês</option>
+                  <option>Sem prazo definido</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="checkboxRow">
+              <input id="antiFraude" type="checkbox" required>
+              <span>Declaro que as informações são verdadeiras e que não utilizarei dados de terceiros.</span>
+            </div>
+          </div>
+
+          <!-- STEP 4 -->
+          <div class="step" data-step="4" style="display:none;">
+            <div class="stepTitle">Etapa 4/5 — Perfil e capacidade</div>
+            <div class="stepHint">Responda para concluirmos a análise do seu cadastro.</div>
+
+            <div class="grid">
+              <div class="field">
+                <label for="restricao">Você possui restrição no seu nome? *</label>
+                <select id="restricao" required>
+                  <option value="" selected disabled>Selecione</option>
+                  <option>Sim</option>
+                  <option>Não</option>
+                  <option>Não sei</option>
+                </select>
+              </div>
+
+              <div class="field">
+                <label for="cpfRegular">Seu CPF está regular para compras online? *</label>
+                <select id="cpfRegular" required>
+                  <option value="" selected disabled>Selecione</option>
+                  <option>Sim</option>
+                  <option>Não</option>
+                  <option>Não sei</option>
+                </select>
+                <div class="help">Usamos essa informação para validar possíveis compras no atacado.</div>
+              </div>
+
+              <div class="field">
+                <label for="empregoFixo">Você possui um emprego fixo? *</label>
+                <select id="empregoFixo" required>
+                  <option value="" selected disabled>Selecione</option>
+                  <option>Sim, CLT</option>
+                  <option>Sim, autônomo(a)</option>
+                  <option>Não, estou desempregado(a)</option>
+                  <option>Sou empresário(a)</option>
+                  <option>Prefiro não informar</option>
+                </select>
+                <div class="help">Ajuda a entender disponibilidade de tempo e rotina.</div>
+              </div>
+
+              <div class="field">
+                <label for="perfilCliente">Qual o perfil dos clientes que você pretende vender? *</label>
+                <select id="perfilCliente" required>
+                  <option value="" selected disabled>Selecione</option>
+                  <option>Pessoas mais simples (preço acessível)</option>
+                  <option>Classe média (presentes e uso diário)</option>
+                  <option>Público premium (peças de maior valor)</option>
+                  <option>Vendas variadas / ainda não definido</option>
+                  <option>Empresas / brindes / presentes corporativos</option>
+                </select>
+              </div>
+
+              <div class="field">
+                <label for="facilidadeSocial">Você tem facilidade em usar WhatsApp e Instagram para fazer vendas? *</label>
+                <select id="facilidadeSocial" required>
+                  <option value="" selected disabled>Selecione</option>
+                  <option>Sim, uso com frequência</option>
+                  <option>Tenho noção básica</option>
+                  <option>Tenho dificuldade, mas quero aprender</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <!-- STEP 5 -->
+          <div class="step" data-step="5" style="display:none;">
+            <div class="stepTitle">Etapa 5/5 — Verificação</div>
+            <div class="stepHint">Resolva o captcha numérico e finalize o envio por e-mail.</div>
+
+            <div class="grid" style="margin-top:12px;">
+              <div class="field">
+                <label for="captchaAnswer">Captcha numérico *</label>
+                <input id="captchaAnswer" type="number" inputmode="numeric" placeholder="Resposta" required>
+                <div class="help" id="captchaQuestion">Carregando captcha...</div>
+              </div>
+
+              <div class="field">
+                <label>Envio</label>
+                <div class="help">Ao clicar no botão, será aberto o seu app de e-mail com tudo preenchido para enviar.</div>
+              </div>
+            </div>
+
+            <div class="checkboxRow">
+              <input id="lgpd" type="checkbox" required>
+              <span>Autorizo o contato e a análise do cadastro com as informações fornecidas.</span>
+            </div>
+
+            <div style="margin-top:14px;">
+              <button class="btn btnPrimary" id="sendBtn" type="button" disabled>Enviar por e-mail</button>
+              <div class="help" style="margin-top:8px;">O botão será liberado após o captcha e todas as confirmações.</div>
+            </div>
+          </div>
+
+          <div class="actions">
+            <div class="smallNote" id="stepNote">Campos com * são obrigatórios.</div>
+            <div style="display:flex; gap:10px; flex-wrap:wrap;">
+              <button class="btn btnGhost" id="backBtn" type="button" style="display:none;">Voltar</button>
+              <button class="btn btnPrimary" id="nextBtn" type="button">Continuar</button>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <footer>
+        <div class="wrap footerRow">
+          <div><b>Emporium24k</b> • Cadastro de Revendedores — Semijoias</div>
+          <div>Triagem + e-mail</div>
+        </div>
+      </footer>
+    </div>
+  </section>
+
+  <script>
+    const EMP_EMAIL = "emporium24k@gmail.com";
+    const MIN_AGE = 18;
+
+    let currentStep = 1;
+    const totalSteps = 5;
+
+    const $ = (id) => document.getElementById(id);
+    const errorBox = $("errorBox");
+    const okBox = $("okBox");
+    const bar = $("bar");
+    const nextBtn = $("nextBtn");
+    const backBtn = $("backBtn");
+    const sendBtn = $("sendBtn");
+    const stepNote = $("stepNote");
+
+    let capA = 0, capB = 0, capExpected = 0;
+
+    function setCaptcha(){
+      capA = Math.floor(2 + Math.random()*8);
+      capB = Math.floor(2 + Math.random()*8);
+      const op = Math.random() < 0.6 ? "+" : "*";
+      capExpected = (op === "+") ? (capA + capB) : (capA * capB);
+      $("captchaQuestion").textContent = `Resolva: ${capA} ${op} ${capB} = ?`;
+      $("captchaAnswer").value = "";
+      sendBtn.disabled = true;
+    }
+
+    function clearInvalid(){
+      document.querySelectorAll(".field.invalid").forEach(f => f.classList.remove("invalid"));
+      document.querySelectorAll(".checkboxRow.invalid").forEach(r => r.classList.remove("invalid"));
+    }
+    function markInvalid(el){
+      const field = el.closest(".field");
+      if(field){ field.classList.add("invalid"); return; }
+      const row = el.closest(".checkboxRow");
+      if(row) row.classList.add("invalid");
+    }
+
+    function showError(msg){
+      clearInvalid();
+      okBox.style.display = "none";
+      errorBox.textContent = msg;
+      errorBox.style.display = "block";
+      errorBox.scrollIntoView({behavior:"smooth", block:"center"});
+    }
+    function showOk(msg){
+      errorBox.style.display = "none";
+      okBox.textContent = msg;
+      okBox.style.display = "block";
+    }
+    function hideAlerts(){
+      errorBox.style.display = "none";
+      okBox.style.display = "none";
+    }
+
+    function updateProgress(){
+      const pct = Math.round((currentStep-1) / (totalSteps-1) * 100);
+      bar.style.width = `${pct}%`;
+    }
+
+    function showStep(n){
+      document.querySelectorAll(".step").forEach(step => {
+        step.style.display = (Number(step.dataset.step) === n) ? "block" : "none";
+      });
+
+      currentStep = n;
+      updateProgress();
+      hideAlerts();
+
+      backBtn.style.display = (currentStep > 1) ? "inline-flex" : "none";
+
+      if(currentStep < totalSteps){
+        nextBtn.style.display = "inline-flex";
+        nextBtn.textContent = "Continuar";
+        stepNote.textContent = "Campos com * são obrigatórios.";
+      } else {
+        nextBtn.textContent = "Finalizar";
+        stepNote.textContent = "Conclua a verificação para liberar o envio.";
+        setCaptcha();
+        sendBtn.disabled = true;
+      }
+
+      window.scrollTo({top: 0, behavior: "smooth"});
+    }
+
+    function digitsOnly(str){ return (str || "").replace(/\D/g, ""); }
+
+    function requiredText(el, name){
+      const v = (el.value || "").trim();
+      if(!v){
+        markInvalid(el);
+        throw new Error(`Preencha o campo: ${name}.`);
+      }
+      return v;
+    }
+    function requiredSelect(el, name){
+      const v = el.value;
+      if(!v){
+        markInvalid(el);
+        throw new Error(`Selecione: ${name}.`);
+      }
+      return v;
+    }
+
+    function validateAllUpTo(step){
+      for(let s=1; s<=step; s++) validateStep(s);
+    }
+
+    function validateStep(step){
+      if(step === 1){
+        requiredText($("nome"), "Nome completo");
+        const idade = Number(requiredText($("idade"), "Idade"));
+        if(Number.isNaN(idade) || idade < MIN_AGE){
+          markInvalid($("idade"));
+          throw new Error("Idade inválida. Cadastro apenas para maiores de 18.");
+        }
+        const w = digitsOnly(requiredText($("whatsapp"), "WhatsApp"));
+        if(w.length < 10 || w.length > 13){
+          markInvalid($("whatsapp"));
+          throw new Error("WhatsApp inválido. Digite DDD + número (apenas números).");
+        }
+        requiredSelect($("casado"), "Você é casado(a)?");
+        requiredText($("cidade"), "Cidade / Estado");
+        if(!$("consent").checked){
+          markInvalid($("consent"));
+          throw new Error("Confirme o consentimento para contato.");
+        }
+      }
+
+      if(step === 2){
+        requiredText($("motivo"), "Motivo do interesse");
+        requiredSelect($("origem"), "Como nos encontrou");
+        requiredSelect($("experiencia"), "Experiência em vendas");
+        requiredSelect($("canal"), "Canal de vendas");
+      }
+
+      if(step === 3){
+        requiredText($("ocupacao"), "Ocupação atual");
+        requiredSelect($("tempo"), "Tempo por semana");
+        requiredText($("instagram"), "Instagram / rede principal");
+        requiredText($("referencia"), "Referência");
+        requiredText($("endereco"), "Bairro + Cidade/Estado");
+        requiredSelect($("compromisso"), "Quando pretende iniciar");
+        if(!$("antiFraude").checked){
+          markInvalid($("antiFraude"));
+          throw new Error("Confirme a declaração.");
+        }
+      }
+
+      if(step === 4){
+        requiredSelect($("restricao"), "Restrição no nome");
+        requiredSelect($("cpfRegular"), "CPF regular");
+        requiredSelect($("empregoFixo"), "Emprego fixo");
+        requiredSelect($("perfilCliente"), "Perfil de clientes");
+        requiredSelect($("facilidadeSocial"), "Facilidade WhatsApp/Instagram");
+      }
+
+      if(step === 5){
+        const ans = Number(requiredText($("captchaAnswer"), "Captcha"));
+        if(ans !== capExpected){
+          markInvalid($("captchaAnswer"));
+          throw new Error("Captcha incorreto. Tente novamente.");
+        }
+        if(!$("lgpd").checked){
+          markInvalid($("lgpd"));
+          throw new Error("Marque a autorização para contato e análise.");
+        }
+      }
+    }
+
+    function buildEmailBody(){
+      const nome = ($("nome").value || "").trim();
+      const idade = ($("idade").value || "").trim();
+      const whatsapp = digitsOnly(($("whatsapp").value || "").trim());
+      const casado = ($("casado").value || "").trim();
+      const cidade = ($("cidade").value || "").trim();
+
+      const motivo = ($("motivo").value || "").trim();
+      const origem = ($("origem").value || "").trim();
+      const origemDetalhe = ($("origemDetalhe").value || "").trim();
+      const experiencia = ($("experiencia").value || "").trim();
+      const canal = ($("canal").value || "").trim();
+
+      const ocupacao = ($("ocupacao").value || "").trim();
+      const tempo = ($("tempo").value || "").trim();
+      const instagram = ($("instagram").value || "").trim();
+      const referencia = ($("referencia").value || "").trim();
+      const endereco = ($("endereco").value || "").trim();
+      const compromisso = ($("compromisso").value || "").trim();
+
+      const restricao = ($("restricao").value || "").trim();
+      const cpfRegular = ($("cpfRegular").value || "").trim();
+      const empregoFixo = ($("empregoFixo").value || "").trim();
+      const perfilCliente = ($("perfilCliente").value || "").trim();
+      const facilidadeSocial = ($("facilidadeSocial").value || "").trim();
+
+      return [
+        "CADASTRO — REVENDEDOR(A) DE SEMIJOIAS",
+        "",
+        "1) DADOS BÁSICOS",
+        `nome: ${nome}`,
+        `idade: ${idade}`,
+        `whatsapp: ${whatsapp}`,
+        `casado(a): ${casado}`,
+        `cidade/estado: ${cidade}`,
+        "",
+        "2) INTERESSE E ORIGEM",
+        `motivo: ${motivo}`,
+        `como nos encontrou: ${origem}${origemDetalhe ? " | detalhe: " + origemDetalhe : ""}`,
+        `experiência: ${experiencia}`,
+        `onde pretende vender: ${canal}`,
+        "",
+        "3) ROTINA E POTENCIAL",
+        `ocupação atual: ${ocupacao}`,
+        `tempo disponível/semana: ${tempo}`,
+        `instagram (ou rede): ${instagram}`,
+        `referência (nome + contato): ${referencia}`,
+        `bairro + cidade/estado: ${endereco}`,
+        `quando pretende iniciar: ${compromisso}`,
+        "",
+        "4) PERFIL E CAPACIDADE",
+        `restrição no nome: ${restricao}`,
+        `cpf regular p/ compras online: ${cpfRegular}`,
+        `emprego fixo: ${empregoFixo}`,
+        `perfil de clientes: ${perfilCliente}`,
+        `facilidade WhatsApp/Instagram: ${facilidadeSocial}`
+      ].join("\n");
+    }
+
+    function openEmail(body){
+      const subject = "Cadastro de Revendedor(a) - Emporium24k";
+      const url = `mailto:${EMP_EMAIL}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+      window.location.href = url;
+    }
+
+    nextBtn.addEventListener("click", () => {
+      try{
+        validateStep(currentStep);
+
+        if(currentStep < totalSteps){
+          showStep(currentStep + 1);
+          return;
+        }
+
+        validateAllUpTo(5);
+        showOk("Tudo certo. Agora você já pode enviar por e-mail.");
+        sendBtn.disabled = false;
+
+      } catch(err){
+        showError(err.message || "Verifique os campos e tente novamente.");
+        if(currentStep === 5) setCaptcha();
+        sendBtn.disabled = true;
+      }
+    });
+
+    backBtn.addEventListener("click", () => {
+      if(currentStep > 1) showStep(currentStep - 1);
+    });
+
+    ["captchaAnswer","lgpd"].forEach(id=>{
+      const el = $(id);
+      if(!el) return;
+
+      const handler = () => {
+        if(currentStep !== 5) return;
+        try{
+          validateAllUpTo(5);
+          sendBtn.disabled = false;
+          hideAlerts();
+        } catch {
+          sendBtn.disabled = true;
+        }
+      };
+
+      el.addEventListener("input", handler);
+      el.addEventListener("change", handler);
+    });
+
+    sendBtn.addEventListener("click", () => {
+      try{
+        validateAllUpTo(5);
+        openEmail(buildEmailBody());
+      } catch(err){
+        showError(err.message || "Verifique os campos e tente novamente.");
+        setCaptcha();
+        sendBtn.disabled = true;
+      }
+    });
+
+    $("whatsapp").addEventListener("blur", () => {
+      $("whatsapp").value = digitsOnly($("whatsapp").value);
+    });
+
+    showStep(1);
+  </script>
+</body>
+</html>
