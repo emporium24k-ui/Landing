@@ -4,14 +4,14 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Emporium24k | Cadastro de Revendedores — Semijoias</title>
-  <meta name="description" content="Cadastro de revendedores de semijoias. Preencha o formulário para análise e envio via WhatsApp." />
+  <meta name="description" content="Cadastro de revendedores de semijoias. Preencha o formulário para análise e envio via WhatsApp (quando elegível)." />
 
   <style>
     :root{
       --bg:#0b0b0d;
-      --panel:rgba(255,255,255,.05);
+      --panel:#121218;
       --text:rgba(255,255,255,.92);
-      --muted:rgba(255,255,255,.66);
+      --muted:rgba(255,255,255,.70);
       --line:rgba(255,255,255,.10);
       --gold:#d4b15f;
       --gold2:#f0df9a;
@@ -37,6 +37,7 @@
 
     /* ==========================
        FUNDO: “alianças caindo”
+       (com diamante)
        ========================== */
     .bgRings{
       position: fixed;
@@ -91,7 +92,7 @@
     /* garante que o conteúdo fique acima do fundo */
     .top, header, section, footer { position: relative; z-index: 1; }
 
-    /* TOP BAR */
+    /* TOP */
     .top{
       position:sticky; top:0; z-index:50;
       backdrop-filter: blur(14px);
@@ -130,7 +131,6 @@
       font-size:14px;
       opacity:.92;
     }
-
     .brand b{letter-spacing:.12em; font-size:12px; color:rgba(240,223,154,.95)}
     .brand small{display:block; color:rgba(255,255,255,.55); margin-top:2px; font-size:12px}
     .pill{
@@ -197,7 +197,7 @@
       padding: 16px 20px;
       border-bottom: 1px solid rgba(255,255,255,.08);
       background: rgba(0,0,0,.22);
-      display:flex; justify-content:space-between; gap:12px; align-items:center; flex-wrap:wrap;
+      display:flex; justify-content:space-between; gap:12px; align-items:flex-start; flex-wrap:wrap;
     }
     .panelHead h2{margin:0; font-size:16px;}
     .panelHead .sub{
@@ -221,7 +221,6 @@
       border:1px solid rgba(255,255,255,.10);
       background: rgba(0,0,0,.28);
     }
-
     .progress{
       width: 210px;
       max-width: 100%;
@@ -230,6 +229,7 @@
       border:1px solid rgba(255,255,255,.10);
       background: rgba(0,0,0,.18);
       overflow:hidden;
+      margin-top: 6px;
     }
     .bar{
       height:100%;
@@ -282,6 +282,7 @@
     }
     textarea{min-height: 110px; resize: vertical;}
 
+    /* ✅ Dropdown legível (Netlify/Chrome/Windows) */
     select{ color-scheme: dark; background-color: rgba(0,0,0,.26); color: rgba(255,255,255,.92); }
     option{ background-color: #0b0b0d; color: #ffffff; }
     option:disabled{ color: rgba(255,255,255,.55); }
@@ -404,12 +405,12 @@
     <div class="wrap">
       <div class="hero">
         <h1>Cadastro de Revendedores de Semijoias</h1>
-        <p>Preencha todas as etapas. Ao final, você será direcionado ao WhatsApp com todas as informações organizadas.</p>
+        <p>Preencha as etapas com atenção. Ao final, dependendo do perfil, o botão de envio no WhatsApp será liberado com a mensagem pronta.</p>
 
         <div class="trustRow" aria-label="Indicadores de confiança">
           <span class="trustPill">✅ Processo rápido (2–3 min)</span>
           <span class="trustPill">🔒 Dados usados apenas para análise</span>
-          <span class="trustPill">📲 Envio no WhatsApp</span>
+          <span class="trustPill">📲 Envio no WhatsApp (quando elegível)</span>
         </div>
       </div>
     </div>
@@ -421,11 +422,11 @@
         <div class="panelHead">
           <div>
             <h2>Questionário</h2>
-            <p class="sub">Responda com atenção. Ao final, o botão será liberado para envio no WhatsApp.</p>
+            <p class="sub">Responda com atenção. No final, o envio no WhatsApp depende da elegibilidade do perfil (pontuação).</p>
             <div class="panelMeta">
               <span>Tempo estimado: 2–3 min</span>
               <span>5 etapas</span>
-              <span>Envio: WhatsApp</span>
+              <span>Semijoias (revenda)</span>
             </div>
           </div>
 
@@ -484,45 +485,176 @@
 
           <!-- STEP 2 -->
           <div class="step" data-step="2" style="display:none;">
-            <div class="stepTitle">Etapa 2/5 — Interesse</div>
-            <div class="stepHint">Explique rapidamente seu objetivo.</div>
+            <div class="stepTitle">Etapa 2/5 — Interesse e origem</div>
+            <div class="stepHint">Conte rapidamente seu objetivo e como chegou até nós.</div>
 
             <div class="grid grid1">
               <div class="field">
                 <label for="motivo">Por que você se interessou em se tornar revendedor(a) de semijoias? *</label>
                 <textarea id="motivo" placeholder="Ex: Quero renda extra, já vendo online e quero aumentar catálogo..." required></textarea>
               </div>
-              <div class="field">
-                <label for="comoEncontrou">Como nos encontrou? *</label>
-                <select id="comoEncontrou" required>
-                  <option value="" selected disabled>Selecione</option>
-                  <option>Instagram / Reels</option>
-                  <option>Anúncio (Meta Ads)</option>
-                  <option>Google</option>
-                  <option>Indicação</option>
-                  <option>WhatsApp</option>
-                  <option>Outro</option>
-                </select>
+
+              <div class="grid">
+                <div class="field">
+                  <label for="origem">Como nos encontrou? *</label>
+                  <select id="origem" required>
+                    <option value="" selected disabled>Selecione</option>
+                    <option>Instagram / Reels</option>
+                    <option>Anúncio (Meta Ads)</option>
+                    <option>Google</option>
+                    <option>Indicação</option>
+                    <option>WhatsApp</option>
+                    <option>Outro</option>
+                  </select>
+                </div>
+
+                <div class="field">
+                  <label for="experiencia">Você já vendeu algo antes? *</label>
+                  <select id="experiencia" required>
+                    <option value="" selected disabled>Selecione</option>
+                    <option>Não, seria minha primeira vez</option>
+                    <option>Sim, já vendi produtos (geral)</option>
+                    <option>Sim, já vendi semijoias/joias</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="grid">
+                <div class="field">
+                  <label for="canal">Onde pretende vender? *</label>
+                  <select id="canal" required>
+                    <option value="" selected disabled>Selecione</option>
+                    <option>Instagram</option>
+                    <option>WhatsApp (status/grupos)</option>
+                    <option>Marketplace</option>
+                    <option>Vendas presenciais</option>
+                    <option>Loja física</option>
+                    <option>Mais de um canal</option>
+                  </select>
+                </div>
+
+                <div class="field">
+                  <label for="origemDetalhe">Se quiser, detalhe (opcional)</label>
+                  <input id="origemDetalhe" type="text" placeholder="Ex: Indicação da Ana / nome do perfil / etc.">
+                </div>
               </div>
             </div>
           </div>
 
           <!-- STEP 3 -->
           <div class="step" data-step="3" style="display:none;">
-            <div class="stepTitle">Etapa 3/5 — Perfil de venda</div>
-            <div class="stepHint">Escolhas rápidas para entender seu perfil.</div>
+            <div class="stepTitle">Etapa 3/5 — Potencial de vendas</div>
+            <div class="stepHint">Perguntas objetivas para prever desempenho, disponibilidade e canais.</div>
 
             <div class="grid">
               <div class="field">
-                <label for="perfilCliente">Qual o perfil dos clientes que você pretende vender? *</label>
-                <select id="perfilCliente" required>
+                <label for="ocupacao">Ocupação atual *</label>
+                <select id="ocupacao" required>
                   <option value="" selected disabled>Selecione</option>
-                  <option>Pessoas mais simples (preço acessível)</option>
-                  <option>Classe média (presentes e uso diário)</option>
-                  <option>Público premium (peças de maior valor)</option>
-                  <option>Vendas variadas / ainda não definido</option>
-                  <option>Empresas / brindes / presentes corporativos</option>
+                  <option>Sou empresário(a) / empreendo</option>
+                  <option>Sou autônomo(a) e já faço vendas</option>
+                  <option>Sou CLT</option>
+                  <option>Sou estudante (18+)</option>
+                  <option>Estou desempregado(a)</option>
+                  <option>Prefiro não informar</option>
                 </select>
+              </div>
+
+              <div class="field">
+                <label for="tempo">Tempo por semana disponível para vendas *</label>
+                <select id="tempo" required>
+                  <option value="" selected disabled>Selecione</option>
+                  <option>1–3 horas</option>
+                  <option>4–7 horas</option>
+                  <option>8–14 horas</option>
+                  <option>15+ horas</option>
+                </select>
+              </div>
+
+              <div class="field">
+                <label for="contatos">Quantos contatos você tem no WhatsApp? *</label>
+                <select id="contatos" required>
+                  <option value="" selected disabled>Selecione</option>
+                  <option>Até 200</option>
+                  <option>200–500</option>
+                  <option>500–1000</option>
+                  <option>1000+</option>
+                </select>
+              </div>
+
+              <div class="field">
+                <label for="grupos">Você participa de grupos (WhatsApp/Comunidades)? *</label>
+                <select id="grupos" required>
+                  <option value="" selected disabled>Selecione</option>
+                  <option>Não</option>
+                  <option>Sim, poucos</option>
+                  <option>Sim, vários</option>
+                </select>
+              </div>
+
+              <div class="field">
+                <label for="metaMes">Meta de vendas no 1º mês *</label>
+                <select id="metaMes" required>
+                  <option value="" selected disabled>Selecione</option>
+                  <option>Até 3 vendas</option>
+                  <option>4–10 vendas</option>
+                  <option>11–20 vendas</option>
+                  <option>20+ vendas</option>
+                </select>
+              </div>
+
+              <div class="field">
+                <label for="abordagem">Você se sente confortável em abordar clientes? *</label>
+                <select id="abordagem" required>
+                  <option value="" selected disabled>Selecione</option>
+                  <option>Sim</option>
+                  <option>Mais ou menos</option>
+                  <option>Não, mas quero aprender</option>
+                </select>
+              </div>
+
+              <div class="field">
+                <label for="compromisso">Quando pretende iniciar? *</label>
+                <select id="compromisso" required>
+                  <option value="" selected disabled>Selecione</option>
+                  <option>Em até 2 semanas</option>
+                  <option>Em até 1 mês</option>
+                  <option>Sem prazo definido</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="checkboxRow">
+              <input id="antiFraude" type="checkbox" required>
+              <span>Declaro que as informações são verdadeiras e que não utilizarei dados de terceiros.</span>
+            </div>
+          </div>
+
+          <!-- STEP 4 -->
+          <div class="step" data-step="4" style="display:none;">
+            <div class="stepTitle">Etapa 4/5 — Perfil e capacidade</div>
+            <div class="stepHint">As perguntas abaixo ajudam a validar rotina, canais e segurança.</div>
+
+            <div class="grid">
+              <div class="field">
+                <label for="restricaoNome">Você possui restrição no seu nome? *</label>
+                <select id="restricaoNome" required>
+                  <option value="" selected disabled>Selecione</option>
+                  <option>Não</option>
+                  <option>Sim</option>
+                  <option>Não sei</option>
+                </select>
+              </div>
+
+              <div class="field">
+                <label for="cpfRegular">Seu CPF está regular para compras online? *</label>
+                <select id="cpfRegular" required>
+                  <option value="" selected disabled>Selecione</option>
+                  <option>Sim</option>
+                  <option>Não</option>
+                  <option>Não sei</option>
+                </select>
+                <div class="help">Informação usada apenas para análise (ex.: compras no atacado).</div>
               </div>
 
               <div class="field">
@@ -538,36 +670,25 @@
               </div>
 
               <div class="field">
-                <label for="facilidade">Você tem facilidade em usar WhatsApp e Instagram para fazer vendas? *</label>
-                <select id="facilidade" required>
+                <label for="perfilCliente">Qual o perfil dos clientes que você pretende vender? *</label>
+                <select id="perfilCliente" required>
+                  <option value="" selected disabled>Selecione</option>
+                  <option>Pessoas mais simples (preço acessível)</option>
+                  <option>Classe média (presentes e uso diário)</option>
+                  <option>Público premium (peças de maior valor)</option>
+                  <option>Vendas variadas / ainda não definido</option>
+                  <option>Empresas / brindes / presentes corporativos</option>
+                </select>
+              </div>
+
+              <div class="field" style="grid-column:1/-1;">
+                <label for="facilidadeSocial">Você tem facilidade em usar WhatsApp e Instagram para fazer vendas? *</label>
+                <select id="facilidadeSocial" required>
                   <option value="" selected disabled>Selecione</option>
                   <option>Sim, uso com frequência</option>
                   <option>Tenho noção básica</option>
                   <option>Tenho dificuldade, mas quero aprender</option>
                 </select>
-              </div>
-
-              <div class="field">
-                <label for="restricao">Você possui restrição no seu nome? *</label>
-                <select id="restricao" required>
-                  <option value="" selected disabled>Selecione</option>
-                  <option>Não</option>
-                  <option>Sim</option>
-                  <option>Não sei</option>
-                </select>
-              </div>
-            </div>
-          </div>
-
-          <!-- STEP 4 -->
-          <div class="step" data-step="4" style="display:none;">
-            <div class="stepTitle">Etapa 4/5 — Segurança</div>
-            <div class="stepHint">Responda para seguirmos com a análise.</div>
-
-            <div class="grid grid1">
-              <div class="checkboxRow">
-                <input id="antiFraude" type="checkbox" required>
-                <span>Declaro que as informações são verdadeiras e que não utilizarei dados de terceiros.</span>
               </div>
             </div>
           </div>
@@ -575,17 +696,20 @@
           <!-- STEP 5 -->
           <div class="step" data-step="5" style="display:none;">
             <div class="stepTitle">Etapa 5/5 — Verificação</div>
-            <div class="stepHint">Resolva o captcha numérico para liberar o envio no WhatsApp.</div>
+            <div class="stepHint">Resolva o captcha numérico e finalize. Dependendo do perfil, o envio no WhatsApp pode ser liberado.</div>
 
-            <div class="grid">
+            <div class="ok" id="resultBox" style="display:none;"></div>
+
+            <div class="grid" style="margin-top:12px;">
               <div class="field">
-                <label for="captchaAnswer">Captcha *</label>
+                <label for="captchaAnswer">Captcha numérico *</label>
                 <input id="captchaAnswer" type="number" inputmode="numeric" placeholder="Resposta" required>
                 <div class="help" id="captchaQuestion">Carregando captcha...</div>
               </div>
+
               <div class="field">
                 <label>Envio</label>
-                <div class="help">O botão será liberado após captcha e confirmações.</div>
+                <div class="help" id="resultHint">O botão será liberado após o captcha e todas as confirmações.</div>
               </div>
             </div>
 
@@ -595,8 +719,12 @@
             </div>
 
             <div style="margin-top:14px;">
-              <button class="btn btnPrimary" id="sendBtn" type="button" disabled>Enviar no WhatsApp</button>
-              <div class="help" style="margin-top:8px;">Ao clicar, seu WhatsApp abrirá com a mensagem pronta.</div>
+              <button class="btn btnPrimary" id="sendBtn" type="button" disabled>
+                Enviar no WhatsApp
+              </button>
+              <div class="help" style="margin-top:8px;">
+                Se seu perfil estiver elegível, o botão será liberado após o captcha.
+              </div>
             </div>
           </div>
 
@@ -614,7 +742,7 @@
       <footer>
         <div class="wrap footerRow">
           <div><b>Emporium24k</b> • Cadastro de Revendedores — Semijoias</div>
-          <div>Triagem + WhatsApp</div>
+          <div>Triagem + WhatsApp (quando elegível)</div>
         </div>
       </footer>
     </div>
@@ -624,6 +752,11 @@
     // ✅ WhatsApp fixo da empresa
     const EMP_WHATS = "5541998518452";
     const MIN_AGE = 18;
+
+    // ✅ Regras de pontuação (para liberar WhatsApp)
+    const SCORE_REPROVADO_MAX = 14;   // 0..14 => REPROVADO (não libera)
+    const SCORE_QUALIFICAR_MAX = 29;  // 15..29 => QUALIFICAR (libera)
+    // 30+ => APROVADO (libera)
 
     let currentStep = 1;
     const totalSteps = 5;
@@ -636,20 +769,23 @@
     const backBtn = $("backBtn");
     const sendBtn = $("sendBtn");
     const stepNote = $("stepNote");
+    const resultBox = $("resultBox");
+    const resultHint = $("resultHint");
 
     let capExpected = 0;
 
-    // Logo fallback
+    // Logo fallback (se logo.png não existir)
     (function logoFallback(){
       const img = document.getElementById("brandLogo");
       const mark = document.getElementById("brandMark");
       if(!img || !mark) return;
-
       img.addEventListener("error", () => {
         mark.classList.add("fallback");
         img.style.display = "none";
       });
     })();
+
+    function digitsOnly(str){ return (str || "").replace(/\D/g, ""); }
 
     function setCaptcha(){
       const a = Math.floor(2 + Math.random()*8);
@@ -714,15 +850,14 @@
         stepNote.textContent = "Campos com * são obrigatórios.";
       } else {
         nextBtn.textContent = "Finalizar";
-        stepNote.textContent = "Conclua a verificação para liberar o envio.";
+        stepNote.textContent = "Conclua a verificação para finalizar.";
         setCaptcha();
         sendBtn.disabled = true;
+        applyFinalBehavior(); // decide o que aparece no final conforme pontuação
       }
 
       window.scrollTo({top: 0, behavior: "smooth"});
     }
-
-    function digitsOnly(str){ return (str || "").replace(/\D/g, ""); }
 
     function requiredText(el, name){
       const v = (el.value || "").trim();
@@ -750,16 +885,13 @@
           markInvalid($("idade"));
           throw new Error("Idade inválida. Cadastro apenas para maiores de 18.");
         }
-
         const w = digitsOnly(requiredText($("whatsappLead"), "WhatsApp"));
         if(w.length < 10 || w.length > 13){
           markInvalid($("whatsappLead"));
           throw new Error("WhatsApp inválido. Digite DDD + número (apenas números).");
         }
-
         requiredSelect($("casado"), "Você é casado(a)?");
         requiredText($("cidade"), "Cidade / Estado");
-
         if(!$("consent").checked){
           markInvalid($("consent"));
           throw new Error("Confirme a declaração de veracidade.");
@@ -768,21 +900,31 @@
 
       if(step === 2){
         requiredText($("motivo"), "Motivo do interesse");
-        requiredSelect($("comoEncontrou"), "Como nos encontrou");
+        requiredSelect($("origem"), "Como nos encontrou");
+        requiredSelect($("experiencia"), "Experiência em vendas");
+        requiredSelect($("canal"), "Onde pretende vender");
       }
 
       if(step === 3){
-        requiredSelect($("perfilCliente"), "Perfil dos clientes");
-        requiredSelect($("empregoFixo"), "Emprego fixo");
-        requiredSelect($("facilidade"), "Facilidade com WhatsApp/Instagram");
-        requiredSelect($("restricao"), "Restrição no nome");
+        requiredSelect($("ocupacao"), "Ocupação atual");
+        requiredSelect($("tempo"), "Tempo por semana");
+        requiredSelect($("contatos"), "Contatos no WhatsApp");
+        requiredSelect($("grupos"), "Participação em grupos");
+        requiredSelect($("metaMes"), "Meta do 1º mês");
+        requiredSelect($("abordagem"), "Conforto em abordar");
+        requiredSelect($("compromisso"), "Quando pretende iniciar");
+        if(!$("antiFraude").checked){
+          markInvalid($("antiFraude"));
+          throw new Error("Confirme a declaração.");
+        }
       }
 
       if(step === 4){
-        if(!$("antiFraude").checked){
-          markInvalid($("antiFraude"));
-          throw new Error("Confirme a declaração de segurança.");
-        }
+        requiredSelect($("restricaoNome"), "Restrição no nome");
+        requiredSelect($("cpfRegular"), "CPF regular para compras online");
+        requiredSelect($("empregoFixo"), "Emprego fixo");
+        requiredSelect($("perfilCliente"), "Perfil de clientes");
+        requiredSelect($("facilidadeSocial"), "Facilidade com WhatsApp/Instagram");
       }
 
       if(step === 5){
@@ -802,6 +944,136 @@
       for(let s=1; s<=step; s++) validateStep(s);
     }
 
+    // ---- SCORING ----
+    function calcScore(){
+      let score = 0;
+      const notes = [];
+
+      const experiencia = ($("experiencia").value || "").trim();
+      const canal = ($("canal").value || "").trim();
+      const tempo = ($("tempo").value || "").trim();
+      const contatos = ($("contatos").value || "").trim();
+      const grupos = ($("grupos").value || "").trim();
+      const metaMes = ($("metaMes").value || "").trim();
+      const abordagem = ($("abordagem").value || "").trim();
+      const compromisso = ($("compromisso").value || "").trim();
+
+      const restricaoNome = ($("restricaoNome").value || "").trim();
+      const cpfRegular = ($("cpfRegular").value || "").trim();
+      const empregoFixo = ($("empregoFixo").value || "").trim();
+      const facilidadeSocial = ($("facilidadeSocial").value || "").trim();
+
+      // Experiência
+      if(experiencia === "Sim, já vendi semijoias/joias") score += 10;
+      else if(experiencia === "Sim, já vendi produtos (geral)") score += 6;
+      else score += 2;
+
+      // Canal
+      if(canal === "Mais de um canal") score += 8;
+      else if(canal === "Instagram") score += 6;
+      else if(canal === "WhatsApp (status/grupos)") score += 6;
+      else if(canal === "Marketplace") score += 4;
+      else if(canal === "Vendas presenciais") score += 4;
+      else if(canal === "Loja física") score += 12; // força “alto” (também vira APROVADO no status)
+
+      // Tempo disponível
+      if(tempo === "15+ horas") score += 8;
+      else if(tempo === "8–14 horas") score += 6;
+      else if(tempo === "4–7 horas") score += 4;
+      else score += 2;
+
+      // Contatos
+      if(contatos === "1000+") score += 8;
+      else if(contatos === "500–1000") score += 6;
+      else if(contatos === "200–500") score += 4;
+      else score += 2;
+
+      // Grupos
+      if(grupos === "Sim, vários") score += 6;
+      else if(grupos === "Sim, poucos") score += 3;
+      else score += 1;
+
+      // Meta
+      if(metaMes === "20+ vendas") score += 8;
+      else if(metaMes === "11–20 vendas") score += 6;
+      else if(metaMes === "4–10 vendas") score += 4;
+      else score += 2;
+
+      // Abordagem
+      if(abordagem === "Sim") score += 6;
+      else if(abordagem === "Mais ou menos") score += 3;
+      else score += 1;
+
+      // Compromisso
+      if(compromisso === "Em até 2 semanas") score += 6;
+      else if(compromisso === "Em até 1 mês") score += 4;
+      else score += 1;
+
+      // CPF regular
+      if(cpfRegular === "Sim") score += 5;
+      else if(cpfRegular === "Não sei") score += 2;
+      else score -= 6;
+
+      // Restrição no nome (pesa contra)
+      if(restricaoNome === "Sim"){ score -= 10; notes.push("restrição no nome"); }
+      else if(restricaoNome === "Não sei"){ score -= 3; notes.push("restrição: não sabe"); }
+
+      // Emprego fixo (só leve)
+      if(empregoFixo === "Sou empresário(a)") score += 3;
+      else if(empregoFixo === "Sim, autônomo(a)") score += 2;
+      else if(empregoFixo === "Sim, CLT") score += 1;
+
+      // Facilidade social
+      if(facilidadeSocial === "Sim, uso com frequência") score += 5;
+      else if(facilidadeSocial === "Tenho noção básica") score += 3;
+      else score += 1;
+
+      // Limites (evita score negativo exagerado)
+      if(score < 0) score = 0;
+
+      return { score, notes };
+    }
+
+    function getStatus(score){
+      const canal = ($("canal").value || "").trim();
+      if(canal === "Loja física") return "APROVADO";
+      if(score <= SCORE_REPROVADO_MAX) return "REPROVADO";
+      if(score <= SCORE_QUALIFICAR_MAX) return "QUALIFICAR";
+      return "APROVADO";
+    }
+
+    function applyFinalBehavior(){
+      const { score, notes } = calcScore();
+      const status = getStatus(score);
+
+      resultBox.style.display = "block";
+      resultBox.className = "ok";
+
+      if(status === "REPROVADO"){
+        sendBtn.style.display = "none";
+        sendBtn.disabled = true;
+        resultBox.textContent = "Recebemos seus dados. Se o perfil for aprovado, entraremos em contato pelo WhatsApp informado.";
+        resultHint.textContent = "Obrigado! Sua inscrição foi registrada para análise.";
+        return;
+      }
+
+      sendBtn.style.display = "inline-flex";
+
+      if(status === "QUALIFICAR"){
+        resultBox.textContent = "Seu perfil está em análise. Para agilizar, envie seus dados no WhatsApp.";
+        resultHint.textContent = "Após o envio, nossa equipe analisa e retorna no seu WhatsApp.";
+      } else {
+        resultBox.textContent = "Seu perfil tem alta compatibilidade. Envie agora no WhatsApp para avançarmos com prioridade.";
+        resultHint.textContent = "Envie no WhatsApp para receber os próximos passos com prioridade.";
+      }
+
+      // Observação discreta (não expõe regra)
+      if(notes.length){
+        // mantém discreto (sem “explicar filtro”)
+        // apenas sinaliza internamente na mensagem do WhatsApp (vai no buildWhatsMessage)
+      }
+    }
+
     function buildWhatsMessage(){
       const nome = ($("nome").value || "").trim();
       const idade = ($("idade").value || "").trim();
@@ -810,15 +1082,38 @@
       const cidade = ($("cidade").value || "").trim();
 
       const motivo = ($("motivo").value || "").trim();
-      const comoEncontrou = ($("comoEncontrou").value || "").trim();
+      const origem = ($("origem").value || "").trim();
+      const origemDetalhe = ($("origemDetalhe").value || "").trim();
+      const experiencia = ($("experiencia").value || "").trim();
+      const canal = ($("canal").value || "").trim();
 
-      const perfilCliente = ($("perfilCliente").value || "").trim();
+      const ocupacao = ($("ocupacao").value || "").trim();
+      const tempo = ($("tempo").value || "").trim();
+      const contatos = ($("contatos").value || "").trim();
+      const grupos = ($("grupos").value || "").trim();
+      const metaMes = ($("metaMes").value || "").trim();
+      const abordagem = ($("abordagem").value || "").trim();
+      const compromisso = ($("compromisso").value || "").trim();
+
+      const restricaoNome = ($("restricaoNome").value || "").trim();
+      const cpfRegular = ($("cpfRegular").value || "").trim();
       const empregoFixo = ($("empregoFixo").value || "").trim();
-      const facilidade = ($("facilidade").value || "").trim();
-      const restricao = ($("restricao").value || "").trim();
+      const perfilCliente = ($("perfilCliente").value || "").trim();
+      const facilidadeSocial = ($("facilidadeSocial").value || "").trim();
+
+      const { score, notes } = calcScore();
+      const status = getStatus(score);
+
+      let headline = "CADASTRO — REVENDEDOR(A) DE SEMIJOIAS";
+      if(status === "QUALIFICAR") headline = "CADASTRO — QUALIFICAÇÃO (REVENDA SEMIJOIAS)";
+      if(status === "APROVADO") headline = "CADASTRO — APROVADO PRIORIDADE (REVENDA SEMIJOIAS)";
 
       const lines = [
-        "CADASTRO — REVENDEDOR(A) SEMIJOIAS",
+        headline,
+        "",
+        `STATUS: ${status}`,
+        `SCORE: ${score}`,
+        notes.length ? `OBS: ${notes.join(" | ")}` : "OBS: -",
         "",
         "1) DADOS BÁSICOS",
         `nome: ${nome}`,
@@ -827,15 +1122,27 @@
         `casado(a): ${casado}`,
         `cidade/estado: ${cidade}`,
         "",
-        "2) INTERESSE",
+        "2) INTERESSE E ORIGEM",
         `motivo: ${motivo}`,
-        `como nos encontrou: ${comoEncontrou}`,
+        `como nos encontrou: ${origem}${origemDetalhe ? " | detalhe: " + origemDetalhe : ""}`,
+        `experiência: ${experiencia}`,
+        `onde pretende vender: ${canal}`,
         "",
-        "3) PERFIL DE VENDA",
-        `perfil de clientes: ${perfilCliente}`,
+        "3) POTENCIAL DE VENDAS",
+        `ocupação atual: ${ocupacao}`,
+        `tempo disponível/semana: ${tempo}`,
+        `contatos no WhatsApp: ${contatos}`,
+        `participa de grupos: ${grupos}`,
+        `meta 1º mês: ${metaMes}`,
+        `conforto em abordar: ${abordagem}`,
+        `quando pretende iniciar: ${compromisso}`,
+        "",
+        "4) PERFIL E CAPACIDADE",
+        `restrição no nome: ${restricaoNome}`,
+        `CPF regular p/ compras online: ${cpfRegular}`,
         `emprego fixo: ${empregoFixo}`,
-        `facilidade WhatsApp/Instagram: ${facilidade}`,
-        `restrição no nome: ${restricao}`,
+        `perfil de clientes: ${perfilCliente}`,
+        `facilidade WhatsApp/Instagram: ${facilidadeSocial}`,
       ];
 
       return lines.join("\n");
@@ -855,9 +1162,20 @@
           return;
         }
 
+        // Finalizar no Step 5
         validateAllUpTo(5);
-        showOk("Tudo certo. Agora você já pode enviar no WhatsApp.");
-        sendBtn.disabled = false;
+        applyFinalBehavior();
+
+        const { score } = calcScore();
+        const status = getStatus(score);
+
+        if(status !== "REPROVADO"){
+          showOk("Tudo certo. Agora você já pode enviar no WhatsApp.");
+          sendBtn.disabled = false;
+        } else {
+          showOk("Tudo certo. Sua inscrição foi registrada para análise.");
+          sendBtn.disabled = true;
+        }
 
       } catch(err){
         showError(err.message || "Verifique os campos e tente novamente.");
@@ -870,21 +1188,27 @@
       if(currentStep > 1) showStep(currentStep - 1);
     });
 
+    // Recalcula o comportamento final quando captcha / LGPD mudam
     ["captchaAnswer","lgpd"].forEach(id=>{
       const el = $(id);
       if(!el) return;
-
       const handler = () => {
         if(currentStep !== 5) return;
         try{
           validateAllUpTo(5);
-          sendBtn.disabled = false;
+          applyFinalBehavior();
+
+          const { score } = calcScore();
+          const status = getStatus(score);
+
+          if(status !== "REPROVADO") sendBtn.disabled = false;
+          else sendBtn.disabled = true;
+
           hideAlerts();
         } catch {
           sendBtn.disabled = true;
         }
       };
-
       el.addEventListener("input", handler);
       el.addEventListener("change", handler);
     });
@@ -892,6 +1216,16 @@
     sendBtn.addEventListener("click", () => {
       try{
         validateAllUpTo(5);
+
+        const { score } = calcScore();
+        const status = getStatus(score);
+
+        if(status === "REPROVADO"){
+          applyFinalBehavior();
+          showOk("Recebemos seus dados. Se aprovado, entraremos em contato.");
+          return;
+        }
+
         openWhatsApp(buildWhatsMessage());
       } catch(err){
         showError(err.message || "Verifique os campos e tente novamente.");
@@ -908,40 +1242,32 @@
 
     /* ==========================
        GERA “alianças 3D caindo”
-       (agora com diamante)
+       (com diamante)
        ========================== */
     (function fallingRings(){
       const host = document.getElementById("bgRings");
       if(!host) return;
 
-      // ✅ Anel com “solitário” (diamante) em cima — bem discreto
       const ringSVG = `
         <svg viewBox="0 0 120 140" width="100%" height="100%" aria-hidden="true">
           <defs>
-            <!-- ouro -->
             <radialGradient id="goldFill" cx="35%" cy="25%" r="78%">
               <stop offset="0%" stop-color="#fff4c9" stop-opacity="1"/>
               <stop offset="35%" stop-color="#f0df9a" stop-opacity="1"/>
               <stop offset="70%" stop-color="#d4b15f" stop-opacity="1"/>
               <stop offset="100%" stop-color="#8a6a22" stop-opacity="1"/>
             </radialGradient>
-
-            <!-- brilho do ouro -->
             <linearGradient id="goldShine" x1="0" y1="0" x2="1" y2="1">
               <stop offset="0%" stop-color="#ffffff" stop-opacity=".70"/>
               <stop offset="32%" stop-color="#ffffff" stop-opacity=".10"/>
               <stop offset="100%" stop-color="#ffffff" stop-opacity="0"/>
             </linearGradient>
-
-            <!-- diamante -->
             <linearGradient id="dia" x1="0" y1="0" x2="1" y2="1">
               <stop offset="0%" stop-color="#ffffff" stop-opacity="1"/>
               <stop offset="35%" stop-color="#eaf3ff" stop-opacity="1"/>
               <stop offset="70%" stop-color="#b7d6ff" stop-opacity=".95"/>
               <stop offset="100%" stop-color="#7fb5ff" stop-opacity=".90"/>
             </linearGradient>
-
-            <!-- sparkle -->
             <radialGradient id="spark" cx="50%" cy="50%" r="60%">
               <stop offset="0%" stop-color="#ffffff" stop-opacity=".95"/>
               <stop offset="55%" stop-color="#ffffff" stop-opacity=".22"/>
@@ -949,15 +1275,12 @@
             </radialGradient>
           </defs>
 
-          <!-- diamante (no topo) -->
+          <!-- diamante -->
           <g transform="translate(60 24)">
-            <!-- suporte -->
             <path d="M-10 18 L0 6 L10 18 L6 20 L0 14 L-6 20 Z"
                   fill="url(#goldFill)" opacity=".92"/>
-            <!-- pedra -->
             <polygon points="0,0 12,12 0,24 -12,12" fill="url(#dia)" opacity=".95"/>
             <polygon points="0,4 7,12 0,20 -7,12" fill="#ffffff" opacity=".22"/>
-            <!-- brilho/sparkle -->
             <circle cx="16" cy="6" r="7" fill="url(#spark)" opacity=".45"/>
             <path d="M16 0 L16 12 M10 6 L22 6" stroke="#ffffff" stroke-opacity=".55" stroke-width="1.4" />
           </g>
@@ -976,26 +1299,21 @@
                    C34 68 46 56 60 56
                    Z"
                 fill="url(#goldFill)" opacity=".94"/>
-
-          <!-- brilho do anel -->
           <path d="M30 70 C42 52, 62 48, 82 58 C70 54, 54 56, 40 68 Z"
                 fill="url(#goldShine)" opacity=".32"/>
-
-          <!-- sombra interna suave -->
           <circle cx="60" cy="82" r="30" fill="none" stroke="#000" stroke-opacity=".22" stroke-width="4"/>
-
         </svg>
       `;
 
-      const COUNT = 12; // discreto
+      const COUNT = 12;
       for(let i=0;i<COUNT;i++){
         const el = document.createElement("div");
         el.className = "ring";
 
-        const x = Math.random()*100;                 // %
+        const x = Math.random()*100;                 // vw
         const s = 30 + Math.random()*36;             // px
         const d = 10 + Math.random()*10;             // seconds
-        const delay = Math.random()*-d;              // start already “running”
+        const delay = Math.random()*-d;              // start already running
         const o = 0.08 + Math.random()*0.10;         // opacity bem baixa
         const r = Math.floor(Math.random()*360);     // deg
         const sx = (Math.random() < 0.5 ? -1 : 1) * (8 + Math.random()*18); // px sway
