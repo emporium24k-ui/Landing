@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Emporium24k | Cadastro de Revendedores — Semijoias</title>
-  <meta name="description" content="Cadastro de revendedores de semijoias. Preencha o formulário para análise e envio via WhatsApp (quando elegível)." />
+  <meta name="description" content="Cadastro de revendedores de semijoias. Preencha o formulário para análise e envio via WhatsApp." />
 
   <style>
     :root{
@@ -405,12 +405,12 @@
     <div class="wrap">
       <div class="hero">
         <h1>Cadastro de Revendedores de Semijoias</h1>
-        <p>Preencha as etapas com atenção. Ao final, dependendo do perfil, o botão de envio no WhatsApp será liberado com a mensagem pronta.</p>
+        <p>Preencha as etapas com atenção para completar seu cadastro.</p>
 
         <div class="trustRow" aria-label="Indicadores de confiança">
           <span class="trustPill">✅ Processo rápido (2–3 min)</span>
-          <span class="trustPill">🔒 Dados usados apenas para análise</span>
-          <span class="trustPill">📲 Envio no WhatsApp (quando elegível)</span>
+          <span class="trustPill">🔒 Dados usados apenas para contato</span>
+          <span class="trustPill">📲 Retorno pelo WhatsApp informado</span>
         </div>
       </div>
     </div>
@@ -422,7 +422,7 @@
         <div class="panelHead">
           <div>
             <h2>Questionário</h2>
-            <p class="sub">Responda com atenção. No final, o envio no WhatsApp depende da elegibilidade do perfil (pontuação).</p>
+            <p class="sub">Responda com atenção para completar seu cadastro.</p>
             <div class="panelMeta">
               <span>Tempo estimado: 2–3 min</span>
               <span>5 etapas</span>
@@ -442,7 +442,7 @@
           <!-- STEP 1 -->
           <div class="step" data-step="1">
             <div class="stepTitle">Etapa 1/5 — Dados básicos</div>
-            <div class="stepHint">Preencha seus dados para contato e análise.</div>
+            <div class="stepHint">Preencha seus dados para contato.</div>
 
             <div class="grid">
               <div class="field">
@@ -544,7 +544,7 @@
           <!-- STEP 3 -->
           <div class="step" data-step="3" style="display:none;">
             <div class="stepTitle">Etapa 3/5 — Potencial de vendas</div>
-            <div class="stepHint">Perguntas objetivas para prever desempenho, disponibilidade e canais.</div>
+            <div class="stepHint">Perguntas objetivas sobre rotina e vendas.</div>
 
             <div class="grid">
               <div class="field">
@@ -633,7 +633,7 @@
           <!-- STEP 4 -->
           <div class="step" data-step="4" style="display:none;">
             <div class="stepTitle">Etapa 4/5 — Perfil e capacidade</div>
-            <div class="stepHint">As perguntas abaixo ajudam a validar rotina, canais e segurança.</div>
+            <div class="stepHint">Mais algumas perguntas para concluir seu cadastro.</div>
 
             <div class="grid">
               <div class="field">
@@ -654,7 +654,6 @@
                   <option>Não</option>
                   <option>Não sei</option>
                 </select>
-                <div class="help">Informação usada apenas para análise (ex.: compras no atacado).</div>
               </div>
 
               <div class="field">
@@ -696,7 +695,7 @@
           <!-- STEP 5 -->
           <div class="step" data-step="5" style="display:none;">
             <div class="stepTitle">Etapa 5/5 — Verificação</div>
-            <div class="stepHint">Resolva o captcha numérico e finalize. Dependendo do perfil, o envio no WhatsApp pode ser liberado.</div>
+            <div class="stepHint">Resolva o captcha numérico e finalize seu cadastro.</div>
 
             <div class="ok" id="resultBox" style="display:none;"></div>
 
@@ -708,8 +707,8 @@
               </div>
 
               <div class="field">
-                <label>Envio</label>
-                <div class="help" id="resultHint">O botão será liberado após o captcha e todas as confirmações.</div>
+                <label>Finalização</label>
+                <div class="help" id="resultHint">Conclua o captcha e finalize.</div>
               </div>
             </div>
 
@@ -723,7 +722,7 @@
                 Enviar no WhatsApp
               </button>
               <div class="help" style="margin-top:8px;">
-                Se seu perfil estiver elegível, o botão será liberado após o captcha.
+                Ao clicar, a mensagem será aberta já preenchida.
               </div>
             </div>
           </div>
@@ -742,7 +741,7 @@
       <footer>
         <div class="wrap footerRow">
           <div><b>Emporium24k</b> • Cadastro de Revendedores — Semijoias</div>
-          <div>Triagem + WhatsApp (quando elegível)</div>
+          <div>Atendimento via WhatsApp</div>
         </div>
       </footer>
     </div>
@@ -753,7 +752,7 @@
     const EMP_WHATS = "5541998518452";
     const MIN_AGE = 18;
 
-    // ✅ Regras de pontuação (para liberar WhatsApp)
+    // ✅ Regras de pontuação (interno)
     const SCORE_REPROVADO_MAX = 14;   // 0..14 => REPROVADO (não libera)
     const SCORE_QUALIFICAR_MAX = 29;  // 15..29 => QUALIFICAR (libera)
     // 30+ => APROVADO (libera)
@@ -853,7 +852,7 @@
         stepNote.textContent = "Conclua a verificação para finalizar.";
         setCaptcha();
         sendBtn.disabled = true;
-        applyFinalBehavior(); // decide o que aparece no final conforme pontuação
+        applyFinalBehavior();
       }
 
       window.scrollTo({top: 0, behavior: "smooth"});
@@ -947,7 +946,6 @@
     // ---- SCORING ----
     function calcScore(){
       let score = 0;
-      const notes = [];
 
       const experiencia = ($("experiencia").value || "").trim();
       const canal = ($("canal").value || "").trim();
@@ -960,78 +958,59 @@
 
       const restricaoNome = ($("restricaoNome").value || "").trim();
       const cpfRegular = ($("cpfRegular").value || "").trim();
-      const empregoFixo = ($("empregoFixo").value || "").trim();
       const facilidadeSocial = ($("facilidadeSocial").value || "").trim();
 
-      // Experiência
       if(experiencia === "Sim, já vendi semijoias/joias") score += 10;
       else if(experiencia === "Sim, já vendi produtos (geral)") score += 6;
       else score += 2;
 
-      // Canal
       if(canal === "Mais de um canal") score += 8;
       else if(canal === "Instagram") score += 6;
       else if(canal === "WhatsApp (status/grupos)") score += 6;
       else if(canal === "Marketplace") score += 4;
       else if(canal === "Vendas presenciais") score += 4;
-      else if(canal === "Loja física") score += 12; // força “alto” (também vira APROVADO no status)
+      else if(canal === "Loja física") score += 12;
 
-      // Tempo disponível
       if(tempo === "15+ horas") score += 8;
       else if(tempo === "8–14 horas") score += 6;
       else if(tempo === "4–7 horas") score += 4;
       else score += 2;
 
-      // Contatos
       if(contatos === "1000+") score += 8;
       else if(contatos === "500–1000") score += 6;
       else if(contatos === "200–500") score += 4;
       else score += 2;
 
-      // Grupos
       if(grupos === "Sim, vários") score += 6;
       else if(grupos === "Sim, poucos") score += 3;
       else score += 1;
 
-      // Meta
       if(metaMes === "20+ vendas") score += 8;
       else if(metaMes === "11–20 vendas") score += 6;
       else if(metaMes === "4–10 vendas") score += 4;
       else score += 2;
 
-      // Abordagem
       if(abordagem === "Sim") score += 6;
       else if(abordagem === "Mais ou menos") score += 3;
       else score += 1;
 
-      // Compromisso
       if(compromisso === "Em até 2 semanas") score += 6;
       else if(compromisso === "Em até 1 mês") score += 4;
       else score += 1;
 
-      // CPF regular
       if(cpfRegular === "Sim") score += 5;
       else if(cpfRegular === "Não sei") score += 2;
       else score -= 6;
 
-      // Restrição no nome (pesa contra)
-      if(restricaoNome === "Sim"){ score -= 10; notes.push("restrição no nome"); }
-      else if(restricaoNome === "Não sei"){ score -= 3; notes.push("restrição: não sabe"); }
+      if(restricaoNome === "Sim") score -= 10;
+      else if(restricaoNome === "Não sei") score -= 3;
 
-      // Emprego fixo (só leve)
-      if(empregoFixo === "Sou empresário(a)") score += 3;
-      else if(empregoFixo === "Sim, autônomo(a)") score += 2;
-      else if(empregoFixo === "Sim, CLT") score += 1;
-
-      // Facilidade social
       if(facilidadeSocial === "Sim, uso com frequência") score += 5;
       else if(facilidadeSocial === "Tenho noção básica") score += 3;
       else score += 1;
 
-      // Limites (evita score negativo exagerado)
       if(score < 0) score = 0;
-
-      return { score, notes };
+      return { score };
     }
 
     function getStatus(score){
@@ -1042,36 +1021,28 @@
       return "APROVADO";
     }
 
+    // ✅ Comportamento final SEM “entregar” o filtro
     function applyFinalBehavior(){
-      const { score, notes } = calcScore();
+      const { score } = calcScore();
       const status = getStatus(score);
 
       resultBox.style.display = "block";
       resultBox.className = "ok";
 
       if(status === "REPROVADO"){
+        // some o botão e mostra mensagem neutra (sem raiva)
         sendBtn.style.display = "none";
         sendBtn.disabled = true;
-        resultBox.textContent = "Recebemos seus dados. Se o perfil for aprovado, entraremos em contato pelo WhatsApp informado.";
-        resultHint.textContent = "Obrigado! Sua inscrição foi registrada para análise.";
+
+        resultBox.textContent = "Cadastro enviado com sucesso. Se necessário, entraremos em contato pelo WhatsApp informado.";
+        resultHint.textContent = "Obrigado! Sua inscrição foi registrada.";
         return;
       }
 
+      // QUALIFICAR / APROVADO: botão aparece normalmente
       sendBtn.style.display = "inline-flex";
-
-      if(status === "QUALIFICAR"){
-        resultBox.textContent = "Seu perfil está em análise. Para agilizar, envie seus dados no WhatsApp.";
-        resultHint.textContent = "Após o envio, nossa equipe analisa e retorna no seu WhatsApp.";
-      } else {
-        resultBox.textContent = "Seu perfil tem alta compatibilidade. Envie agora no WhatsApp para avançarmos com prioridade.";
-        resultHint.textContent = "Envie no WhatsApp para receber os próximos passos com prioridade.";
-      }
-
-      // Observação discreta (não expõe regra)
-      if(notes.length){
-        // mantém discreto (sem “explicar filtro”)
-        // apenas sinaliza internamente na mensagem do WhatsApp (vai no buildWhatsMessage)
-      }
+      resultBox.textContent = "Cadastro pronto. Clique no botão abaixo para enviar suas informações pelo WhatsApp.";
+      resultHint.textContent = "Ao clicar, a mensagem será aberta já preenchida.";
     }
 
     function buildWhatsMessage(){
@@ -1101,19 +1072,8 @@
       const perfilCliente = ($("perfilCliente").value || "").trim();
       const facilidadeSocial = ($("facilidadeSocial").value || "").trim();
 
-      const { score, notes } = calcScore();
-      const status = getStatus(score);
-
-      let headline = "CADASTRO — REVENDEDOR(A) DE SEMIJOIAS";
-      if(status === "QUALIFICAR") headline = "CADASTRO — QUALIFICAÇÃO (REVENDA SEMIJOIAS)";
-      if(status === "APROVADO") headline = "CADASTRO — APROVADO PRIORIDADE (REVENDA SEMIJOIAS)";
-
       const lines = [
-        headline,
-        "",
-        `STATUS: ${status}`,
-        `SCORE: ${score}`,
-        notes.length ? `OBS: ${notes.join(" | ")}` : "OBS: -",
+        "CADASTRO — REVENDEDOR(A) DE SEMIJOIAS",
         "",
         "1) DADOS BÁSICOS",
         `nome: ${nome}`,
@@ -1166,14 +1126,12 @@
         validateAllUpTo(5);
         applyFinalBehavior();
 
-        const { score } = calcScore();
-        const status = getStatus(score);
-
-        if(status !== "REPROVADO"){
-          showOk("Tudo certo. Agora você já pode enviar no WhatsApp.");
+        // Se o botão existir/estiver visível e estiver tudo ok, libera
+        if(sendBtn.style.display !== "none"){
+          showOk("Tudo certo. Agora você pode enviar pelo WhatsApp.");
           sendBtn.disabled = false;
         } else {
-          showOk("Tudo certo. Sua inscrição foi registrada para análise.");
+          showOk("Tudo certo. Seu cadastro foi registrado.");
           sendBtn.disabled = true;
         }
 
@@ -1188,7 +1146,6 @@
       if(currentStep > 1) showStep(currentStep - 1);
     });
 
-    // Recalcula o comportamento final quando captcha / LGPD mudam
     ["captchaAnswer","lgpd"].forEach(id=>{
       const el = $(id);
       if(!el) return;
@@ -1197,13 +1154,8 @@
         try{
           validateAllUpTo(5);
           applyFinalBehavior();
-
-          const { score } = calcScore();
-          const status = getStatus(score);
-
-          if(status !== "REPROVADO") sendBtn.disabled = false;
+          if(sendBtn.style.display !== "none") sendBtn.disabled = false;
           else sendBtn.disabled = true;
-
           hideAlerts();
         } catch {
           sendBtn.disabled = true;
@@ -1216,16 +1168,11 @@
     sendBtn.addEventListener("click", () => {
       try{
         validateAllUpTo(5);
-
-        const { score } = calcScore();
-        const status = getStatus(score);
-
-        if(status === "REPROVADO"){
+        if(sendBtn.style.display === "none"){
           applyFinalBehavior();
-          showOk("Recebemos seus dados. Se aprovado, entraremos em contato.");
+          showOk("Cadastro registrado.");
           return;
         }
-
         openWhatsApp(buildWhatsMessage());
       } catch(err){
         showError(err.message || "Verifique os campos e tente novamente.");
