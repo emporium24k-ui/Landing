@@ -2,20 +2,21 @@
 
 Primeira versão da landing page conversacional da Emporium24k.
 
-## Arquivo principal
+## Arquivos
 
+- `iniciar.html`: entrada recomendada. Sorteia o primeiro vendedor em 50/50 e abre o assistente.
 - `index.html`: página completa, responsiva e sem dependências de backend.
 
 ## Rotas de atendimento
 
 ### Compra de alianças, joias, semijoias e personalizados
 
-Distribuição alternada 50/50 entre:
+Distribuição entre:
 
 - 5541995888995
 - 5541995776736
 
-A alternância é armazenada no `localStorage` do navegador.
+A entrada `iniciar.html` sorteia o primeiro vendedor. Depois disso, o navegador alterna entre os dois números usando `localStorage`.
 
 ### Venda e avaliação de ouro ou prata
 
@@ -40,6 +41,8 @@ Direcionamento exclusivo para:
 - Perguntas sobre preço, orçamento, parcelamento, desconto e intenção de compra são transferidas ao comercial.
 - Perguntas sem resposta segura ficam registradas no `localStorage` para evolução futura da base.
 
-## Limitação da V1
+## Limitações da V1
 
-A lógica funciona por palavras-chave e intenções programadas no navegador. Ainda não existe banco de dados central, painel administrativo, histórico compartilhado ou IA conectada ao catálogo.
+- A lógica funciona por palavras-chave e intenções programadas no navegador.
+- Ainda não existe banco de dados central, painel administrativo, histórico compartilhado ou IA conectada ao catálogo.
+- O equilíbrio 50/50 é aproximado. Uma distribuição global exata entre todos os visitantes exige backend.
