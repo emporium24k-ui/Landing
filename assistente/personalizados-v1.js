@@ -118,11 +118,15 @@
   function followUpTopic(text){
     if(!contextActive()) return null;
 
-    if(includesAny(text, [
-      "rastreio", "rastreamento", "codigo de rastreio", "pix", "cartao", "boleto", "cheque",
-      "forma de pagamento", "endereco", "onde fica", "frete", "sedex", "polimento",
-      "conserto", "quero vender ouro", "vender minhas joias", "alianca encapada"
-    ])){
+    const changedSubject = includesAny(text, [
+      "rastreio", "rastrear", "rastreamento", "codigo de rastreio", "pedido", "encomenda",
+      "pix", "cartao", "boleto", "cheque", "forma de pagamento", "parcelamento", "parcelas",
+      "endereco", "onde fica", "loja fisica", "frete", "sedex", "entrega", "envio",
+      "polimento", "polir", "conserto", "consertar", "garantia", "certificado", "nota fiscal",
+      "prazo", "estoque", "catalogo", "depoimentos", "avaliacoes", "quero vender ouro",
+      "vender minhas joias", "avaliar meu ouro", "ouro para abater", "alianca encapada"
+    ]);
+    if(changedSubject){
       resetContext();
       return null;
     }
@@ -144,8 +148,16 @@
       "acabamento", "fosco", "polido", "chanfrado", "anatomico", "ouro", "prata"
     ]) || hasWord(text, jewelryWords) || /\b[2-9]\s*mm\b/.test(text);
 
-    if(designDetail || text.length >= 35) return "idea";
-    return "promptAgain";
+    const descriptiveSentence = text.length >= 25 && includesAny(text, [
+      "eu quero", "eu queria", "eu imaginei", "eu pensei", "gostaria que", "seria uma",
+      "seria um", "quero que tenha", "queria que tivesse", "pensei em fazer"
+    ]);
+
+    if(designDetail || descriptiveSentence) return "idea";
+    if(hasWord(text, ["sim", "claro", "isso", "exato", "ainda", "talvez"])) return "promptAgain";
+
+    resetContext();
+    return null;
   }
 
   function classify(text){
