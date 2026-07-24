@@ -1,0 +1,891 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#101b15" />
+  <meta name="description" content="Assistente virtual da Emporium24k para dúvidas sobre alianças, joias, personalizados, consertos e avaliação de ouro e prata." />
+  <title>Coroa 24K | Assistente Emporium24k</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0b130f;
+      --bg-2: #111d17;
+      --panel: rgba(19, 31, 25, .92);
+      --panel-2: rgba(27, 43, 34, .82);
+      --gold: #d4ac55;
+      --gold-light: #f2d98b;
+      --gold-dark: #8e6926;
+      --text: #f6f1e5;
+      --muted: #aebbb2;
+      --line: rgba(242, 217, 139, .16);
+      --green: #1f8f5f;
+      --danger: #d77272;
+      --shadow: 0 24px 70px rgba(0, 0, 0, .44);
+      --radius: 24px;
+    }
+
+    * { box-sizing: border-box; }
+
+    html, body { min-height: 100%; }
+
+    body {
+      margin: 0;
+      font-family: "DM Sans", system-ui, sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(circle at 20% 0%, rgba(212, 172, 85, .12), transparent 35%),
+        radial-gradient(circle at 95% 25%, rgba(31, 143, 95, .13), transparent 34%),
+        linear-gradient(160deg, #09100c 0%, #101b15 50%, #08100c 100%);
+      overflow: hidden;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      background-image:
+        linear-gradient(rgba(255,255,255,.018) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,.018) 1px, transparent 1px);
+      background-size: 32px 32px;
+      mask-image: linear-gradient(to bottom, black, transparent 75%);
+    }
+
+    button, input { font: inherit; }
+    button { cursor: pointer; }
+
+    .page {
+      min-height: 100dvh;
+      display: grid;
+      place-items: center;
+      padding: 18px;
+    }
+
+    .chat-shell {
+      width: min(920px, 100%);
+      height: min(880px, calc(100dvh - 36px));
+      min-height: 620px;
+      display: grid;
+      grid-template-rows: auto 1fr auto;
+      border: 1px solid var(--line);
+      border-radius: 30px;
+      background: linear-gradient(180deg, rgba(18, 31, 24, .96), rgba(10, 18, 14, .97));
+      box-shadow: var(--shadow);
+      overflow: hidden;
+      position: relative;
+      isolation: isolate;
+    }
+
+    .chat-shell::before {
+      content: "";
+      position: absolute;
+      width: 340px;
+      height: 340px;
+      border-radius: 50%;
+      top: -190px;
+      right: -90px;
+      background: rgba(212, 172, 85, .12);
+      filter: blur(15px);
+      z-index: -1;
+    }
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 16px 20px;
+      border-bottom: 1px solid rgba(255,255,255,.07);
+      background: rgba(9, 16, 12, .62);
+      backdrop-filter: blur(16px);
+    }
+
+    .mascot-wrap {
+      width: 64px;
+      height: 64px;
+      flex: 0 0 64px;
+      border-radius: 21px;
+      display: grid;
+      place-items: center;
+      border: 1px solid rgba(242, 217, 139, .27);
+      background: radial-gradient(circle at 50% 25%, rgba(242,217,139,.15), rgba(0,0,0,.14));
+      box-shadow: inset 0 0 30px rgba(212,172,85,.08), 0 8px 25px rgba(0,0,0,.28);
+    }
+
+    .mascot {
+      width: 56px;
+      height: 56px;
+      filter: drop-shadow(0 6px 7px rgba(0,0,0,.28));
+      animation: mascotFloat 4s ease-in-out infinite;
+    }
+
+    @keyframes mascotFloat {
+      0%, 100% { transform: translateY(0) rotate(-1deg); }
+      50% { transform: translateY(-3px) rotate(1deg); }
+    }
+
+    .brand-copy { min-width: 0; }
+
+    .eyebrow {
+      color: var(--gold-light);
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .17em;
+      margin-bottom: 2px;
+    }
+
+    .brand-copy h1 {
+      font-family: "Playfair Display", serif;
+      font-size: clamp(20px, 4vw, 27px);
+      line-height: 1.1;
+      margin: 0;
+      letter-spacing: -.02em;
+    }
+
+    .status {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      color: var(--muted);
+      font-size: 12px;
+      margin-top: 5px;
+    }
+
+    .status-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #59d398;
+      box-shadow: 0 0 0 4px rgba(89,211,152,.10);
+    }
+
+    .top-action {
+      margin-left: auto;
+      border: 1px solid rgba(242,217,139,.28);
+      background: rgba(212,172,85,.09);
+      color: var(--gold-light);
+      border-radius: 999px;
+      padding: 10px 14px;
+      font-size: 12px;
+      font-weight: 700;
+      transition: .2s ease;
+    }
+
+    .top-action:hover { transform: translateY(-1px); background: rgba(212,172,85,.16); }
+
+    .messages {
+      overflow-y: auto;
+      padding: 22px clamp(14px, 4vw, 28px) 26px;
+      scroll-behavior: smooth;
+      scrollbar-width: thin;
+      scrollbar-color: rgba(212,172,85,.35) transparent;
+    }
+
+    .intro {
+      text-align: center;
+      max-width: 660px;
+      margin: 2px auto 22px;
+    }
+
+    .intro-badge {
+      display: inline-flex;
+      gap: 8px;
+      align-items: center;
+      border: 1px solid rgba(242,217,139,.18);
+      background: rgba(212,172,85,.06);
+      color: var(--gold-light);
+      border-radius: 999px;
+      padding: 7px 11px;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: .04em;
+    }
+
+    .intro h2 {
+      font-family: "Playfair Display", serif;
+      font-size: clamp(27px, 5vw, 42px);
+      line-height: 1.08;
+      margin: 13px 0 9px;
+    }
+
+    .intro p {
+      color: var(--muted);
+      margin: 0 auto;
+      max-width: 590px;
+      font-size: 14px;
+      line-height: 1.65;
+    }
+
+    .message-row {
+      display: flex;
+      gap: 9px;
+      align-items: flex-end;
+      margin: 15px 0;
+      animation: messageIn .28s ease both;
+    }
+
+    @keyframes messageIn {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .message-row.user { justify-content: flex-end; }
+
+    .mini-avatar {
+      width: 31px;
+      height: 31px;
+      flex: 0 0 31px;
+      border-radius: 11px;
+      border: 1px solid rgba(242,217,139,.19);
+      background: rgba(212,172,85,.08);
+      display: grid;
+      place-items: center;
+      color: var(--gold-light);
+      font-weight: 800;
+      font-size: 12px;
+    }
+
+    .bubble {
+      max-width: min(680px, 84%);
+      padding: 13px 15px;
+      border-radius: 19px 19px 19px 6px;
+      border: 1px solid rgba(255,255,255,.075);
+      background: var(--panel-2);
+      color: #f5f2e9;
+      line-height: 1.55;
+      font-size: 14px;
+      box-shadow: 0 10px 28px rgba(0,0,0,.13);
+    }
+
+    .user .bubble {
+      border-radius: 19px 19px 6px 19px;
+      background: linear-gradient(135deg, #af8237, #d4ac55);
+      color: #15100a;
+      font-weight: 600;
+      border-color: rgba(255,255,255,.13);
+    }
+
+    .bubble strong { color: var(--gold-light); }
+    .user .bubble strong { color: #15100a; }
+
+    .quick-replies {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin: 9px 0 3px 40px;
+      animation: messageIn .28s ease both;
+    }
+
+    .quick-reply {
+      border: 1px solid rgba(242,217,139,.21);
+      background: rgba(212,172,85,.06);
+      color: #f2e6c6;
+      padding: 9px 12px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 600;
+      transition: .18s ease;
+    }
+
+    .quick-reply:hover {
+      background: rgba(212,172,85,.15);
+      border-color: rgba(242,217,139,.36);
+      transform: translateY(-1px);
+    }
+
+    .action-card {
+      margin: 10px 0 3px 40px;
+      max-width: 610px;
+      padding: 15px;
+      border: 1px solid rgba(89,211,152,.22);
+      background: linear-gradient(135deg, rgba(31,143,95,.13), rgba(212,172,85,.07));
+      border-radius: 18px;
+      animation: messageIn .28s ease both;
+    }
+
+    .action-card p {
+      margin: 0 0 11px;
+      color: #cfdbd3;
+      font-size: 12px;
+      line-height: 1.5;
+    }
+
+    .whatsapp-btn {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      border: 0;
+      border-radius: 13px;
+      padding: 12px 14px;
+      color: #06150e;
+      font-weight: 800;
+      background: linear-gradient(135deg, #6ae0a5, #36b978);
+      box-shadow: 0 9px 24px rgba(54,185,120,.18);
+      transition: .18s ease;
+    }
+
+    .whatsapp-btn:hover { transform: translateY(-1px); filter: brightness(1.04); }
+
+    .typing {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      min-width: 61px;
+    }
+
+    .typing span {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--muted);
+      animation: typing 1s infinite ease-in-out;
+    }
+
+    .typing span:nth-child(2) { animation-delay: .15s; }
+    .typing span:nth-child(3) { animation-delay: .3s; }
+
+    @keyframes typing {
+      0%, 60%, 100% { transform: translateY(0); opacity: .45; }
+      30% { transform: translateY(-3px); opacity: 1; }
+    }
+
+    .composer {
+      padding: 13px 16px calc(13px + env(safe-area-inset-bottom));
+      border-top: 1px solid rgba(255,255,255,.07);
+      background: rgba(8, 14, 10, .88);
+      backdrop-filter: blur(16px);
+    }
+
+    .input-row {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 9px;
+      padding: 6px;
+      border: 1px solid rgba(242,217,139,.17);
+      background: rgba(255,255,255,.045);
+      border-radius: 18px;
+      transition: .2s ease;
+    }
+
+    .input-row:focus-within {
+      border-color: rgba(242,217,139,.4);
+      box-shadow: 0 0 0 4px rgba(212,172,85,.07);
+    }
+
+    #questionInput {
+      min-width: 0;
+      border: 0;
+      outline: 0;
+      color: var(--text);
+      background: transparent;
+      padding: 10px 11px;
+      font-size: 14px;
+    }
+
+    #questionInput::placeholder { color: #819087; }
+
+    .send-btn {
+      width: 43px;
+      height: 43px;
+      border: 0;
+      border-radius: 13px;
+      background: linear-gradient(135deg, var(--gold-light), var(--gold));
+      color: #181109;
+      font-size: 18px;
+      font-weight: 900;
+      transition: .18s ease;
+    }
+
+    .send-btn:hover { transform: scale(1.03); }
+    .send-btn:disabled { opacity: .45; cursor: default; transform: none; }
+
+    .composer-note {
+      display: flex;
+      justify-content: center;
+      gap: 5px;
+      color: #718078;
+      text-align: center;
+      font-size: 10px;
+      margin-top: 8px;
+    }
+
+    .hidden { display: none !important; }
+
+    @media (max-width: 640px) {
+      .page { padding: 0; }
+      .chat-shell { height: 100dvh; min-height: 100dvh; border-radius: 0; border: 0; }
+      .topbar { padding: 12px 13px; }
+      .mascot-wrap { width: 54px; height: 54px; flex-basis: 54px; border-radius: 17px; }
+      .mascot { width: 49px; height: 49px; }
+      .top-action { padding: 9px 11px; font-size: 11px; }
+      .messages { padding-top: 17px; }
+      .bubble { max-width: 88%; }
+      .intro { margin-top: 0; }
+      .quick-replies, .action-card { margin-left: 0; }
+      .composer { padding-left: 10px; padding-right: 10px; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; scroll-behavior: auto !important; }
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <section class="chat-shell" aria-label="Assistente virtual Emporium24k">
+      <header class="topbar">
+        <div class="mascot-wrap" aria-hidden="true">
+          <svg class="mascot" viewBox="0 0 120 105" role="img" aria-label="Mascote coroa dourada">
+            <defs>
+              <linearGradient id="goldFill" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0" stop-color="#fff1af"/>
+                <stop offset=".28" stop-color="#e8bd57"/>
+                <stop offset=".62" stop-color="#a87520"/>
+                <stop offset="1" stop-color="#f1d377"/>
+              </linearGradient>
+              <linearGradient id="goldStroke" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0" stop-color="#fff1a8"/>
+                <stop offset="1" stop-color="#9b691d"/>
+              </linearGradient>
+              <filter id="softGlow"><feGaussianBlur stdDeviation="1.4" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+            </defs>
+            <path d="M10 38 L28 55 L42 27 L60 52 L78 27 L92 55 L110 38 L100 83 L20 83 Z" fill="url(#goldFill)" stroke="url(#goldStroke)" stroke-width="4" stroke-linejoin="round" filter="url(#softGlow)"/>
+            <circle cx="10" cy="37" r="6" fill="url(#goldFill)" stroke="#f3d77e" stroke-width="2"/>
+            <circle cx="42" cy="25" r="6" fill="url(#goldFill)" stroke="#f3d77e" stroke-width="2"/>
+            <circle cx="78" cy="25" r="6" fill="url(#goldFill)" stroke="#f3d77e" stroke-width="2"/>
+            <circle cx="110" cy="37" r="6" fill="url(#goldFill)" stroke="#f3d77e" stroke-width="2"/>
+            <path d="M60 5 L70 22 L60 38 L50 22 Z" fill="url(#goldFill)" stroke="#f5dc86" stroke-width="3"/>
+            <rect x="18" y="82" width="84" height="13" rx="5" fill="url(#goldFill)" stroke="#f1d377" stroke-width="3"/>
+            <path d="M52 55 L60 46 L68 55 L60 64 Z" fill="#b17d28" stroke="#ffe79b" stroke-width="2"/>
+            <ellipse cx="42" cy="67" rx="8" ry="10" fill="#24170d"/>
+            <ellipse cx="78" cy="67" rx="8" ry="10" fill="#24170d"/>
+            <circle cx="39" cy="63" r="2.7" fill="#fff"/>
+            <circle cx="75" cy="63" r="2.7" fill="#fff"/>
+            <circle cx="44" cy="70" r="1.4" fill="#f4cb69"/>
+            <circle cx="80" cy="70" r="1.4" fill="#f4cb69"/>
+            <path d="M53 72 Q60 79 67 72" fill="none" stroke="#2c190c" stroke-width="3" stroke-linecap="round"/>
+            <path d="M34 55 Q42 50 49 55" fill="none" stroke="#80551c" stroke-width="2.3" stroke-linecap="round"/>
+            <path d="M71 55 Q78 50 86 55" fill="none" stroke="#80551c" stroke-width="2.3" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <div class="brand-copy">
+          <div class="eyebrow">Emporium24k</div>
+          <h1>Coroa 24K</h1>
+          <div class="status"><span class="status-dot"></span> Assistente virtual disponível</div>
+        </div>
+        <button class="top-action" id="humanTopBtn" type="button">Atendimento humano</button>
+      </header>
+
+      <div class="messages" id="messages" aria-live="polite">
+        <div class="intro" id="intro">
+          <div class="intro-badge">✦ Joias, alianças, ouro e prata</div>
+          <h2>Qual é a sua dúvida?</h2>
+          <p>Respondo de forma rápida e ajudo você a chegar ao atendimento certo quando for necessário.</p>
+        </div>
+      </div>
+
+      <footer class="composer">
+        <form class="input-row" id="questionForm">
+          <input id="questionInput" autocomplete="off" maxlength="420" aria-label="Digite sua pergunta" placeholder="Ex.: Vocês fazem anel personalizado?" />
+          <button class="send-btn" id="sendBtn" type="submit" aria-label="Enviar pergunta">➜</button>
+        </form>
+        <div class="composer-note">Assistente virtual • Informações comerciais finais são confirmadas pela equipe</div>
+      </footer>
+    </section>
+  </main>
+
+  <script>
+    (() => {
+      "use strict";
+
+      const SALES_PHONES = ["5541995888995", "5541995776736"];
+      const EVALUATION_PHONE = "5541998518452";
+
+      const messages = document.getElementById("messages");
+      const form = document.getElementById("questionForm");
+      const input = document.getElementById("questionInput");
+      const sendBtn = document.getElementById("sendBtn");
+      const humanTopBtn = document.getElementById("humanTopBtn");
+
+      let activeContext = null;
+      let lastUserMessage = "";
+      let busy = false;
+
+      const normalize = (text) => text
+        .toLowerCase()
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .replace(/[^a-z0-9\s]/g, " ")
+        .replace(/\s+/g, " ")
+        .trim();
+
+      const includesAny = (text, terms) => terms.some(term => text.includes(term));
+
+      const escapeHTML = (text) => text.replace(/[&<>'"]/g, char => ({
+        "&": "&amp;", "<": "&lt;", ">": "&gt;", "'": "&#039;", '"': "&quot;"
+      })[char]);
+
+      const scrollBottom = () => requestAnimationFrame(() => {
+        messages.scrollTop = messages.scrollHeight;
+      });
+
+      function track(event, details = {}) {
+        window.dataLayer = window.dataLayer || [];
+        window.dataLayer.push({ event, ...details });
+      }
+
+      function addMessage(content, sender = "bot") {
+        const row = document.createElement("div");
+        row.className = `message-row ${sender}`;
+
+        if (sender === "bot") {
+          const avatar = document.createElement("div");
+          avatar.className = "mini-avatar";
+          avatar.textContent = "24K";
+          row.appendChild(avatar);
+        }
+
+        const bubble = document.createElement("div");
+        bubble.className = "bubble";
+        bubble.innerHTML = content;
+        row.appendChild(bubble);
+        messages.appendChild(row);
+        scrollBottom();
+        return row;
+      }
+
+      function addQuickReplies(options) {
+        const wrap = document.createElement("div");
+        wrap.className = "quick-replies";
+        options.forEach(option => {
+          const button = document.createElement("button");
+          button.type = "button";
+          button.className = "quick-reply";
+          button.textContent = option.label;
+          button.addEventListener("click", () => {
+            wrap.remove();
+            submitQuestion(option.message || option.label);
+          });
+          wrap.appendChild(button);
+        });
+        messages.appendChild(wrap);
+        scrollBottom();
+      }
+
+      function addActionCard({ label, description, href, route }) {
+        const card = document.createElement("div");
+        card.className = "action-card";
+        card.innerHTML = `<p>${description}</p>`;
+
+        const button = document.createElement("button");
+        button.type = "button";
+        button.className = "whatsapp-btn";
+        button.innerHTML = `<span>◉</span> ${label}`;
+        button.addEventListener("click", () => {
+          track("whatsapp_click", { route, question: lastUserMessage });
+          window.open(href, "_blank", "noopener,noreferrer");
+        });
+        card.appendChild(button);
+        messages.appendChild(card);
+        scrollBottom();
+      }
+
+      function addTyping() {
+        const row = addMessage('<span class="typing"><span></span><span></span><span></span></span>', "bot");
+        row.dataset.typing = "true";
+        return row;
+      }
+
+      function whatsappURL(phone, text) {
+        return `https://api.whatsapp.com/send/?phone=${phone}&text=${encodeURIComponent(text)}&type=phone_number&app_absent=0`;
+      }
+
+      function nextSalesPhone() {
+        const key = "emporium24k_sales_rotation";
+        const current = Number(localStorage.getItem(key) || "0") % SALES_PHONES.length;
+        localStorage.setItem(key, String((current + 1) % SALES_PHONES.length));
+        return SALES_PHONES[current];
+      }
+
+      function salesHandoff(reason = "atendimento comercial") {
+        const phone = nextSalesPhone();
+        const text = [
+          "Olá! Vim pelo assistente Coroa 24K da Emporium24k.",
+          `Assunto: ${reason}.`,
+          lastUserMessage ? `Minha pergunta: ${lastUserMessage}` : "Gostaria de receber atendimento.",
+          ""
+        ].join("\n");
+
+        addActionCard({
+          label: "Falar com um especialista",
+          description: "Vou distribuir seu atendimento entre os vendedores para equilibrar o tempo de resposta.",
+          href: whatsappURL(phone, text),
+          route: "sales"
+        });
+      }
+
+      function evaluationHandoff(reason) {
+        const text = [
+          "Olá! Vim pelo assistente Coroa 24K da Emporium24k.",
+          `Assunto: ${reason}.`,
+          lastUserMessage ? `Minha pergunta: ${lastUserMessage}` : "Gostaria de receber orientação.",
+          ""
+        ].join("\n");
+
+        addActionCard({
+          label: reason.includes("conserto") ? "Falar sobre o conserto" : "Falar com a equipe de avaliação",
+          description: reason.includes("conserto")
+            ? "Consertos de joias e semijoias são direcionados para esta equipe."
+            : "Avaliações e vendas de itens de ouro ou prata são tratadas por um canal exclusivo.",
+          href: whatsappURL(EVALUATION_PHONE, text),
+          route: reason.includes("conserto") ? "repair" : "evaluation"
+        });
+      }
+
+      function saveUnanswered(question) {
+        try {
+          const key = "emporium24k_unanswered_questions";
+          const list = JSON.parse(localStorage.getItem(key) || "[]");
+          list.push({ question, at: new Date().toISOString() });
+          localStorage.setItem(key, JSON.stringify(list.slice(-100)));
+        } catch (_) {}
+      }
+
+      function detectIntent(raw) {
+        const text = normalize(raw);
+
+        const sellingTerms = [
+          "quero vender", "vender ouro", "vender prata", "vender minha", "vender minhas", "vender um", "vender uma",
+          "quanto voces pagam", "quanto pagam", "compram ouro", "compram prata", "avaliar ouro", "avaliar prata",
+          "avaliacao do ouro", "avaliacao da prata", "tenho ouro para vender", "tenho prata para vender",
+          "sucata de ouro", "sucata de prata", "joia usada", "joias usadas", "ouro usado", "prata usada"
+        ];
+
+        const repairTerms = [
+          "conserto", "consertam", "consertar", "arrumar joia", "arrumar anel", "arrumar corrente", "arrumar pulseira",
+          "corrente quebrou", "anel quebrou", "alianca quebrou", "joia quebrada", "semijoia quebrada", "solda em joia",
+          "apertar anel", "aumentar anel", "diminuir anel", "reparo"
+        ];
+
+        const unsupportedTerms = [
+          "aco", "tungstenio", "titanio", "latao", "bronze", "cobre", "moeda antiga", "alianca de moeda",
+          "feito de moeda", "metal moeda", "niobio", "paladio"
+        ];
+
+        const priceTerms = [
+          "quanto custa", "qual valor", "qual o valor", "preco", "orcamento", "quanto fica", "quanto sairia",
+          "valor da alianca", "valor das aliancas", "valor do anel", "valor da joia", "valor do ouro", "valor da prata",
+          "parcela", "parcelamento", "formas de pagamento", "forma de pagamento", "desconto", "promocao", "entrada",
+          "tem disponivel", "quero comprar", "como comprar", "como faco o pedido", "fechar pedido"
+        ];
+
+        if (includesAny(text, repairTerms)) return "repair";
+        if (includesAny(text, sellingTerms)) return "sell";
+        if (includesAny(text, unsupportedTerms)) return "unsupported";
+        if (includesAny(text, priceTerms)) return "price";
+
+        if (includesAny(text, ["personalizado", "personalizada", "sob medida", "fazer igual", "igual a foto", "minha ideia", "desenho 3d", "molde 3d", "exclusivo"])) return "custom";
+        if (includesAny(text, ["frete", "envio", "entrega", "todo brasil", "outra cidade", "fora de curitiba", "correios", "rastreio"])) return "shipping";
+        if (includesAny(text, ["gravacao", "gravar", "nome dentro", "data dentro", "frase dentro"])) return "engraving";
+        if (includesAny(text, ["garantia", "certificado", "nota fiscal", "ouro verdadeiro", "prata verdadeira", "comprovar teor", "autenticidade"])) return "trust";
+        if (includesAny(text, ["ouro 18k", "prata 925", "qual material", "materiais", "teor", "10k", "14k", "24k"])) return "materials";
+        if (includesAny(text, ["prazo", "quanto tempo", "dias uteis", "quando fica pronto", "producao", "urgente"])) return "deadline";
+        if (includesAny(text, ["numeracao", "numero do aro", "tamanho do aro", "medir dedo", "medida do dedo", "qual meu aro"])) return "size";
+        if (includesAny(text, ["limpar", "limpeza", "polimento", "escureceu", "oxidou", "manutencao", "cuidar da joia"])) return "care";
+        if (includesAny(text, ["anatômica", "anatomica", "semi anatomica", "semianatomica", "interno reto", "confort fit", "conforto"])) return "comfort";
+        if (includesAny(text, ["alianca", "aliancas", "casamento", "noivado", "compromisso"])) return "rings";
+        if (includesAny(text, ["semijoia", "semijoias", "banhada", "banhado"])) return "semijewelry";
+        if (includesAny(text, ["atendente", "pessoa", "humano", "vendedor", "especialista", "whatsapp", "falar com alguem"])) return "human";
+        if (includesAny(text, ["oi", "ola", "bom dia", "boa tarde", "boa noite", "tudo bem"])) return "greeting";
+        return "unknown";
+      }
+
+      async function botReply(raw) {
+        const intent = detectIntent(raw);
+        track("assistant_question", { intent, question: raw });
+
+        switch (intent) {
+          case "repair":
+            addMessage("Sim. A Emporium24k realiza <strong>consertos de joias e semijoias</strong>. A viabilidade e o valor dependem da avaliação da peça.");
+            evaluationHandoff("conserto de joia ou semijoia");
+            break;
+
+          case "sell":
+            addMessage("Compramos e avaliamos <strong>itens de ouro e prata</strong>. O valor correto depende do teor, peso e análise presencial ou orientada pela equipe. Não compramos outros metais.");
+            evaluationHandoff("venda ou avaliação de ouro/prata");
+            break;
+
+          case "unsupported":
+            addMessage("Trabalhamos com confecção em <strong>ouro 18k e prata 925</strong>. Não produzimos peças de moeda, aço, tungstênio, titânio ou outros metais. Também não compramos metais diferentes de ouro e prata.");
+            addQuickReplies([
+              { label: "Fazer em ouro 18k", message: "Quero fazer essa peça em ouro 18k" },
+              { label: "Fazer em prata 925", message: "Quero fazer essa peça em prata 925" }
+            ]);
+            break;
+
+          case "price":
+            addMessage("Valores dependem de modelo, medidas, peso, acabamento e numeração. Para não passar uma estimativa errada, essa pergunta é respondida diretamente por um atendente.");
+            salesHandoff("preço, orçamento ou condição de pagamento");
+            break;
+
+          case "custom":
+            activeContext = "custom";
+            addMessage("Sim. Criamos <strong>peças personalizadas em ouro 18k ou prata 925</strong> a partir de ideia, desenho ou foto de referência, inclusive com desenvolvimento em molde 3D. O projeto passa por análise de viabilidade técnica.");
+            addQuickReplies([
+              { label: "Anel personalizado", message: "Quero fazer um anel personalizado" },
+              { label: "Alianças personalizadas", message: "Quero fazer alianças personalizadas" },
+              { label: "Pingente personalizado", message: "Quero fazer um pingente personalizado" },
+              { label: "Enviar minha ideia", message: "Quero enviar a ideia de uma peça personalizada" }
+            ]);
+            break;
+
+          case "shipping":
+            addMessage("O <strong>frete é gratuito para todo o Brasil</strong> e o envio acompanha rastreamento. Em Curitiba e região, a disponibilidade de entrega local pode ser confirmada pela equipe.");
+            addQuickReplies([
+              { label: "Quero receber um orçamento", message: "Quero receber um orçamento com frete grátis" },
+              { label: "Continuar perguntando", message: "Tenho outra dúvida" }
+            ]);
+            break;
+
+          case "engraving":
+            addMessage("As <strong>gravações internas nas alianças compradas conosco são gratuitas</strong>. É possível gravar nomes, data ou uma frase curta, conforme o espaço disponível na peça.");
+            break;
+
+          case "trust":
+            addMessage("As peças em ouro e prata acompanham <strong>nota fiscal, certificado e garantia permanente do teor</strong>. Trabalhamos exclusivamente com ouro 18k e prata 925 nas linhas correspondentes.");
+            addQuickReplies([
+              { label: "Como funciona o pedido?", message: "Como funciona o pedido das alianças?" },
+              { label: "Quero falar com a equipe", message: "Quero falar com um atendente" }
+            ]);
+            break;
+
+          case "materials":
+            addMessage("Na joalheria trabalhamos com <strong>ouro 18k</strong> e <strong>prata 925</strong>. O ouro 18k possui 75% de ouro puro e uma liga que dá resistência para o uso diário. A prata 925 possui 92,5% de prata.");
+            break;
+
+          case "deadline":
+            addMessage("O prazo padrão de produção é de aproximadamente <strong>5 a 7 dias úteis</strong>, podendo variar conforme a complexidade do projeto e a logística de entrega. Para uma data específica, a equipe precisa confirmar a agenda.");
+            addQuickReplies([
+              { label: "Tenho uma data urgente", message: "Preciso da peça para uma data específica" },
+              { label: "Quero fazer um pedido", message: "Quero fazer o pedido" }
+            ]);
+            break;
+
+          case "size":
+            addMessage("A numeração correta é essencial para conforto e segurança. O ideal é medir com uma <strong>aneleira</strong> ou confirmar em uma joalheria. Medidas feitas com régua, barbante ou aplicativo podem gerar diferença.");
+            break;
+
+          case "care":
+            addMessage("O cuidado depende do material e do estado da peça. Evite produtos químicos, guarde separadamente e faça limpeza adequada. Quando houver escurecimento, risco, quebra ou necessidade de polimento, a peça pode ser avaliada pela equipe.");
+            addQuickReplies([
+              { label: "Minha peça precisa de conserto", message: "Minha joia precisa de conserto" },
+              { label: "É apenas limpeza", message: "Quero saber sobre limpeza e polimento" }
+            ]);
+            break;
+
+          case "comfort":
+            addMessage("O <strong>interno reto</strong> tem a parte interna plana. O <strong>semianatômico</strong> possui leve curvatura para melhorar o conforto. O <strong>anatômico</strong> é mais arredondado internamente e costuma ficar mais confortável, especialmente em alianças largas.");
+            break;
+
+          case "rings":
+            activeContext = "rings";
+            addMessage("Posso ajudar a escolher alianças para casamento, noivado ou compromisso. Temos modelos em <strong>ouro 18k e prata 925</strong>, clássicos, modernos e personalizados.");
+            addQuickReplies([
+              { label: "Ouro 18k", message: "Quero alianças em ouro 18k" },
+              { label: "Prata 925", message: "Quero alianças em prata 925" },
+              { label: "Modelo personalizado", message: "Quero alianças personalizadas" },
+              { label: "Saber valores", message: "Quanto custam as alianças?" }
+            ]);
+            break;
+
+          case "semijewelry":
+            addMessage("Também trabalhamos com semijoias. Para dúvidas sobre compra, disponibilidade ou valores, a equipe comercial confirma os modelos atuais. Para <strong>conserto de semijoias</strong>, o atendimento é feito pelo canal de reparos.");
+            addQuickReplies([
+              { label: "Comprar semijoias", message: "Quero comprar semijoias" },
+              { label: "Consertar semijoia", message: "Quero consertar uma semijoia" }
+            ]);
+            break;
+
+          case "human":
+            addMessage("Certo. Vou encaminhar você para um especialista da Emporium24k.");
+            salesHandoff("atendimento solicitado pelo cliente");
+            break;
+
+          case "greeting":
+            addMessage("Olá! Eu sou a <strong>Coroa 24K</strong>. Posso responder dúvidas sobre alianças, joias personalizadas, ouro 18k, prata 925, consertos, frete e avaliação de peças.");
+            showInitialOptions();
+            break;
+
+          default:
+            saveUnanswered(raw);
+            addMessage("Ainda não encontrei uma resposta segura para essa pergunta. Ela foi registrada para melhorar minha base. Você pode reformular ou falar com um especialista.");
+            addQuickReplies([
+              { label: "Reformular pergunta", message: "Tenho outra dúvida" },
+              { label: "Falar com atendente", message: "Quero falar com um atendente" }
+            ]);
+        }
+
+        if (activeContext === "custom" && includesAny(normalize(raw), ["anel personalizado", "aliancas personalizadas", "pingente personalizado", "enviar a ideia"])) {
+          addMessage("Para analisar o projeto, o atendente precisará da referência, material desejado e prazo. Vou deixar o acesso direto abaixo.");
+          salesHandoff("peça personalizada");
+          activeContext = null;
+        }
+      }
+
+      function showInitialOptions() {
+        addQuickReplies([
+          { label: "Quero alianças", message: "Quero saber sobre alianças" },
+          { label: "Peça personalizada", message: "Vocês fazem peças personalizadas?" },
+          { label: "Vender ouro ou prata", message: "Quero vender ouro ou prata" },
+          { label: "Consertar uma peça", message: "Vocês fazem conserto de joias?" },
+          { label: "Frete e entrega", message: "Como funciona o frete?" }
+        ]);
+      }
+
+      async function submitQuestion(value) {
+        const raw = String(value || "").trim();
+        if (!raw || busy) return;
+
+        busy = true;
+        sendBtn.disabled = true;
+        lastUserMessage = raw;
+        input.value = "";
+        addMessage(escapeHTML(raw), "user");
+
+        const typing = addTyping();
+        const delay = Math.min(1000, 420 + raw.length * 7);
+        await new Promise(resolve => setTimeout(resolve, delay));
+        typing.remove();
+
+        await botReply(raw);
+        busy = false;
+        sendBtn.disabled = false;
+        input.focus();
+      }
+
+      form.addEventListener("submit", event => {
+        event.preventDefault();
+        submitQuestion(input.value);
+      });
+
+      humanTopBtn.addEventListener("click", () => {
+        lastUserMessage = "Solicitei atendimento humano pelo botão superior.";
+        addMessage("Quero falar com um atendente", "user");
+        addMessage("Claro. Vou encaminhar você para um especialista da Emporium24k.");
+        salesHandoff("atendimento humano");
+      });
+
+      setTimeout(() => {
+        addMessage("Olá! Eu sou a <strong>Coroa 24K</strong>, assistente virtual da Emporium24k. Posso tirar suas dúvidas e encaminhar você para o setor certo.");
+        showInitialOptions();
+        input.focus();
+      }, 350);
+    })();
+  </script>
+</body>
+</html>
