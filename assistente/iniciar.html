@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="robots" content="noindex" />
+  <title>Abrindo assistente Emporium24k</title>
+  <style>
+    html,body{height:100%;margin:0;background:#0b130f;color:#f6f1e5;font-family:system-ui,sans-serif}
+    body{display:grid;place-items:center;text-align:center;padding:24px}
+    span{color:#d4ac55}
+  </style>
+</head>
+<body>
+  <p>Abrindo a <span>Coroa 24K</span>…</p>
+  <script>
+    const key = "emporium24k_sales_rotation";
+    if (localStorage.getItem(key) === null) {
+      localStorage.setItem(key, String(Math.random() < 0.5 ? 0 : 1));
+    }
+    location.replace("./index.html");
+  </script>
+</body>
+</html>
