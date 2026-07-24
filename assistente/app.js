@@ -82,7 +82,7 @@
     "igual uma foto","foto de referencia","desenho proprio","molde 3d","com iniciais","com nome","projeto exclusivo"
   ];
 
-  const ringTerms = ["alianca","aliancas","anel","aneis","solitario","solitarios"];
+  const ringTerms = ["alianca","aliancas","aliansa","aliansas","alinca","anel","aneis","solitario","solitarios","aparador","aparadores"];
   const stockTerms = [
     "estoque","em estoque","pronta entrega","pronto entrega","disponivel agora","disponiveis agora","entrega imediata",
     "comprar pronto","quais produtos tem","o que tem disponivel","ver produtos","loja online","loja oficial","site da loja",
@@ -94,6 +94,9 @@
     "tornozeleira","tornozeleiras","piercing","piercings","escapulario","choker"
   ];
   const purchaseTerms = [
+    "gostaria","gostaria de","queria","queria ver","tenho interesse","me interessei","procuro",
+    "procurando","estou procurando","to procurando","busco","preciso","preciso de","desejo",
+    "vim atras","penso em comprar","pretendo comprar","estou querendo","tava querendo","poderia me mostrar",
     "quanto custa","qual valor","qual o valor","preco","orcamento","quanto fica","parcelamento","parcela","parcelam",
     "desconto","promocao","comprar","quero uma","quero um","encomendar","fazer pedido","fazer um pedido","como pedir",
     "catalogo","modelos disponiveis","tem disponivel","valor da alianca","valor das aliancas","valor do anel","quero alianca",
@@ -148,7 +151,26 @@
     if(hasAny(text, personalizationTerms) && hasAny(text, purchaseTerms)) return "personalized_commercial";
     if(hasAny(text, personalizationTerms)) return "personalized";
 
-    if(hasAny(text, ringTerms) && (hasAny(text, purchaseTerms) || hasAny(text, stockTerms) || hasAny(text,["modelos","modelo","disponibilidade","milimetros","milimetragem","gramatura","tamanho"]))) return "rings_order";
+    // NATURAL_LANGUAGE_V3: entende desejo, ocasiao e frases indiretas sobre aneis e aliancas.
+    const naturalDesireTerms = [
+      "quero","queria","gostaria","tenho interesse","me interessei","procuro","procurando","estou procurando",
+      "to procurando","busco","preciso","desejo","vim atras","penso em comprar","pretendo comprar",
+      "estou querendo","tava querendo","poderia me mostrar"
+    ];
+    const weddingTerms = ["casamento","casar","casando","matrimonio","bodas","casamento civil"];
+    const engagementTerms = ["noivado","noivar","pedido de casamento","pedido de noivado","noiva","noivo"];
+    const commitmentTerms = ["compromisso","namoro","namorados","alianca de namoro"];
+    const ringDetailTerms = [
+      "modelos","modelo","disponibilidade","milimetros","milimetragem","gramatura","tamanho","largura",
+      "ouro","prata","18k","925","classica","classico","moderna","moderno","lisa","trabalhada"
+    ];
+    const hasRingProduct = hasAny(text, ringTerms);
+    const hasRingOccasion = hasAny(text, [...weddingTerms, ...engagementTerms, ...commitmentTerms]);
+    const hasNaturalPurchaseIntent = hasAny(text, naturalDesireTerms) || hasAny(text, purchaseTerms) || hasAny(text, stockTerms);
+
+    if(hasRingProduct && (hasNaturalPurchaseIntent || hasRingOccasion || hasAny(text, ringDetailTerms) || text.split(" ").length <= 5)) return "rings_order";
+    if(!hasRingProduct && hasAny(text, weddingTerms) && (hasAny(text, naturalDesireTerms) || text.split(" ").length <= 4)) return "rings_order";
+    if(!hasRingProduct && hasAny(text, engagementTerms) && (hasAny(text, naturalDesireTerms) || text.split(" ").length <= 4)) return "rings_order";
     if(hasAny(text, stockTerms) && hasAny(text, semijewelryTerms)) return "store_semijewelry";
     if(hasAny(text, stockTerms) && hasAny(text,["corrente de ouro","correntes de ouro","ouro 18k"])) return "store_gold_chains";
     if(hasAny(text, stockTerms)) return "store_stock";
@@ -685,6 +707,22 @@
     const previousTopic = state.lastTopic;
     state.lastTopic = null;
     const tests = [
+      ["gostaria de uma aliança de casamento","rings_order"],
+      ["eu queria uma alianca para casar","rings_order"],
+      ["estou procurando alianças para meu casamento","rings_order"],
+      ["preciso de um par de alianças de casamento","rings_order"],
+      ["aliança de casamento","rings_order"],
+      ["vou casar e queria ver modelos","rings_order"],
+      ["quero casar","rings_order"],
+      ["gostaria de uma aliança de noivado","rings_order"],
+      ["quero alianças de compromisso","rings_order"],
+      ["gostaria de uma aliansa","rings_order"],
+      ["quero um aparador","rings_order"],
+      ["tenho interesse em um solitário","rings_order"],
+      ["gostaria de uma corrente","store_products"],
+      ["queria comprar um brinco","store_products"],
+      ["procuro semijoias","store_semijewelry"],
+      ["gostaria de uma joia","commercial"],
       ["quanto custa um par de alianças?","rings_order"],
       ["as alianças estão em estoque?","rings_order"],
       ["quero ver modelos de anel","rings_order"],
