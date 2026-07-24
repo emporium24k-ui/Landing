@@ -4,13 +4,13 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <meta name="theme-color" content="#0d1712" />
-  <meta name="description" content="Assistente virtual da Emporium24k para alianças, joias, produtos em estoque, personalizados, consertos e avaliação de ouro e prata." />
-  <title>Coroa 24K | Assistente Emporium24k</title>
-  <link rel="stylesheet" href="./style.css" />
+  <meta name="description" content="Converse com a Coroa 24K, assistente da Emporium24k para alianças, joias, personalizados, estoque, consertos e avaliação de ouro e prata." />
+  <title>Coroa 24K | Emporium24k</title>
+  <link rel="stylesheet" href="./style.css?v=human-1" />
 </head>
 <body>
   <main class="page">
-    <section class="shell" aria-label="Assistente virtual da Emporium24k">
+    <section class="shell" aria-label="Conversa com a Coroa 24K">
       <header class="topbar">
         <div class="mascot-box" aria-hidden="true">
           <svg class="mascot" viewBox="0 0 120 120" role="img" aria-label="Coroa dourada sorridente">
@@ -23,25 +23,36 @@
             <path d="M51 84c5 6 13 6 18 0" fill="none" stroke="#38240f" stroke-width="4" stroke-linecap="round"/>
           </svg>
         </div>
-        <div class="brand"><div class="eyebrow">Emporium24k</div><h1>Coroa 24K</h1><div class="status"><span class="dot"></span>Assistente virtual disponível</div></div>
+        <div class="brand">
+          <div class="eyebrow">Emporium24k</div>
+          <h1>Coroa 24K</h1>
+          <div class="status"><span class="dot"></span>Respondendo agora</div>
+        </div>
         <div class="top-actions">
           <a class="top-store" href="https://www.emporium24k.com.br/produtos/" target="_blank" rel="noopener noreferrer">Loja oficial</a>
-          <button class="top-cta" id="topCta" type="button">Especialista</button>
+          <button class="top-cta" id="topCta" type="button">Atendimento</button>
         </div>
       </header>
 
-      <div class="messages" id="messages" aria-live="polite">
-        <div class="intro" id="intro"><span class="intro-badge">✦ Joias, alianças e ouro</span><h2>Como posso ajudar?</h2><p>Respondo dúvidas, mostro onde consultar estoque e preços atualizados e encaminho você para a equipe certa.</p></div>
+      <div class="messages" id="messages" aria-live="polite" aria-relevant="additions">
+        <div class="intro" id="intro">
+          <span class="intro-badge">✦ Converse naturalmente</span>
+          <h2>Pode perguntar do seu jeito</h2>
+          <p>Sem menus e sem perguntas prontas. Escreva como falaria com alguém da equipe.</p>
+        </div>
       </div>
 
       <form class="composer" id="composer" autocomplete="off">
-        <label class="sr-only" for="question">Digite sua pergunta</label>
-        <div class="input-wrap"><input id="question" maxlength="300" placeholder="Ex.: quais produtos estão à pronta entrega?" aria-label="Digite sua pergunta" /><button class="send" type="submit" aria-label="Enviar pergunta">➜</button></div>
-        <div class="fine">Preços e estoque de pronta entrega são atualizados na loja oficial. Anéis e alianças são confirmados pelo atendimento.</div>
+        <label class="sr-only" for="question">Escreva sua mensagem</label>
+        <div class="input-wrap">
+          <input id="question" maxlength="500" placeholder="Escreva sua dúvida..." aria-label="Escreva sua mensagem" enterkeyhint="send" />
+          <button class="send" type="submit" aria-label="Enviar mensagem">➜</button>
+        </div>
+        <div class="fine">A Coroa 24K orienta e encaminha. Preços, avaliações e projetos personalizados são confirmados pela equipe.</div>
       </form>
     </section>
   </main>
   <pre id="test-results"></pre>
-  <script src="./app.js?v=6eed1c2" defer></script>
+  <script src="./app.js?v=human-1" defer></script>
 </body>
 </html>
