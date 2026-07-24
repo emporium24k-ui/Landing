@@ -46,6 +46,8 @@ Distribuição aleatória por sessão entre:
 
 - `5541998518452`
 
+O fluxo de conserto é restrito a joias e semijoias. Pedidos genéricos recebem uma pergunta de confirmação sobre o tipo de peça. Relógios, veículos, eletrônicos, utensílios, móveis, outros objetos e joias em materiais não trabalhados são recusados sem encaminhamento.
+
 ## Regras implementadas
 
 - Personalizados somente em ouro 18k ou prata 925, sujeitos à viabilidade técnica.
@@ -53,6 +55,7 @@ Distribuição aleatória por sessão entre:
 - Não compra metais diferentes de ouro e prata.
 - Produtos à pronta entrega são consultados na loja oficial.
 - Anéis, alianças e solitários seguem para atendimento humano.
+- Consertos somente de joias e semijoias, após análise técnica.
 - Frete para todo o Brasil, conforme a regra comercial e a condição mostrada no checkout.
 - Gravações internas gratuitas nas alianças compradas na Emporium24k.
 - Joias em ouro 18k ou prata 925 têm garantia permanente do teor.
@@ -61,7 +64,7 @@ Distribuição aleatória por sessão entre:
 
 ## Testes
 
-Acesse `index.html?test=1` para executar a bateria interna de classificação, botões, telefones e links da loja.
+Acesse `index.html?test=1` para executar a bateria interna de classificação, botões, telefones e links da loja. A bateria inclui consertos válidos de joias e semijoias, solicitações genéricas e recusas de relógios, carros, aviões, panelas, celulares e materiais não trabalhados.
 
 ## Limitações atuais
 
