@@ -17,7 +17,14 @@
     }
   });
 
-  const state = { salesAgent: null, lastTopic: null, busy: false };
+  const state = {
+    salesAgent: null,
+    lastTopic: null,
+    lastVariant: Object.create(null),
+    history: [],
+    busy: false
+  };
+
   const $ = (selector) => document.querySelector(selector);
   const messages = $("#messages");
   const intro = $("#intro");
@@ -25,19 +32,83 @@
 
   const normalize = (value) => String(value || "")
     .toLowerCase()
-    .normalize("NFD").replace(/[\u0300-\u036f]/g, "")
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
     .replace(/[^a-z0-9\s]/g, " ")
-    .replace(/\s+/g, " ").trim();
+    .replace(/\s+/g, " ")
+    .trim();
 
   const hasAny = (text, terms) => terms.some((term) => text.includes(term));
   const hasWord = (text, words) => words.some((word) => new RegExp(`(^|\\s)${word}(\\s|$)`).test(text));
 
+  const repairIntent = [
+    "conserto","concerto","concertar","consertar","consertam","concertam","arrumar","arrumam",
+    "reparar","reparam","reparo","soldar","solda","quebrou","quebrada","quebrado","apertar pedra",
+    "pedra caiu","polimento","polir","banho de novo","novo banho","restaurar","ajustar aro",
+    "ajuste de aro","aumentar aro","diminuir aro","reformar joia"
+  ];
+
+  const jewelryRepairTargets = [
+    "joia","joias","semijoia","semijoias","semi joia","semi joias","alianca","aliancas","anel","aneis",
+    "solitario","solitarios","corrente","correntes","colar","colares","pulseira","pulseiras","brinco","brincos",
+    "pingente","pingentes","tornozeleira","tornozeleiras","piercing","piercings","escapulario","escapularios",
+    "ouro","prata","pedra","zirconia","diamante","aro","folheado","folheada","banhado","banhada"
+  ];
+
+  const nonJewelryRepairTargets = [
+    "relogio","relogios","smartwatch","carro","carros","automovel","automoveis","moto","motos","motocicleta",
+    "aviao","avioes","aeronave","aeronaves","panela","panelas","talher","talheres","vaso","vasos","porta",
+    "janela","movel","moveis","cadeira","mesa","celular","celulares","telefone","telefones","computador",
+    "computadores","notebook","notebooks","televisao","televisor","tv","bicicleta","bicicletas","sapato",
+    "sapatos","bolsa","bolsas","roupa","roupas","eletrodomestico","eletrodomesticos","geladeira","fogao",
+    "microondas","maquina de lavar","instrumento","instrumentos","oculos"
+  ];
+
+  const unsupportedMetals = [
+    "aco","tungstenio","titanio","latao","cobre","bronze","rodio","bijuteria","alianca de moeda","anel de moeda",
+    "feito de moeda","joia de moeda","compram moeda","vender moeda"
+  ];
+
+  const sellingTerms = [
+    "quero vender","vender ouro","vender prata","vendo ouro","vendo prata","avaliar meu ouro","avaliar minha prata",
+    "avaliacao de ouro","avaliacao de prata","quanto voces pagam","quanto pagam","compram ouro","compram prata",
+    "compra de ouro","compra de prata","tenho ouro usado","tenho prata usada","ouro usado","prata usada",
+    "sucata de ouro","sucata de prata","joia usada","joias usadas","corrente usada","anel usado","alianca usada",
+    "peca usada","teste de teor","testar ouro","testar prata"
+  ];
+
+  const personalizationTerms = [
+    "personalizado","personalizada","personalizar","sob medida","do zero","igual a foto","igual a uma foto",
+    "igual uma foto","foto de referencia","desenho proprio","molde 3d","com iniciais","com nome","projeto exclusivo"
+  ];
+
+  const ringTerms = ["alianca","aliancas","anel","aneis","solitario","solitarios"];
+  const stockTerms = [
+    "estoque","em estoque","pronta entrega","pronto entrega","disponivel agora","disponiveis agora","entrega imediata",
+    "comprar pronto","quais produtos tem","o que tem disponivel","ver produtos","loja online","loja oficial","site da loja",
+    "comprar pelo site","catalogo online"
+  ];
+  const semijewelryTerms = ["semi joia","semijoia","semijoias","banhada","banhado","folheada","folheado"];
+  const readyProductTerms = [
+    "corrente","correntes","colar","colares","pulseira","pulseiras","brinco","brincos","pingente","pingentes",
+    "tornozeleira","tornozeleiras","piercing","piercings","escapulario","choker"
+  ];
+  const purchaseTerms = [
+    "quanto custa","qual valor","qual o valor","preco","orcamento","quanto fica","parcelamento","parcela","parcelam",
+    "desconto","promocao","comprar","quero uma","quero um","encomendar","fazer pedido","fazer um pedido","como pedir",
+    "catalogo","modelos disponiveis","tem disponivel","valor da alianca","valor das aliancas","valor do anel","quero alianca",
+    "quero aliancas","quero joia","quero joias","quero anel","ver aliancas","ver joias","falar com especialista",
+    "falar com atendente","falar com vendedor","quero falar com um especialista","quero falar com um atendente",
+    "vendem ouro","vendem prata","vendem alianca","vendem aliancas","vendem joia","vendem joias","tem alianca",
+    "tem aliancas","tem joia","tem joias","quantas gramas","quanto pesa","peso da alianca","peso das aliancas","peso do anel"
+  ];
+
   function chooseSalesAgent(){
     if(state.salesAgent) return state.salesAgent;
     try{
-      const random = new Uint32Array(1);
-      crypto.getRandomValues(random);
-      state.salesAgent = CONFIG.sales[random[0] % CONFIG.sales.length];
+      const data = new Uint32Array(1);
+      crypto.getRandomValues(data);
+      state.salesAgent = CONFIG.sales[data[0] % CONFIG.sales.length];
     }catch(_){
       state.salesAgent = CONFIG.sales[Math.random() < 0.5 ? 0 : 1];
     }
@@ -48,64 +119,19 @@
     const text = normalize(raw);
     if(!text) return "empty";
 
-    const repairIntent = [
-      "conserto","concerto","concertar","consertar","consertam","concertam","arrumar","arrumam",
-      "reparar","reparam","reparo","soldar","solda","quebrou","quebrada","quebrado","apertar pedra","pedra caiu",
-      "polimento","polir","banho de novo","novo banho","restaurar","ajustar aro","ajuste de aro",
-      "aumentar aro","diminuir aro","reformar joia"
-    ];
-    const jewelryRepairTargets = [
-      "joia","joias","semijoia","semijoias","semi joia","semi joias","alianca","aliancas","anel","aneis",
-      "solitario","solitarios","corrente","correntes","colar","colares","pulseira","pulseiras","brinco","brincos",
-      "pingente","pingentes","tornozeleira","tornozeleiras","piercing","piercings","escapulario","escapularios",
-      "ouro","prata","pedra","zirconia","diamante","aro","folheado","folheada","banhado","banhada"
-    ];
-    const nonJewelryRepairTargets = [
-      "relogio","relogios","smartwatch","carro","carros","automovel","automoveis","moto","motos","motocicleta",
-      "aviao","avioes","aeronave","aeronaves","panela","panelas","talher","talheres","vaso","vasos","porta",
-      "janela","movel","moveis","cadeira","mesa","celular","celulares","telefone","telefones","computador",
-      "computadores","notebook","notebooks","televisao","televisor","tv","bicicleta","bicicletas","sapato",
-      "sapatos","bolsa","bolsas","roupa","roupas","eletrodomestico","eletrodomesticos","geladeira","fogao",
-      "microondas","maquina de lavar","instrumento","instrumentos","oculos"
-    ];
-    const unsupportedMetals = [
-      "aco","tungstenio","titanio","latao","cobre","bronze","rodio","bijuteria","alianca de moeda","anel de moeda",
-      "feito de moeda","joia de moeda","compram moeda","vender moeda"
-    ];
-    const selling = [
-      "quero vender","vender ouro","vender prata","vendo ouro","vendo prata","avaliar meu ouro","avaliar minha prata",
-      "avaliacao de ouro","avaliacao de prata","quanto voces pagam","quanto pagam","compram ouro","compram prata",
-      "compra de ouro","compra de prata","tenho ouro usado","tenho prata usada","ouro usado","prata usada",
-      "sucata de ouro","sucata de prata","joia usada","joias usadas","corrente usada","anel usado","alianca usada",
-      "peca usada","teste de teor","testar ouro","testar prata"
-    ];
-    const personalization = [
-      "personalizado","personalizada","personalizar","sob medida","do zero","igual a foto","igual a uma foto",
-      "igual uma foto","foto de referencia","desenho proprio","molde 3d","com iniciais","com nome","projeto exclusivo"
-    ];
-    const goldPriceAmbiguous = ["preco do ouro","valor do ouro","quanto esta o ouro","cotacao do ouro","grama do ouro"];
-    const ringTerms = ["alianca","aliancas","anel","aneis","solitario","solitarios"];
-    const purchaseTerms = [
-      "quanto custa","qual valor","qual o valor","preco","orcamento","quanto fica","parcelamento","parcela","parcelam",
-      "desconto","promocao","comprar","quero uma","quero um","encomendar","fazer pedido","fazer um pedido","como pedir",
-      "catalogo","modelos disponiveis","tem disponivel","valor da alianca","valor das aliancas","valor do anel","quero alianca",
-      "quero aliancas","quero joia","quero joias","quero anel","ver aliancas","ver joias","falar com especialista",
-      "falar com atendente","falar com vendedor","quero falar com um especialista","quero falar com um atendente",
-      "vendem ouro","vendem prata","vendem alianca","vendem aliancas","vendem joia","vendem joias","tem alianca",
-      "tem aliancas","tem joia","tem joias","quantas gramas","quanto pesa","peso da alianca","peso das aliancas","peso do anel"
-    ];
-    const stockTerms = [
-      "estoque","em estoque","pronta entrega","pronto entrega","disponivel agora","disponiveis agora","entrega imediata",
-      "comprar pronto","quais produtos tem","o que tem disponivel","ver produtos","loja online","loja oficial","site da loja",
-      "comprar pelo site","catalogo online"
-    ];
-    const semijewelryTerms = ["semi joia","semijoia","semijoias","banhada","banhado","folheada","folheado"];
-    const readyProductTerms = [
-      "corrente","correntes","colar","colares","pulseira","pulseiras","brinco","brincos","pingente","pingentes",
-      "tornozeleira","tornozeleiras","piercing","piercings","escapulario","choker"
-    ];
+    if(state.lastTopic === "repair_clarify"){
+      if(hasAny(text, nonJewelryRepairTargets) || hasAny(text, unsupportedMetals)) return "unsupported_repair";
+      if(hasAny(text, jewelryRepairTargets)) return "repair";
+    }
+    if(state.lastTopic === "gold_price_clarify"){
+      if(hasAny(text, sellingTerms) || hasAny(text,["vender","avaliar","meu ouro","minha prata"])) return "sell_gold_silver";
+      if(hasAny(text,["comprar","joia","alianca","anel","corrente"])) return "commercial";
+    }
+    if(state.lastTopic === "personalized" && hasAny(text,[...jewelryRepairTargets,"ouro 18k","prata 925","ouro","prata"])){
+      return "personalized_commercial";
+    }
 
-    if(hasAny(text, selling) || ((hasWord(text,["vender","avaliar"]) || hasAny(text,["para vender","para avaliacao"])) && hasAny(text,["ouro","prata","joia","joias","corrente","anel","alianca","pulseira","brinco","pingente","moeda"])) || (hasAny(text,["compram joia","compram joias"]) && !hasAny(text,["aco","tungstenio","titanio","cobre","bronze"]))) return "sell_gold_silver";
+    if(hasAny(text, sellingTerms) || ((hasWord(text,["vender","avaliar"]) || hasAny(text,["para vender","para avaliacao"])) && hasAny(text,["ouro","prata","joia","joias","corrente","anel","alianca","pulseira","brinco","pingente","moeda"]))) return "sell_gold_silver";
 
     if(hasAny(text, repairIntent)){
       if(hasAny(text, nonJewelryRepairTargets) || hasAny(text, unsupportedMetals)) return "unsupported_repair";
@@ -113,10 +139,14 @@
       return "repair_clarify";
     }
 
-    if(hasAny(text, goldPriceAmbiguous)) return "gold_price_clarify";
+    if(hasAny(text,["boleto","boletado","parcelar no boleto","boleto parcelado"])) return "boleto_special";
+    if(hasAny(text,["rastreio","rastrear pedido","onde esta meu pedido","acompanhar pedido","codigo de rastreio","meu pedido nao chegou"])) return "order_tracking";
+    if(hasAny(text,["desconto","promocao","melhor valor","valor promocional","condicao especial"])) return "discount";
+    if(hasAny(text,["preco no site","valor no site","valor do site","site esta mais caro","site esta mais barato","preco do site","valor de referencia"])) return "site_price_vs_service";
+    if(hasAny(text,["preco do ouro","valor do ouro","quanto esta o ouro","cotacao do ouro","grama do ouro"])) return "gold_price_clarify";
     if(hasAny(text, unsupportedMetals)) return "unsupported_material";
-    if(hasAny(text, personalization) && hasAny(text, purchaseTerms)) return "personalized_commercial";
-    if(hasAny(text, personalization)) return "personalized";
+    if(hasAny(text, personalizationTerms) && hasAny(text, purchaseTerms)) return "personalized_commercial";
+    if(hasAny(text, personalizationTerms)) return "personalized";
 
     if(hasAny(text, ringTerms) && (hasAny(text, purchaseTerms) || hasAny(text, stockTerms) || hasAny(text,["modelos","modelo","disponibilidade","milimetros","milimetragem","gramatura","tamanho"]))) return "rings_order";
     if(hasAny(text, stockTerms) && hasAny(text, semijewelryTerms)) return "store_semijewelry";
@@ -126,7 +156,7 @@
     if(hasAny(text,["macica","macico","oca","oco"])) return "solid_or_hollow";
     if(hasAny(text,["largura","milimetros","3mm","4mm","5mm","6mm","alianca fina","alianca larga"])) return "width_style";
     if(hasAny(text,["diferenca entre ouro e prata","ouro ou prata","melhor ouro ou prata","qual material escolher"])) return "material_comparison";
-    if(hasAny(text,["pagamento","pix","cartao","boleto","entrada","pagar na entrega","pagamento na entrega","formas de pagamento"])) return "payment";
+    if(hasAny(text,["pagamento","pix","cartao","entrada","pagar na entrega","pagamento na entrega","formas de pagamento"])) return "payment";
     if(hasAny(text,["frete","entrega","enviam","envio","todo brasil","fora de curitiba"])) return "shipping";
     if(hasAny(text,["gravacao","gravar","nome dentro","data dentro","frase dentro"])) return "engraving";
     if(hasAny(text,["ouro 24k","24 quilates","ouro puro"])) return "gold24k";
@@ -154,125 +184,398 @@
     if(hasAny(text, ringTerms) && hasAny(text,["fazem","vendem","tem","trabalham com","quero","procuro"])) return "rings_order";
     if(hasAny(text,["joia","joias","pingente","corrente","pulseira"]) && hasAny(text, purchaseTerms)) return "commercial";
     if(hasAny(text, purchaseTerms)) return "commercial";
-    if(hasWord(text,["oi","ola"]) || hasAny(text,["bom dia","boa tarde","boa noite","tudo bem"])) return "greeting";
+    if(hasWord(text,["oi","ola","eai"]) || hasAny(text,["bom dia","boa tarde","boa noite","tudo bem"])) return "greeting";
     if(hasWord(text,["obrigado","obrigada","valeu","agradeco"])) return "thanks";
     return "unknown";
   }
 
-  const RESPONSES = {
-    greeting: { text:"Olá! Eu sou a <strong>Coroa 24K</strong>. Posso ajudar com alianças, ouro 18k, prata 925, produtos à pronta entrega, personalizados, consertos ou avaliação de peças.", quick:["Ver pronta entrega","Quero alianças","Peça personalizada","Quero vender ouro","Preciso de conserto"] },
-    store_stock: { text:"Os <strong>preços e produtos à pronta entrega</strong> são mantidos atualizados na loja oficial. Lá você encontra semijoias, joias, correntes, pulseiras, brincos, pingentes, colares, piercings, utilidades e outras categorias disponíveis no momento.", store:"products", storeLabel:"Ver produtos e estoque atual" },
-    store_products: { text:"Para correntes, colares, pulseiras, brincos, pingentes e outros produtos à pronta entrega, consulte a loja oficial. O valor e a disponibilidade exibidos nela são a referência atual.", store:"products", storeLabel:"Abrir loja oficial" },
-    store_semijewelry: { text:"As semijoias disponíveis, com valores e estoque atualizados, estão na loja oficial. Há opções femininas, masculinas, linha fitness e linha personalizável.", store:"semijewelry", storeLabel:"Ver semijoias disponíveis" },
-    store_gold_chains: { text:"As correntes de ouro 18k disponíveis e seus valores atuais estão listados na loja oficial. Como estoque, medidas e construção podem mudar, confirme diretamente na página do produto.", store:"goldChains", storeLabel:"Ver correntes de ouro 18k" },
-    rings_order: { text:"Anéis, solitários e alianças são feitos <strong>por encomenda</strong>. Numeração, largura, milimetragem, gramatura, acabamento e detalhes do projeto mudam a peça. O site pode mostrar um valor de referência, mas os atendentes verificam promoções e calculam a condição correta para o seu pedido.", action:"sales", actionLabel:"Consultar valor e promoção" },
-    personalized: { text:"Sim. A Emporium24k desenvolve peças personalizadas em <strong>ouro 18k ou prata 925</strong>, a partir de uma ideia, desenho ou foto de referência. O projeto passa por análise de viabilidade técnica antes do orçamento.", quick:["Quero orçamento do personalizado","Pode ser igual a uma foto?","Vocês fazem molde 3D?"] },
-    personalized_commercial: { text:"Fazemos personalizados em ouro 18k ou prata 925. Para calcular corretamente, a equipe precisa analisar o tipo de peça, material, medidas, referência e prazo.", action:"sales", actionLabel:"Enviar projeto para orçamento" },
-    shipping: { text:"Vendemos para <strong>todo o Brasil</strong> e o frete das alianças e pedidos atendidos pela equipe é gratuito. Para itens comprados diretamente na loja online, a condição vigente aparece no produto e no checkout.", quick:["Ver pronta entrega","Qual o prazo de produção?","Quero fazer um pedido"] },
-    engraving: { text:"As <strong>gravações internas são gratuitas</strong> nas alianças compradas conosco. É possível gravar nomes, data ou uma frase curta, conforme o espaço disponível na peça.", quick:["Quero orçamento de alianças","Como saber a numeração?"] },
-    gold18k: { text:"Trabalhamos com <strong>ouro 18k</strong>, que possui 75% de ouro puro e 25% de liga metálica para resistência. As joias acompanham nota fiscal, certificado e garantia permanente do teor.", quick:["Qual a diferença para ouro 24k?","Quero alianças em ouro 18k"] },
-    gold24k: { text:"O ouro 24k é praticamente puro, mas é mais macio e deforma com maior facilidade. Por isso, para joias de uso diário, a Emporium24k trabalha com <strong>ouro 18k</strong>, que possui 75% de ouro puro e maior resistência. Nas semijoias, o termo ouro 24k pode se referir ao banho superficial, não ao interior maciço da peça.", quick:["O que é uma peça banhada?","Quero joia em ouro 18k"] },
-    silver925: { text:"A prata 925 contém 92,5% de prata pura. Ela pode escurecer com o tempo por oxidação, o que é natural e não significa perda do teor. Trabalhamos com prata 925 e oferecemos garantia permanente do teor nas joias.", quick:["Como limpar prata?","Quero alianças de prata"] },
-    plated_explanation: { text:"Semijoia é uma peça de metal-base revestida por camadas de ouro ou prata. A linha informada pela Emporium24k utiliza banho de ouro 24k ou prata 925, verniz cataforético e pedras de zircônia em diversos modelos. Ela não deve ser confundida com uma joia maciça de ouro 18k ou prata 925.", store:"platedInfo", storeLabel:"Ler explicação completa" },
-    semijewelry_warranty: { text:"A linha de semijoias possui <strong>1 ano de garantia no folheamento</strong>, conforme as condições do certificado. Danos por queda, mau uso, produtos químicos, riscos, amassados, quebras, perda de pedras ou ajustes de terceiros não entram automaticamente na cobertura e precisam ser analisados.", store:"warranty", storeLabel:"Ver condições de garantia" },
-    trust_docs: { text:"As joias em ouro 18k e prata 925 acompanham <strong>nota fiscal e certificado</strong>. A garantia permanente é sobre o teor do metal. A linha de semijoias tem garantia específica de 1 ano no folheamento, conforme as condições de uso.", quick:["Ver garantia completa","Onde vocês ficam?","Quero falar com vendedor"] },
-    production_time: { text:"O prazo depende do produto. Anéis, alianças e personalizados são produzidos por encomenda e o prazo é confirmado pelo atendente conforme o projeto. Modelos listados no site podem exibir uma previsão própria de despacho, que deve ser conferida na página do produto.", quick:["Quero confirmar meu prazo","Ver pronta entrega"] },
-    ring_size: { text:"A numeração correta evita ajustes e desconforto. A melhor opção é medir com uma aneleira ou confirmar em uma joalheria. Medidas por régua, barbante ou foto podem gerar erro; a equipe pode orientar o procedimento mais seguro.", quick:["Interno reto ou anatômico?","Quero ajuda com a numeração"] },
-    comfort: { text:"O <strong>interno reto</strong> tem a parte interna plana. O <strong>semianatômico</strong> possui leve curvatura. O <strong>anatômico</strong> tem curvatura interna mais acentuada e costuma oferecer maior conforto, especialmente em alianças largas.", quick:["Quero orçamento de alianças","Como saber a numeração?"] },
-    care: { text:"O cuidado depende do material. Evite cloro, produtos químicos, impactos e atrito excessivo. Prata e semijoias podem escurecer; limpeza ou polimento inadequado pode danificar o acabamento. Para avaliar uma <strong>joia ou semijoia</strong> com segurança, nossa equipe pode orientar.", quick:["Preciso consertar uma joia","Preciso consertar uma semijoia"] },
-    stones: { text:"Trabalhamos com projetos com pedras, desde que o modelo seja tecnicamente viável. Tipo, tamanho, cravação e disponibilidade da pedra influenciam o orçamento, por isso a equipe precisa analisar a referência.", action:"sales", actionLabel:"Enviar referência para orçamento" },
-    solid_or_hollow: { text:"O peso e a construção da peça — maciça ou oca — dependem do modelo escolhido. Essa informação deve aparecer claramente no orçamento e no pedido; a equipe comercial confirma o tipo exato antes da compra.", action:"sales", actionLabel:"Confirmar modelo e construção" },
-    width_style: { text:"A largura muda o visual, o conforto, o peso e o valor da aliança. Modelos mais finos tendem a ser discretos; os mais largos têm presença maior. A melhor medida depende do estilo, numeração e orçamento do casal.", action:"sales", actionLabel:"Escolher largura com um especialista" },
-    material_comparison: { text:"O ouro 18k é mais valioso, tem alta durabilidade e mantém valor de material. A prata 925 oferece um investimento inicial menor, mas pode oxidar e exige limpeza periódica. A escolha depende do orçamento e do uso esperado.", quick:["Quero alianças de ouro","Quero alianças de prata"] },
-    payment: { text:"As condições de pagamento e promoções podem mudar. Para produtos à pronta entrega, consulte a condição atual na loja oficial. Para anéis, alianças e encomendas, fale com o atendimento, pois os vendedores podem ter promoções diferentes do valor de referência do site.", quick:["Ver pronta entrega","Quero valor de alianças"] },
-    location_trust: { text:"A Emporium24k é uma empresa de Curitiba, com atendimento físico no <strong>Bairro Alto</strong> e vendas para todo o Brasil. Trabalhamos com nota fiscal, certificado, garantia do teor e rastreamento do envio.", quick:["Quero falar com vendedor","Abrir loja oficial"] },
-    other_gold_karat: { text:"A Emporium24k trabalha exclusivamente com <strong>ouro 18k</strong> nas joias de ouro e prata 925 nas joias de prata. Não produzimos peças em ouro 10k ou 14k.", quick:["Quero alianças em ouro 18k","Qual o valor?"] },
-    gold_care: { text:"O ouro 18k não costuma oxidar como a prata, mas a peça pode perder brilho ou aparentar escurecimento por resíduos, produtos químicos, suor ou alteração no acabamento. A causa deve ser avaliada antes de qualquer polimento.", quick:["Preciso consertar uma joia"] },
-    warranty_scope: { text:"A garantia permanente da linha de joias é sobre o <strong>teor do ouro 18k ou da prata 925</strong>. Quebras, riscos, pedras, deformações e desgastes dependem da causa e precisam de análise técnica para definir reparo e custo.", quick:["Preciso consertar uma joia"] },
-    semijewelry: { text:"Também trabalhamos com semijoias banhadas e realizamos consertos quando a peça permite reparo. Para ver modelos e estoque atual, acesse a loja oficial. Para conserto, a equipe técnica analisa primeiro a peça.", quick:["Ver semijoias disponíveis","Preciso consertar uma semijoia","Como funciona o banho?"] },
-    repair_clarify: { text:"Consertamos somente <strong>joias e semijoias</strong>. Qual é a peça que precisa de reparo?", quick:["É uma joia","É uma semijoia"] },
-    repair: { text:"Realizamos consertos somente de <strong>joias e semijoias</strong>, sujeitos à análise da peça, do material e da viabilidade do reparo. Envie uma foto e explique o problema para a equipe responsável.", action:"repair", actionLabel:"Enviar joia ou semijoia para análise" },
-    unsupported_repair: { text:"Não realizamos esse tipo de conserto. A Emporium24k conserta somente <strong>joias e semijoias</strong>, após análise técnica. Não consertamos relógios, veículos, eletrônicos, utensílios, móveis ou outros objetos." },
-    sell_gold_silver: { text:"Compramos e avaliamos itens de <strong>ouro e prata</strong>. O valor depende do teor, peso e análise da peça; por isso não é seguro fechar uma cotação apenas pelo chat. O atendimento de avaliação orienta os próximos passos.", action:"evaluation", actionLabel:"Avaliar ouro ou prata" },
-    gold_price_clarify: { text:"Você quer saber o valor para <strong>comprar uma joia</strong> ou quer <strong>vender ouro para a Emporium24k</strong>?", quick:["Quero comprar joia de ouro","Quero vender meu ouro"] },
-    unsupported_material: { text:"A Emporium24k confecciona e compra somente itens de <strong>ouro e prata</strong>. Não confeccionamos peças de moeda, aço, tungstênio, titânio, cobre, bronze ou outros metais, e também não compramos esses materiais. As semijoias vendidas na loja são peças banhadas, não projetos confeccionados nesses metais.", quick:["Pode fazer em ouro 18k?","Pode fazer em prata 925?"] },
-    commercial: { text:"Para informar preço com precisão, a equipe precisa considerar o produto, material, medidas, peso, acabamento e disponibilidade. Se for um item de pronta entrega, o site oficial mostra preço e estoque atual. Se for anel, aliança ou personalizado, o atendimento calcula o pedido e verifica promoções.", quick:["Ver pronta entrega","Falar com especialista"] },
-    thanks: { text:"Por nada! Quando precisar, é só me perguntar. Posso ajudar com pronta entrega, alianças, personalizados, consertos de joias e semijoias ou avaliação de ouro e prata.", quick:["Ver pronta entrega","Quero alianças","Falar com atendente"] },
-    unknown: { text:"Ainda não encontrei uma resposta segura para essa pergunta. Para não passar informação incompleta, você pode reformular, consultar a loja oficial para preços e estoque ou falar diretamente com um especialista.", quick:["Ver pronta entrega","Alianças e anéis","Vender ouro ou prata","Conserto de joia ou semijoia","Falar com especialista"] }
-  };
-
-  const QUICK_ALIASES = Object.freeze({
-    "Ver pronta entrega":"Quais produtos estão à pronta entrega?",
-    "Abrir loja oficial":"Quero acessar a loja oficial",
-    "Ver garantia completa":"Qual é a garantia das joias e semijoias?",
-    "Quero confirmar meu prazo":"Quero confirmar o prazo do meu pedido com um atendente",
-    "Quero ajuda com a numeração":"Quero falar com atendente sobre a numeração do anel",
-    "Quero alianças de ouro":"Quero comprar alianças de ouro",
-    "Quero alianças de prata":"Quero comprar alianças de prata",
-    "Quero alianças em ouro 18k":"Quero comprar alianças em ouro 18k",
-    "Quero joia em ouro 18k":"Quero comprar joia em ouro 18k",
-    "Falar com especialista":"Quero falar com um especialista",
-    "Falar com atendente":"Quero falar com um atendente",
-    "Quero falar com vendedor":"Quero falar com vendedor",
-    "Alianças e anéis":"Quero informações sobre alianças e anéis",
-    "Conserto":"Preciso de conserto de uma joia ou semijoia",
-    "Conserto de joia ou semijoia":"Preciso de conserto de uma joia ou semijoia",
-    "É uma joia":"Preciso consertar uma joia",
-    "É uma semijoia":"Preciso consertar uma semijoia",
-    "Vender ouro ou prata":"Quero vender ouro ou prata",
-    "Ver semijoias disponíveis":"Quais semijoias estão em estoque?",
-    "Quero valor de alianças":"Quanto custam as alianças?"
+  const RESPONSES = Object.freeze({
+    greeting: {
+      variants: [
+        "Olá! Eu sou a <strong>Coroa 24K</strong>. Pode me perguntar do seu jeito; eu tento resolver por aqui e, quando precisar, encaminho você para a pessoa certa.",
+        "Oi! Sou a Coroa 24K. Posso ajudar com alianças, joias, personalizados, estoque, consertos de joias e semijoias ou avaliação de ouro e prata.",
+        "Olá, tudo bem? Pode escrever normalmente. Eu conheço os principais assuntos da Emporium24k e não vou inventar uma resposta quando algo precisar de confirmação humana."
+      ]
+    },
+    store_stock: {
+      variants: [
+        "Os produtos à pronta entrega, com preço e disponibilidade atualizados, ficam na <strong>loja oficial</strong>. O estoque pode mudar, então o site é a referência mais segura.",
+        "Para pronta entrega, vale consultar diretamente a loja oficial. Ela mostra o que está disponível agora e o valor vigente de cada item.",
+        "Temos vários itens à pronta entrega, mas eu prefiro não copiar uma lista que pode ficar desatualizada. A loja oficial mostra estoque e preços em tempo real."
+      ],
+      store: "products", storeLabel: "Ver estoque atualizado"
+    },
+    store_products: {
+      variants: [
+        "Correntes, colares, pulseiras, brincos, pingentes e outros itens prontos ficam listados na loja oficial, com preço e disponibilidade atuais.",
+        "Esse tipo de produto costuma aparecer na loja online quando está disponível. Você consegue conferir o valor e comprar diretamente por lá.",
+        "Para produtos à pronta entrega, o caminho mais rápido é a loja oficial: ali você vê as opções que realmente estão em estoque agora."
+      ],
+      store: "products", storeLabel: "Abrir loja oficial"
+    },
+    store_semijewelry: {
+      variants: [
+        "As semijoias disponíveis estão na loja oficial, com estoque e valores atualizados. Lá você encontra opções femininas, masculinas e outras linhas.",
+        "Para semijoias, o site é a melhor referência porque mostra exatamente o que está à pronta entrega naquele momento.",
+        "Temos semijoias, sim. Como os modelos entram e saem de estoque, deixo o link da categoria atualizada para você conferir sem risco de informação antiga."
+      ],
+      store: "semijewelry", storeLabel: "Ver semijoias disponíveis"
+    },
+    store_gold_chains: {
+      variants: [
+        "As correntes de ouro 18k disponíveis e seus valores atuais estão na loja oficial. Medida, construção e estoque aparecem na página do produto.",
+        "Para correntes de ouro 18k à pronta entrega, consulte a categoria atualizada no site. Assim você vê somente o que está disponível agora.",
+        "Temos uma área específica para correntes de ouro 18k. O site mostra preço e disponibilidade atuais, sem depender de uma lista fixa no assistente."
+      ],
+      store: "goldChains", storeLabel: "Ver correntes de ouro 18k"
+    },
+    rings_order: {
+      variants: [
+        "Anéis, solitários e alianças são feitos <strong>por encomenda</strong>. Numeração, largura, milimetragem, gramatura e acabamento alteram a peça. Mesmo quando há valor de referência no site, o atendimento verifica promoções e calcula a condição correta.",
+        "Nesse caso eu não mandaria você fechar direto pelo site. Anéis e alianças são produzidos conforme medida e configuração, e os vendedores podem ter condições melhores que o valor de referência online.",
+        "Para anéis, solitários e alianças, o valor depende da configuração final. O site ajuda como referência, mas o orçamento e as promoções devem ser confirmados com o atendimento.",
+        "Essas peças não trabalham como um estoque comum: são produzidas no tamanho, largura e gramatura escolhidos. Vou direcionar para o atendimento calcular corretamente."
+      ],
+      action: "sales", actionLabel: "Consultar valor e promoção"
+    },
+    personalized: {
+      variants: [
+        "Sim, fazemos peças personalizadas em <strong>ouro 18k ou prata 925</strong>. Pode partir de uma ideia, desenho ou foto de referência, desde que o projeto seja tecnicamente viável. Que tipo de peça você imaginou?",
+        "Conseguimos desenvolver personalizados em ouro 18k e prata 925. A equipe analisa formato, medidas, material e referência antes de confirmar o projeto. Qual peça você quer criar?",
+        "Fazemos, sim. Você pode mandar uma foto, um desenho ou explicar a ideia. Depois avaliamos a viabilidade e montamos o orçamento em ouro 18k ou prata 925."
+      ]
+    },
+    personalized_commercial: {
+      variants: [
+        "Perfeito. Para orçar o personalizado, a equipe precisa ver a referência e confirmar material, medidas, detalhes e prazo.",
+        "Nesse ponto vale falar com o atendimento: eles recebem a foto ou desenho, verificam a viabilidade e calculam o projeto.",
+        "Consigo te encaminhar agora. O orçamento do personalizado depende da análise do modelo, do material e das dimensões finais."
+      ],
+      action: "sales", actionLabel: "Enviar projeto para orçamento"
+    },
+    shipping: {
+      variants: [
+        "Vendemos para <strong>todo o Brasil</strong>. Para alianças e pedidos fechados com a equipe, o frete é gratuito. Nas compras diretas da loja online, vale a condição exibida no produto e no checkout.",
+        "Enviamos para todo o Brasil. Em pedidos atendidos pela equipe, como alianças, o frete é grátis; já no site, a regra vigente aparece antes do pagamento.",
+        "Sim, fazemos envios nacionais. O frete de alianças e encomendas tratadas com o atendimento é gratuito. Para pronta entrega, confirme a condição no checkout da loja."
+      ]
+    },
+    engraving: {
+      variants: [
+        "A gravação interna é <strong>gratuita nas alianças compradas conosco</strong>. Pode ser nome, data ou uma frase curta, respeitando o espaço da peça.",
+        "Nas alianças da Emporium24k, a gravação interna já está incluída. O conteúdo precisa caber com boa leitura dentro da largura escolhida.",
+        "Sim, gravamos gratuitamente as alianças compradas conosco. Nomes e datas são os pedidos mais comuns, mas uma frase curta também pode funcionar."
+      ]
+    },
+    gold18k: {
+      variants: [
+        "O ouro 18k possui <strong>75% de ouro puro</strong> e 25% de liga metálica para dar resistência. As joias acompanham nota fiscal, certificado e garantia permanente do teor.",
+        "Trabalhamos com ouro 18k, também identificado como ouro 750. Ele combina alto teor de ouro com resistência adequada para uso diário.",
+        "Sim, nas joias de ouro trabalhamos com 18k. A peça vai com certificado, nota fiscal e garantia permanente do teor do metal."
+      ]
+    },
+    gold24k: {
+      variants: [
+        "O ouro 24k é praticamente puro, mas é muito mais macio. Para joias de uso diário, trabalhamos com <strong>ouro 18k</strong>. Em semijoias, 'banho de ouro 24k' fala do revestimento, não do interior maciço.",
+        "24k tem teor maior, porém deforma com mais facilidade. Por isso a joalheria costuma usar ouro 18k nas peças; já nas semijoias, o 24k pode aparecer como banho superficial.",
+        "Nas nossas joias de ouro, o padrão é 18k. Ouro 24k é mais puro, mas menos resistente para uma peça de uso frequente."
+      ]
+    },
+    silver925: {
+      variants: [
+        "A prata 925 possui <strong>92,5% de prata pura</strong>. Ela pode escurecer por oxidação, e isso não significa que perdeu o teor. Nas joias, oferecemos garantia permanente do teor.",
+        "Prata 925 é prata de lei. O escurecimento com o tempo é natural e costuma ser resolvido com limpeza adequada.",
+        "Trabalhamos com prata 925 nas joias de prata. Ela pode oxidar, mas continua sendo prata 925; o cuidado correto recupera o brilho."
+      ]
+    },
+    plated_explanation: {
+      variants: [
+        "Semijoia é uma peça de metal-base revestida por camadas de ouro ou prata. Ela não é o mesmo que uma joia maciça de ouro 18k ou prata 925.",
+        "Uma peça banhada recebe um revestimento externo de ouro ou prata sobre outro metal. A durabilidade depende do banho, do verniz e principalmente dos cuidados de uso.",
+        "Nas semijoias, o metal precioso fica no revestimento. Nas joias, o próprio corpo da peça é ouro 18k ou prata 925. Essa é a diferença principal."
+      ],
+      store: "platedInfo", storeLabel: "Ler explicação completa"
+    },
+    semijewelry_warranty: {
+      variants: [
+        "As semijoias têm <strong>1 ano de garantia no folheamento</strong>, conforme as condições do certificado. Queda, mau uso, químicos, riscos, quebras e perda de pedras precisam de análise e não entram automaticamente.",
+        "A garantia da semijoia cobre o folheamento por 1 ano, respeitando as condições de uso. Danos físicos ou contato inadequado com produtos químicos são avaliados separadamente.",
+        "Para semijoias, a garantia é de 1 ano no banho. O certificado explica o que está coberto e quais situações dependem de análise."
+      ],
+      store: "warranty", storeLabel: "Ver condições de garantia"
+    },
+    trust_docs: {
+      variants: [
+        "As joias em ouro 18k e prata 925 acompanham <strong>nota fiscal e certificado</strong>. A garantia permanente é sobre o teor do metal.",
+        "Você recebe nota fiscal e certificado nas joias. A Emporium24k garante permanentemente o teor do ouro 18k ou da prata 925.",
+        "Sim, trabalhamos com documentação: nota fiscal, certificado e garantia do teor para as joias em ouro 18k e prata 925."
+      ]
+    },
+    production_time: {
+      variants: [
+        "O prazo depende da peça. Anéis, alianças e personalizados são feitos por encomenda, então o atendente confirma o prazo conforme o projeto. Produtos do site podem ter uma previsão própria de despacho.",
+        "Para peças sob encomenda, o prazo só fica correto depois de definir modelo, medidas e material. Na pronta entrega, a previsão aparece na página do produto.",
+        "O tempo de produção varia com a complexidade. O atendimento confirma antes do fechamento para evitar prometer uma data que não seja realista."
+      ]
+    },
+    ring_size: {
+      variants: [
+        "A forma mais segura é medir com uma aneleira ou confirmar em uma joalheria. Régua, barbante e foto podem gerar erro, principalmente em alianças largas.",
+        "Para acertar o aro, recomendo uma medição profissional. A largura e o formato interno também podem mudar a sensação no dedo.",
+        "A numeração precisa estar correta antes da produção. Se você ainda não souber, o atendimento orienta a forma mais segura de medir."
+      ]
+    },
+    comfort: {
+      variants: [
+        "O interno reto é plano. O semianatômico tem uma curvatura leve. O anatômico possui uma curvatura interna maior e costuma ser mais confortável, sobretudo em alianças largas.",
+        "A diferença está na curvatura interna: quanto mais anatômica, mais arredondada fica a região de contato com o dedo.",
+        "Em alianças finas a diferença pode ser discreta; nas largas, o interno anatômico costuma melhorar bastante o conforto."
+      ]
+    },
+    care: {
+      variants: [
+        "Evite cloro, produtos químicos, impactos e atrito excessivo. O cuidado muda conforme o material; se a peça já escureceu ou perdeu brilho, é melhor avaliar antes de polir em casa.",
+        "Para conservar a peça, retire antes de piscina, limpeza pesada e contato com químicos. Prata e semijoias podem escurecer, mas cada caso pede um cuidado diferente.",
+        "Limpeza agressiva pode piorar o acabamento. Se for uma joia ou semijoia da qual você não conhece o tratamento, mande uma foto para avaliarmos antes."
+      ]
+    },
+    stones: {
+      variants: [
+        "Trabalhamos com projetos com pedras, desde que a cravação e o modelo sejam tecnicamente viáveis. Tipo, tamanho e disponibilidade da pedra influenciam o orçamento.",
+        "Dá para usar pedras em muitos projetos. A equipe precisa analisar a referência para definir tamanho, cravação e resistência da peça.",
+        "Sim, fazemos peças com pedras. Como cada pedra e cravação muda o projeto, o orçamento precisa ser analisado pelo atendimento."
+      ],
+      action: "sales", actionLabel: "Enviar referência para orçamento"
+    },
+    solid_or_hollow: {
+      variants: [
+        "A peça pode ser maciça ou oca dependendo do modelo. Isso muda peso, resistência e valor, por isso precisa ficar claro no orçamento.",
+        "Construção maciça e oca não são a mesma coisa. A equipe confirma o tipo exato antes da compra para você saber o que está recebendo.",
+        "O peso sozinho não explica tudo; é importante confirmar se o modelo é maciço ou oco e qual será o peso final estimado."
+      ],
+      action: "sales", actionLabel: "Confirmar construção da peça"
+    },
+    width_style: {
+      variants: [
+        "A largura muda bastante o visual, o conforto, o peso e o preço. Modelos finos são mais discretos; os largos têm mais presença.",
+        "Não existe uma largura melhor para todo mundo. Ela precisa combinar com o estilo do casal, o tamanho do dedo e a faixa de investimento.",
+        "Milímetros fazem diferença real em uma aliança. O atendimento pode mostrar proporções e calcular o efeito no peso e no valor."
+      ],
+      action: "sales", actionLabel: "Escolher largura com especialista"
+    },
+    material_comparison: {
+      variants: [
+        "O ouro 18k tem maior valor de material e alta durabilidade. A prata 925 exige investimento inicial menor, mas pode oxidar e pede limpeza periódica.",
+        "Se a prioridade é tradição e valor de material, ouro 18k costuma ser a escolha. Se a prioridade é reduzir o investimento, prata 925 pode fazer mais sentido.",
+        "Os dois materiais são legítimos, mas têm propostas diferentes. Ouro 18k custa mais; prata 925 é mais acessível e demanda mais manutenção estética."
+      ]
+    },
+    payment: {
+      variants: [
+        "As formas e condições de pagamento podem variar conforme o produto e a campanha. Para pronta entrega, o site mostra a condição atual; para encomendas, o atendente confirma as opções.",
+        "No site você vê as condições dos itens à pronta entrega. Em anéis, alianças e personalizados, vale consultar o atendimento porque podem existir promoções específicas.",
+        "O pagamento depende do tipo de pedido. Para eu não te passar uma condição antiga, o atendimento confirma as opções vigentes no momento."
+      ],
+      action: "sales", actionLabel: "Consultar formas de pagamento"
+    },
+    boleto_special: {
+      variants: [
+        "Temos uma possibilidade por boleto feita em conjunto com o banco, mas preciso ser transparente: <strong>o valor final da peça aumenta bastante</strong>. Normalmente só compensa para quem está com o nome realmente restrito e não consegue usar outra forma de pagamento. A equipe precisa simular.",
+        "Existe boleto, porém não funciona como um parcelamento comum da loja. É uma operação com o banco e o custo sobe consideravelmente. Em geral, faz sentido apenas quando a pessoa está negativada e sem alternativa de pagamento.",
+        "Dá para avaliar o boleto bancário, sim, mas ele encarece muito o pedido. Eu não recomendaria para quem consegue pagar de outra forma; o uso mais racional é para quem está com restrição no nome e precisa de uma alternativa."
+      ],
+      action: "sales", actionLabel: "Solicitar simulação no boleto"
+    },
+    discount: {
+      variants: [
+        "As promoções mudam e podem ser diferentes do valor de referência do site, especialmente em anéis e alianças. O atendimento verifica a melhor condição disponível.",
+        "Para desconto real, o ideal é falar com o vendedor. Eles conseguem conferir a campanha atual e calcular o pedido na configuração correta.",
+        "Pode existir uma condição promocional, mas eu não vou prometer um percentual sem consultar. O atendimento confirma o melhor valor vigente."
+      ],
+      action: "sales", actionLabel: "Consultar promoção atual"
+    },
+    site_price_vs_service: {
+      variants: [
+        "O valor do site serve como referência. Em anéis, alianças e peças por encomenda, a configuração final muda o orçamento e os atendentes podem ter promoções específicas.",
+        "Para pronta entrega, o preço válido é o do site. Já para anéis e alianças, o site mostra uma base, mas o atendimento confirma medidas, peso e condição promocional.",
+        "A diferença acontece porque produtos prontos e peças sob encomenda seguem lógicas diferentes. O atendente calcula a peça real e verifica a campanha vigente."
+      ],
+      action: "sales", actionLabel: "Confirmar valor correto"
+    },
+    order_tracking: {
+      variants: [
+        "Para localizar um pedido ou confirmar o rastreio, a equipe precisa dos dados da compra. Vou te encaminhar para o atendimento.",
+        "Consigo te direcionar, mas o rastreamento exige identificar o pedido. Tenha em mãos o nome usado na compra ou o número do pedido.",
+        "O status do pedido não fica disponível dentro deste assistente. O atendimento consegue consultar usando os dados da compra."
+      ],
+      action: "sales", actionLabel: "Consultar meu pedido"
+    },
+    location_trust: {
+      variants: [
+        "A Emporium24k é de Curitiba, com atendimento físico no <strong>Bairro Alto</strong>, e vende para todo o Brasil. Trabalhamos com nota fiscal, certificado e rastreamento.",
+        "Temos operação física em Curitiba, no Bairro Alto, além do atendimento online nacional. As joias acompanham documentação e garantia do teor.",
+        "Sim, a empresa possui atendimento físico em Curitiba e envia para todo o Brasil. Nota fiscal, certificado e rastreamento fazem parte da segurança da compra."
+      ]
+    },
+    other_gold_karat: {
+      variants: [
+        "Nas joias de ouro trabalhamos exclusivamente com <strong>ouro 18k</strong>. Não produzimos em ouro 10k ou 14k.",
+        "O padrão da Emporium24k para joias de ouro é 18k. Se o projeto for em prata, usamos prata 925.",
+        "Não fazemos peças em ouro 10k ou 14k. Nossa produção de joias utiliza ouro 18k e prata 925."
+      ]
+    },
+    gold_care: {
+      variants: [
+        "O ouro 18k pode perder brilho ou aparentar escurecimento por resíduos, químicos, suor ou alteração no acabamento. Antes de polir, vale identificar a causa.",
+        "O ouro 18k não costuma oxidar como a prata, mas pode ficar opaco ou acumular resíduos. Uma avaliação evita usar um produto inadequado.",
+        "Se a joia de ouro mudou de aparência, mande uma foto. Dependendo do caso, pode ser apenas limpeza, polimento ou contato com algum produto."
+      ]
+    },
+    warranty_scope: {
+      variants: [
+        "A garantia permanente das joias é sobre o <strong>teor do ouro 18k ou da prata 925</strong>. Quebras, riscos, pedras, deformações e desgaste precisam de análise técnica.",
+        "O teor do metal tem garantia permanente. Danos físicos não são automaticamente a mesma coisa e dependem da causa e da avaliação da peça.",
+        "Garantia do teor significa que o metal pode ser testado futuramente. Reparos por quebra, risco ou pedra solta são analisados separadamente."
+      ]
+    },
+    semijewelry: {
+      variants: [
+        "Também trabalhamos com semijoias banhadas. Para ver modelos e estoque, consulte a loja oficial. Se for conserto, a peça precisa passar por análise.",
+        "Temos semijoias, sim. Os modelos disponíveis ficam no site, e reparos só são confirmados depois de avaliar a viabilidade da peça.",
+        "A linha de semijoias está na loja oficial. Como o estoque muda, o site é a melhor referência para modelos e valores atuais."
+      ],
+      store: "semijewelry", storeLabel: "Ver semijoias"
+    },
+    repair_clarify: {
+      variants: [
+        "Consertamos somente <strong>joias e semijoias</strong>. Qual é a peça que precisa de reparo?",
+        "Posso verificar, mas antes preciso saber o objeto: é uma joia ou uma semijoia?",
+        "Nosso setor de consertos atende apenas joias e semijoias. Me diga qual peça quebrou ou precisa de ajuste."
+      ]
+    },
+    repair: {
+      variants: [
+        "Realizamos consertos de <strong>joias e semijoias</strong>, sujeitos à análise do material e da viabilidade. Uma foto e uma explicação do problema ajudam bastante.",
+        "Dá para analisar, sim. O conserto só é confirmado depois que a equipe vê a peça e entende o dano.",
+        "Consertamos joias e semijoias, mas não prometemos o reparo sem avaliar. Envie uma foto para a equipe técnica verificar."
+      ],
+      action: "repair", actionLabel: "Enviar peça para análise"
+    },
+    unsupported_repair: {
+      variants: [
+        "Não realizamos esse tipo de conserto. Nosso setor atende somente <strong>joias e semijoias</strong>.",
+        "Esse item fica fora do nosso serviço. Consertamos apenas joias e semijoias, depois de análise técnica.",
+        "Nesse caso não conseguimos ajudar com o reparo. A Emporium24k não conserta relógios, veículos, eletrônicos, utensílios ou outros objetos."
+      ]
+    },
+    sell_gold_silver: {
+      variants: [
+        "Compramos e avaliamos itens de <strong>ouro e prata</strong>. O valor depende do teor, peso e teste da peça, então a cotação final precisa ser feita pelo setor responsável.",
+        "Sim, avaliamos ouro e prata para compra. Para não criar uma expectativa errada, o valor só é confirmado após pesar e testar o material.",
+        "Você pode enviar os itens para avaliação. Trabalhamos apenas com ouro e prata; a equipe verifica teor, peso e condição antes de informar o valor."
+      ],
+      action: "evaluation", actionLabel: "Avaliar ouro ou prata"
+    },
+    gold_price_clarify: {
+      variants: [
+        "Só para eu te encaminhar certo: você quer saber o valor para <strong>comprar uma joia</strong> ou quer <strong>vender ouro</strong> para a Emporium24k?",
+        "Você está procurando o preço de uma peça nova ou quer avaliar ouro usado para venda? São atendimentos diferentes.",
+        "Quando você fala em valor do ouro, é para comprar uma joia ou para vender um item de ouro que já possui?"
+      ]
+    },
+    unsupported_material: {
+      variants: [
+        "A Emporium24k confecciona e compra somente itens de <strong>ouro e prata</strong>. Não fazemos projetos em moeda, aço, tungstênio, titânio, cobre ou outros metais.",
+        "Esse material não faz parte da nossa produção nem da compra de metais. Trabalhamos com ouro 18k e prata 925.",
+        "Não trabalhamos com esse metal. Para projetos novos, as opções são ouro 18k ou prata 925; para compra de usados, avaliamos apenas ouro e prata."
+      ]
+    },
+    commercial: {
+      variants: [
+        "Consigo te orientar, mas para informar o valor correto a equipe precisa considerar produto, material, medidas, peso, acabamento e disponibilidade.",
+        "Nesse ponto vale falar com o atendimento. Se for pronta entrega, o site mostra preço e estoque; se for encomenda, o vendedor calcula e verifica promoções.",
+        "Vou te encaminhar para quem consegue fechar essa informação com precisão e conferir a melhor condição disponível."
+      ],
+      action: "sales", actionLabel: "Falar com especialista"
+    },
+    thanks: {
+      variants: [
+        "Por nada! Pode continuar perguntando por aqui.",
+        "Imagina. Quando precisar, é só escrever.",
+        "Disponha! Se surgir outra dúvida sobre joias, alianças ou atendimento, pode mandar."
+      ]
+    },
+    unknown: {
+      variants: [
+        "Não encontrei uma resposta segura para isso. Pode explicar de outra forma? Prefiro perguntar de novo do que inventar uma informação.",
+        "Acho que ainda não entendi exatamente o que você precisa. Tente escrever com um pouco mais de contexto.",
+        "Não quero te responder no chute. Reformule a pergunta ou diga se o assunto é compra, conserto, personalizado, estoque ou venda de ouro e prata."
+      ]
+    }
   });
+
+  function pickVariant(topic){
+    const entry = RESPONSES[topic] || RESPONSES.unknown;
+    const variants = entry.variants || [entry.text || ""];
+    if(variants.length === 1) return variants[0];
+    let index;
+    do { index = Math.floor(Math.random() * variants.length); }
+    while(index === state.lastVariant[topic] && variants.length > 1);
+    state.lastVariant[topic] = index;
+    return variants[index];
+  }
 
   function buildWhatsUrl(type, context){
     const phone = type === "sales" ? chooseSalesAgent() : CONFIG.evaluationAndRepairs;
-    const introText = type === "sales" ? "Olá! Vim pelo assistente Coroa 24K e quero atendimento comercial." :
-      type === "repair" ? "Olá! Vim pelo assistente Coroa 24K e preciso analisar o conserto de uma joia ou semijoia." :
-      "Olá! Vim pelo assistente Coroa 24K e quero avaliar itens de ouro ou prata para venda.";
+    const introText = type === "sales"
+      ? "Olá! Vim pelo assistente Coroa 24K e quero atendimento comercial."
+      : type === "repair"
+        ? "Olá! Vim pelo assistente Coroa 24K e preciso analisar o conserto de uma joia ou semijoia."
+        : "Olá! Vim pelo assistente Coroa 24K e quero avaliar itens de ouro ou prata para venda.";
     const text = `${introText}\n\nMinha pergunta: ${context || "Quero mais informações."}`;
     return `https://api.whatsapp.com/send/?phone=${phone}&text=${encodeURIComponent(text)}&type=phone_number&app_absent=0`;
   }
 
-  function addMessage(html, who="bot"){
+  function clock(){
+    return new Intl.DateTimeFormat("pt-BR", {hour:"2-digit", minute:"2-digit"}).format(new Date());
+  }
+
+  function addMessage(html, who = "bot"){
     if(intro) intro.style.display = "none";
     const row = document.createElement("div");
     row.className = `row ${who === "user" ? "user" : ""}`;
+
     if(who !== "user"){
       const avatar = document.createElement("div");
       avatar.className = "avatar";
       avatar.textContent = "♛";
       row.appendChild(avatar);
     }
+
+    const stack = document.createElement("div");
+    stack.className = "message-stack";
     const bubble = document.createElement("div");
     bubble.className = "bubble";
     bubble.innerHTML = html;
-    row.appendChild(bubble);
+    const meta = document.createElement("div");
+    meta.className = "bubble-meta";
+    meta.textContent = who === "user" ? clock() : `Coroa 24K · ${clock()}`;
+    stack.append(bubble, meta);
+    row.appendChild(stack);
     messages.appendChild(row);
     messages.scrollTop = messages.scrollHeight;
     return row;
-  }
-
-  function addQuick(items){
-    const box = document.createElement("div");
-    box.className = "quick";
-    items.forEach((label) => {
-      const button = document.createElement("button");
-      button.type = "button";
-      button.textContent = label;
-      button.addEventListener("click", () => handleQuestion(QUICK_ALIASES[label] || label));
-      box.appendChild(button);
-    });
-    messages.appendChild(box);
-    messages.scrollTop = messages.scrollHeight;
   }
 
   function addAction(type, label, context){
     const card = document.createElement("div");
     card.className = "action-card";
     const note = document.createElement("p");
-    note.textContent = type === "sales" ? "Você será direcionado a um dos atendentes comerciais." :
-      type === "repair" ? "O reparo é exclusivo para joias e semijoias e depende da análise da peça." :
-      "A avaliação depende de teste, teor e peso.";
+    note.textContent = type === "sales"
+      ? "O WhatsApp abre com sua dúvida já preenchida."
+      : type === "repair"
+        ? "O conserto é exclusivo para joias e semijoias e depende da análise da peça."
+        : "A avaliação depende de teste, teor e peso.";
     const link = document.createElement("a");
     link.className = "action-btn wa";
     link.target = "_blank";
@@ -290,7 +593,7 @@
     const card = document.createElement("div");
     card.className = "action-card store-card";
     const note = document.createElement("p");
-    note.textContent = "A loja oficial é a fonte atual para valores, disponibilidade e condições dos itens à pronta entrega.";
+    note.textContent = "A loja oficial é a referência atual para preço, estoque e condições dos produtos à pronta entrega.";
     const link = document.createElement("a");
     link.className = "action-btn store";
     link.target = "_blank";
@@ -305,6 +608,7 @@
 
   function showTyping(){
     const row = addMessage('<span class="typing"><span></span><span></span><span></span></span>');
+    row.classList.add("typing-row");
     return () => row.remove();
   }
 
@@ -325,25 +629,37 @@
     }catch(_){}
   }
 
+  function typingDelay(question){
+    const base = 300 + Math.min(question.length * 7, 650);
+    return Math.min(1050, base + Math.floor(Math.random() * 160));
+  }
+
   async function handleQuestion(raw){
     const question = String(raw || "").trim();
     if(!question || state.busy) return;
+
     state.busy = true;
     input.value = "";
     const safe = question.replace(/[&<>"']/g, (char) => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[char]));
     addMessage(safe, "user");
+    state.history.push({role:"user", text:question});
+
     const stop = showTyping();
-    await new Promise((resolve) => setTimeout(resolve, 260));
+    await new Promise((resolve) => setTimeout(resolve, typingDelay(question)));
     stop();
+
     const topic = classify(question);
     state.lastTopic = topic;
     const response = RESPONSES[topic] || RESPONSES.unknown;
-    addMessage(response.text);
+    const text = pickVariant(topic);
+    addMessage(text);
+    state.history.push({role:"assistant", topic, text});
+
     if(topic === "unknown") saveUnknown(question);
-    if(response.quick) addQuick(response.quick);
     if(response.action) addAction(response.action, response.actionLabel, question);
     if(response.store) addStoreAction(response.store, response.storeLabel);
     track("assistant_answer", {topic});
+
     state.busy = false;
     input.focus();
   }
@@ -355,12 +671,19 @@
 
   $("#topCta").addEventListener("click", () => handleQuestion("Quero falar com um especialista"));
 
-  addMessage("Olá! Eu sou a <strong>Coroa 24K</strong>. Posso responder suas dúvidas, mostrar o estoque atualizado da loja oficial e encaminhar você para a equipe certa.");
-  addQuick(["Ver pronta entrega","Quero alianças","Peça personalizada","Quero vender ouro","Preciso de conserto"]);
+  const hour = new Date().getHours();
+  const opening = hour < 12
+    ? "Bom dia! Eu sou a <strong>Coroa 24K</strong>. Pode perguntar do seu jeito — vou tentar resolver por aqui."
+    : hour < 18
+      ? "Boa tarde! Eu sou a <strong>Coroa 24K</strong>. Pode escrever normalmente; eu te ajudo e encaminho quando for necessário."
+      : "Boa noite! Eu sou a <strong>Coroa 24K</strong>. Pode mandar sua dúvida do jeito que você falaria com uma pessoa.";
+  addMessage(opening);
 
-  window.__assistant = { normalize, classify, buildWhatsUrl, RESPONSES, CONFIG, QUICK_ALIASES };
+  window.__assistant = { normalize, classify, buildWhatsUrl, RESPONSES, CONFIG };
 
   function runSelfTests(){
+    const previousTopic = state.lastTopic;
+    state.lastTopic = null;
     const tests = [
       ["quanto custa um par de alianças?","rings_order"],
       ["as alianças estão em estoque?","rings_order"],
@@ -373,45 +696,50 @@
       ["quanto custa uma pulseira?","store_products"],
       ["quero comprar um brinco","store_products"],
       ["quero vender uma corrente de ouro","sell_gold_silver"],
-      ["quanto vocês pagam na grama da prata?","sell_gold_silver"],
-      ["vocês compram ouro usado?","sell_gold_silver"],
-      ["quanto está o ouro hoje?","gold_price_clarify"],
-      ["qual a cotação do ouro?","gold_price_clarify"],
-      ["vocês consertam joias?","repair"],
+      ["quanto voces pagam na grama da prata?","sell_gold_silver"],
+      ["voces compram ouro usado?","sell_gold_silver"],
+      ["quanto esta o ouro hoje?","gold_price_clarify"],
+      ["qual a cotacao do ouro?","gold_price_clarify"],
+      ["voces consertam joias?","repair"],
       ["concertam semijoias?","repair"],
       ["minha corrente quebrou","repair"],
-      ["consertam aliança de ouro?","repair"],
-      ["vocês fazem conserto?","repair_clarify"],
-      ["consertam relógios?","unsupported_repair"],
+      ["consertam alianca de ouro?","repair"],
+      ["voces fazem conserto?","repair_clarify"],
+      ["consertam relogios?","unsupported_repair"],
       ["arrumam carros?","unsupported_repair"],
-      ["reparam aviões?","unsupported_repair"],
+      ["reparam avioes?","unsupported_repair"],
       ["consertam panelas?","unsupported_repair"],
       ["consertam celulares?","unsupported_repair"],
-      ["consertam aliança de tungstênio?","unsupported_repair"],
+      ["consertam alianca de tungstenio?","unsupported_repair"],
       ["fazem anel personalizado?","personalized"],
-      ["quero orçamento de pingente personalizado","personalized_commercial"],
+      ["quero orcamento de pingente personalizado","personalized_commercial"],
       ["fazem igual a uma foto?","personalized"],
-      ["fazem aliança de moeda?","unsupported_material"],
-      ["trabalham com tungstênio?","unsupported_material"],
+      ["fazem alianca de moeda?","unsupported_material"],
+      ["trabalham com tungstenio?","unsupported_material"],
       ["compram cobre?","unsupported_material"],
-      ["o frete é grátis?","shipping"],
+      ["o frete e gratis?","shipping"],
       ["enviam para todo brasil?","shipping"],
-      ["a gravação é gratuita?","engraving"],
-      ["o ouro é 18k?","gold18k"],
-      ["qual a diferença do ouro 24k?","gold24k"],
+      ["a gravacao e gratuita?","engraving"],
+      ["o ouro e 18k?","gold18k"],
+      ["qual a diferenca do ouro 24k?","gold24k"],
       ["prata 925 escurece?","silver925"],
-      ["o que é uma peça banhada?","plated_explanation"],
+      ["o que e uma peca banhada?","plated_explanation"],
       ["qual a garantia da semijoia?","semijewelry_warranty"],
       ["tem certificado e nota fiscal?","trust_docs"],
       ["quanto tempo para ficar pronto?","production_time"],
       ["como descubro meu aro?","ring_size"],
-      ["qual diferença do anatômico?","comfort"],
-      ["como limpar minha aliança?","care"],
+      ["qual diferenca do anatomico?","comfort"],
+      ["como limpar minha alianca?","care"],
       ["trabalham com diamante?","stones"],
       ["aceitam pix?","payment"],
+      ["fazem por boleto?","boleto_special"],
+      ["tem boleto parcelado?","boleto_special"],
+      ["consegue desconto?","discount"],
+      ["o valor do site e o mesmo?","site_price_vs_service"],
+      ["onde esta meu pedido?","order_tracking"],
       ["onde fica a loja?","location_trust"],
       ["fazem ouro 10k?","other_gold_karat"],
-      ["vocês trabalham com semijoias?","semijewelry"],
+      ["voces trabalham com semijoias?","semijewelry"],
       ["oi bom dia","greeting"],
       ["obrigado pela ajuda","thanks"],
       ["qual a temperatura em marte?","unknown"]
@@ -419,18 +747,21 @@
 
     const failures = [];
     for(const [question, expected] of tests){
+      state.lastTopic = null;
       const got = classify(question);
       if(got !== expected) failures.push({question, expected, got});
     }
+
+    state.lastTopic = "repair_clarify";
+    const followUpRepair = classify("uma corrente de prata");
+    state.lastTopic = "gold_price_clarify";
+    const followUpGoldSell = classify("quero vender uma corrente");
+    state.lastTopic = previousTopic;
+
     const missing = [...new Set(tests.map((item) => item[1]))].filter((key) => !RESPONSES[key]);
-    const quickFailures = [];
-    for(const response of Object.values(RESPONSES)){
-      for(const label of response.quick || []){
-        const question = QUICK_ALIASES[label] || label;
-        const got = classify(question);
-        if(got === "unknown" || got === "empty") quickFailures.push({label, question, got});
-      }
-    }
+    const insufficientVariants = Object.entries(RESPONSES)
+      .filter(([,value]) => !Array.isArray(value.variants) || value.variants.length < 3)
+      .map(([key]) => key);
     const urls = {
       sales: buildWhatsUrl("sales", "teste"),
       evaluation: buildWhatsUrl("evaluation", "teste"),
@@ -441,7 +772,9 @@
       passed: tests.length - failures.length,
       failures,
       missing,
-      quickFailures,
+      insufficientVariants,
+      followUpRepair,
+      followUpGoldSell,
       salesPhoneOk: CONFIG.sales.some((phone) => urls.sales.includes(phone)),
       evaluationPhoneOk: urls.evaluation.includes(CONFIG.evaluationAndRepairs),
       repairPhoneOk: urls.repair.includes(CONFIG.evaluationAndRepairs),
@@ -450,7 +783,7 @@
     const element = $("#test-results");
     element.style.display = "block";
     element.textContent = JSON.stringify(checks, null, 2);
-    document.title = failures.length || missing.length || quickFailures.length ? "TEST_FAIL" : "TEST_OK";
+    document.title = failures.length || missing.length || insufficientVariants.length || followUpRepair !== "repair" || followUpGoldSell !== "sell_gold_silver" ? "TEST_FAIL" : "TEST_OK";
   }
 
   if(new URLSearchParams(location.search).has("test")) runSelfTests();
