@@ -75,7 +75,7 @@
       ? " Como você pretende usar seu próprio ouro, ele precisa ser avaliado; sendo adequado e suficiente, o orçamento pode considerar somente a mão de obra."
       : "";
 
-    addMessage(`O valor de uma aliança personalizada${materialText} não é único, porque muda conforme <strong>largura, peso, formato, acabamento, pedras, detalhes e numerações</strong>.${ownGoldText} Para calcular corretamente, me conte como imagina o modelo e, caso possua, diga que tem uma foto ou desenho de referência.`);
+    addMessage(`O valor de uma aliança personalizada${materialText} não é único, porque muda conforme <strong>largura, peso, formato, acabamento, pedras, detalhes e numerações</strong>.${ownGoldText} Para calcular corretamente, me conte como imagina o modelo e pode me dizer <strong>se possui</strong> uma foto ou desenho de referência.`);
 
     const catalog = window.__catalogoAliancasV1;
     if(catalog?.state){
