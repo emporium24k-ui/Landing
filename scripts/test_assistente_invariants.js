@@ -13,6 +13,10 @@ const coordinator = read("assistente/coordenador-central-v1.js");
 const topCta = read("assistente/top-cta-v1.js");
 const visualCatalog = read("assistente/catalogo-loja-visual-v1.js");
 const recovery = read("assistente/recuperacao-conversa-v1.js");
+const session = read("assistente/sessao-conversa-v1.js");
+const legacyRouting = read("assistente/roteamento-legado-v1.js");
+const analytics = read("assistente/analytics-bridge-v1.js");
+const syncWorkflow = read(".github/workflows/sync-store-catalog.yml");
 
 const expectedFallbacks = [
   "ortografia-v1.js", "referencia-whatsapp-v1.js", "tom-humano-v1.js", "ajuste-aro-v1.js",
@@ -30,8 +34,9 @@ for(const file of expectedFallbacks){
 }
 
 const order = [
-  "config-negocio-v1.js", "core-intencoes-v1.js", "coordenador-central-v1.js", "metricas-v1.js",
-  "top-cta-v1.js", "catalogo-loja-dados.js", "catalogo-loja-visual-v1.js", "rota-produtos-site-v1.js",
+  "config-negocio-v1.js", "core-intencoes-v1.js", "sessao-conversa-v1.js", "coordenador-central-v1.js",
+  "metricas-v1.js", "analytics-bridge-v1.js", "top-cta-v1.js", "catalogo-loja-dados.js",
+  "roteamento-legado-v1.js", "catalogo-loja-visual-v1.js", "rota-produtos-site-v1.js",
   "recuperacao-conversa-v1.js", "app-concise-v3.js"
 ];
 let previous = -1;
@@ -62,4 +67,18 @@ assert.ok(visualCatalog.includes('product.category === "alianca"'), "Catálogo v
 assert.ok(recovery.includes("Falar com atendente"), "Recuperação deve oferecer atendimento humano");
 assert.ok(recovery.includes("config.contacts.boss"), "Recuperação deve usar o telefone do chefe");
 
-console.log(`${expectedFallbacks.length + order.length + 17} invariantes verificadas com sucesso.`);
+assert.ok(session.includes("30 * 60 * 1000"), "Sessão precisa expirar após 30 minutos");
+assert.ok(session.includes("newConversation"), "Interface precisa oferecer nova conversa");
+assert.ok(session.includes("clearConversationStorage"), "Nova conversa precisa limpar a memória");
+
+assert.ok(legacyRouting.includes("config.contacts.boss"), "Joias personalizadas devem seguir para o chefe");
+assert.ok(!legacyRouting.includes("5541995888995"), "Roteamento prioritário de joias não pode usar vendedor aleatório");
+assert.ok(!legacyRouting.includes("5541995776736"), "Roteamento prioritário de joias não pode usar vendedor aleatório");
+assert.ok(legacyRouting.includes("if(visualProducts.length) return"), "Busca visual deve continuar prioritária quando encontrar produtos");
+assert.ok(legacyRouting.includes("answerProductFallback"), "Busca sem resultado precisa cair na pesquisa exata do site");
+
+assert.ok(analytics.includes("window.dataLayer"), "Eventos precisam estar preparados para analytics central");
+assert.ok(analytics.includes("assistant_whatsapp_click"), "Clique no WhatsApp precisa gerar evento de analytics");
+assert.ok(syncWorkflow.includes('cron: "40 8 * * *"'), "Catálogo da loja precisa ser sincronizado diariamente");
+
+console.log(`${expectedFallbacks.length + order.length + 30} invariantes verificadas com sucesso.`);
