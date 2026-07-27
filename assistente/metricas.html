@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#0d1712" />
+  <title>Métricas da Coroa 24K</title>
+  <style>
+    :root{color-scheme:dark;font-family:Inter,system-ui,-apple-system,Segoe UI,sans-serif;background:#07100b;color:#f7efd6}
+    *{box-sizing:border-box}body{margin:0;min-height:100vh;background:radial-gradient(circle at top,#163122,#07100b 55%);padding:24px}
+    main{width:min(1000px,100%);margin:auto}.head{display:flex;gap:16px;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;margin-bottom:22px}
+    h1{margin:0;color:#f0cf7b;font-size:clamp(1.55rem,4vw,2.25rem)}p{line-height:1.55;color:#d8d0ba}.note{max-width:700px}
+    .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px}.card{background:rgba(14,34,23,.92);border:1px solid rgba(229,188,91,.25);border-radius:16px;padding:18px;box-shadow:0 18px 40px rgba(0,0,0,.24)}
+    .label{font-size:.82rem;color:#bcb49f}.value{font-size:1.7rem;font-weight:750;margin-top:7px;color:#f3d98f}.wide{grid-column:1/-1}
+    table{width:100%;border-collapse:collapse;margin-top:8px}th,td{text-align:left;padding:10px 6px;border-bottom:1px solid rgba(255,255,255,.08)}th{font-size:.78rem;color:#c9b77f}td:last-child,th:last-child{text-align:right}
+    button,a{appearance:none;border:1px solid rgba(230,190,91,.5);border-radius:11px;padding:10px 14px;background:#d8ae51;color:#10130f;font-weight:700;text-decoration:none;cursor:pointer}button.secondary{background:transparent;color:#f0cf7b}.actions{display:flex;gap:8px;flex-wrap:wrap}
+    .empty{padding:18px 0;color:#bbb19c}.foot{margin-top:20px;font-size:.82rem;color:#a99f8a}
+  </style>
+</head>
+<body>
+  <main>
+    <div class="head">
+      <div>
+        <h1>Métricas da Coroa 24K</h1>
+        <p class="note">Este painel mostra os dados anônimos armazenados neste navegador. Ele não registra nome, telefone nem o conteúdo completo das mensagens.</p>
+      </div>
+      <div class="actions">
+        <a href="./?build=20260727-50">Voltar ao assistente</a>
+        <button class="secondary" id="copy" type="button">Copiar dados</button>
+        <button class="secondary" id="reset" type="button">Zerar dados locais</button>
+      </div>
+    </div>
+
+    <section class="grid" aria-label="Resumo das métricas">
+      <article class="card"><div class="label">Sessões</div><div class="value" id="sessions">0</div></article>
+      <article class="card"><div class="label">Mensagens analisadas</div><div class="value" id="messages">0</div></article>
+      <article class="card"><div class="label">Taxa de entendimento</div><div class="value" id="understood">0%</div></article>
+      <article class="card"><div class="label">Não entendidas</div><div class="value" id="unknown">0</div></article>
+      <article class="card"><div class="label">Cliques no WhatsApp</div><div class="value" id="whatsapp">0</div></article>
+      <article class="card"><div class="label">Cliques na loja</div><div class="value" id="store">0</div></article>
+      <article class="card"><div class="label">Modelos de alianças escolhidos</div><div class="value" id="models">0</div></article>
+      <article class="card wide">
+        <div class="label">Assuntos identificados</div>
+        <div id="intentions"></div>
+      </article>
+    </section>
+    <p class="foot" id="period"></p>
+  </main>
+
+  <script>
+    (() => {
+      const KEY = "emp24kAssistantMetricsV1";
+      const labels = {
+        alliance_catalog:"Catálogo de alianças", alliance_interest:"Interesse em alianças", alliance_custom:"Aliança personalizada",
+        customer_gold_alliance:"Aliança com ouro do cliente", ring_resize:"Ajuste de aro", ready_product_search:"Busca de joias/semijoias",
+        sell_metals:"Venda e avaliação de metais", repair_service:"Conserto e polimento", tracking:"Rastreamento", payment:"Pagamento",
+        shipping:"Frete", engraving:"Gravação", material_education:"Materiais e teores", trust:"Confiança e documentos",
+        location:"Endereço", identity:"Sobre a empresa", price_general:"Pergunta ampla de valor", unknown:"Não entendida",
+        greeting:"Saudação", thanks:"Agradecimento"
+      };
+      const read = () => {
+        try{return JSON.parse(localStorage.getItem(KEY) || "{}") || {}}catch(_){return {}}
+      };
+      function render(){
+        const data = read();
+        const messages = Number(data.messages || 0);
+        const unknown = Number(data.unknown || 0);
+        const rate = messages ? (((messages - unknown) / messages) * 100).toFixed(1) : "0.0";
+        document.querySelector("#sessions").textContent = data.sessions || 0;
+        document.querySelector("#messages").textContent = messages;
+        document.querySelector("#understood").textContent = `${rate}%`;
+        document.querySelector("#unknown").textContent = unknown;
+        document.querySelector("#whatsapp").textContent = data.whatsappClicks || 0;
+        document.querySelector("#store").textContent = data.storeClicks || 0;
+        document.querySelector("#models").textContent = data.allianceModelClicks || 0;
+        const entries = Object.entries(data.intents || {}).sort((a,b) => b[1] - a[1]);
+        document.querySelector("#intentions").innerHTML = entries.length
+          ? `<table><thead><tr><th>Assunto</th><th>Quantidade</th></tr></thead><tbody>${entries.map(([key,value]) => `<tr><td>${labels[key] || key}</td><td>${value}</td></tr>`).join("")}</tbody></table>`
+          : '<div class="empty">Ainda não há interações registradas neste navegador.</div>';
+        const first = data.firstSeenAt ? new Date(data.firstSeenAt).toLocaleString("pt-BR") : "—";
+        const last = data.updatedAt ? new Date(data.updatedAt).toLocaleString("pt-BR") : "—";
+        document.querySelector("#period").textContent = `Primeiro registro: ${first} · Última atualização: ${last}`;
+      }
+      document.querySelector("#copy").addEventListener("click", async () => {
+        const text = JSON.stringify(read(), null, 2);
+        try{await navigator.clipboard.writeText(text); alert("Dados copiados.")}catch(_){prompt("Copie os dados:", text)}
+      });
+      document.querySelector("#reset").addEventListener("click", () => {
+        if(confirm("Deseja apagar somente as métricas armazenadas neste navegador?")){localStorage.removeItem(KEY);render()}
+      });
+      render();
+    })();
+  </script>
+</body>
+</html>
