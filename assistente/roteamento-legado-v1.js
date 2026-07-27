@@ -18,6 +18,12 @@
     "a partir de um desenho", "tenho uma ideia", "quero criar", "quero desenvolver"
   ];
 
+  const EXPLICIT_CUSTOM_TERMS = [
+    "personalizado", "personalizada", "personalizados", "personalizadas", "sob medida",
+    "do meu jeito", "modelo exclusivo", "projeto exclusivo", "igual a foto", "a partir de uma foto",
+    "a partir de um desenho", "tenho uma ideia"
+  ];
+
   const ALLIANCE_TERMS = ["alianca", "aliancas", "aliansa", "aliansas", "alinca", "alincas"];
   const CHANGE_SUBJECT = [
     "rastreio", "rastreamento", "frete", "sedex", "pagamento", "pix", "cartao", "boleto",
@@ -34,8 +40,9 @@
   function isCustomJewelry(text){
     if(isAlliance(text)) return false;
     const hasCustom = includesAny(text, CUSTOM_TERMS);
+    const explicitCustom = includesAny(text, EXPLICIT_CUSTOM_TERMS);
     const hasPiece = /\b(joia|joias|peca|pecas|anel|aneis|solitario|aparador|pingente|corrente|colar|pulseira|brinco|tornozeleira)\b/.test(text);
-    return hasCustom && hasPiece;
+    return hasCustom && (hasPiece || explicitCustom);
   }
 
   function enoughDetails(text){
