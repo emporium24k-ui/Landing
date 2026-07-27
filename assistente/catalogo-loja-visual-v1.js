@@ -12,6 +12,9 @@
     "comprar","ver","mostrar","mostra","qual","quais","quanto","custa","valor","preco","modelo","estilo","tipo",
     "opcao","opcoes","de","da","do","das","dos","um","uma","uns","umas","em","com","e","ou","para","pra","por"
   ]);
+  const genericTokens = new Set([
+    "joia","joias","semijoia","semijoias","produto","produtos","peca","pecas","ouro","prata","18k","10k","14k","925","banhada","banhado","folheada","folheado"
+  ]);
 
   function money(value){
     return new Intl.NumberFormat("pt-BR", {style:"currency", currency:"BRL"}).format(Number(value || 0));
@@ -25,6 +28,16 @@
     return core.normalize(value).split(" ").filter((token) => token && !stopwords.has(token) && token.length > 1);
   }
 
+  function hasSpecificRequest(raw, result){
+    const entities = result.entities || {};
+    const product = core.normalize(entities.product || "");
+    const model = core.normalize(entities.model || "");
+    const dimensions = Array.isArray(entities.dimensions) ? entities.dimensions : [];
+    const specificProduct = product && !["joia","semijoia"].includes(product);
+    const specificTokens = tokens(raw).filter((token) => !genericTokens.has(token));
+    return Boolean(specificProduct || model || dimensions.length || specificTokens.length);
+  }
+
   function scoreProduct(product, query, queryTokens, entities){
     if(product.category === "alianca") return -100;
     const title = core.normalize(product.title);
@@ -35,21 +48,22 @@
       else if(title.includes(token)) score += 5;
       else if(search.includes(token)) score += 2;
     });
-    if(entities.product && title.includes(core.normalize(entities.product))) score += 5;
-    if(entities.model && search.includes(core.normalize(entities.model))) score += 7;
-    if(entities.material === "semijoia" && product.category === "semijoia") score += 4;
-    if(entities.material?.startsWith("ouro") && search.includes("ouro")) score += 4;
-    if(entities.material?.startsWith("prata") && search.includes("prata")) score += 4;
+    if(entities.product && !["joia","semijoia"].includes(core.normalize(entities.product)) && title.includes(core.normalize(entities.product))) score += 6;
+    if(entities.model && search.includes(core.normalize(entities.model))) score += 8;
+    if(entities.material === "semijoia" && product.category === "semijoia") score += 3;
+    if(entities.material?.startsWith("ouro") && search.includes("ouro")) score += 3;
+    if(entities.material?.startsWith("prata") && search.includes("prata")) score += 3;
     if(query && search.includes(query)) score += 8;
     return score;
   }
 
   function findProducts(raw, result){
+    if(!hasSpecificRequest(raw, result)) return [];
     const query = core.normalize(raw);
-    const queryTokens = tokens(raw);
+    const queryTokens = tokens(raw).filter((token) => !["joia","joias","semijoia","semijoias"].includes(token));
     return catalog
       .map((product) => ({product, score:scoreProduct(product, query, queryTokens, result.entities || {})}))
-      .filter((item) => item.score >= 4)
+      .filter((item) => item.score >= 6)
       .sort((a,b) => b.score - a.score || Number(a.product.price) - Number(b.product.price))
       .slice(0, 5)
       .map((item) => item.product);
@@ -114,6 +128,7 @@
       image.loading = "lazy";
       image.decoding = "async";
       image.style.cssText = "display:block;width:100%;aspect-ratio:1/1;object-fit:cover;background:#fff";
+      image.addEventListener("error", () => linkImage.remove(), {once:true});
       linkImage.appendChild(image);
 
       const title = document.createElement("strong");
@@ -173,5 +188,5 @@
     }, true);
   });
 
-  window.__catalogoLojaVisualV1 = Object.freeze({findProducts, scoreProduct, catalog});
+  window.__catalogoLojaVisualV1 = Object.freeze({findProducts, scoreProduct, hasSpecificRequest, catalog});
 })();
