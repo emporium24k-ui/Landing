@@ -1,12 +1,8 @@
 (() => {
   "use strict";
 
-  const STORE = "https://www.emporium24k.com.br/produtos/";
-  const SEMIJOIAS = "https://www.emporium24k.com.br/semijoias/";
-  const SEMIJOIAS_MASC = "https://www.emporium24k.com.br/semijoias/masculino/";
-  const OURO_CORRENTES = "https://www.emporium24k.com.br/joias/masculino1/ouro-18k1/correntes/";
-  const CARTIER_SEMI = "https://www.emporium24k.com.br/produtos/corrente-estilo-cartier-cubinho-15mm/";
-  const state = { busy: false };
+  const SEARCH_BASE = "https://www.emporium24k.com.br/search/?q=";
+  const state = {busy:false};
 
   const normalize = (value) => String(value || "")
     .toLowerCase()
@@ -25,7 +21,17 @@
     ["groumet", "grumet"], ["grumet", "grumet"], ["cartier", "Cartier"],
     ["veneziana", "veneziana"], ["singapura", "singapura"],
     ["piastrine", "piastrine"], ["figaro", "figaro"], ["cubana", "cubana"],
-    ["cadeado", "cadeado"], ["baiana", "baiana"]
+    ["cadeado", "cadeado"], ["baiana", "baiana"], ["riviera", "riviera"],
+    ["ponto de luz", "ponto de luz"], ["ponto luz", "ponto de luz"],
+    ["estrela de davi", "estrela de Davi"], ["estrela davi", "estrela de Davi"],
+    ["espirito santo", "Espírito Santo"], ["sao jorge", "São Jorge"],
+    ["olho grego", "olho grego"], ["flor de lis", "flor de lis"],
+    ["tres por um", "3 por 1"], ["3 por 1", "3 por 1"],
+    ["trevo", "trevo"], ["crucifixo", "crucifixo"], ["cruz", "cruz"],
+    ["escapulario", "escapulário"], ["anilha", "anilha"], ["halter", "halter"],
+    ["basquete", "basquete"], ["coracao", "coração"], ["infinito", "infinito"],
+    ["borboleta", "borboleta"], ["argola", "argola"], ["tenis", "tênis"],
+    ["tennis", "tênis"], ["solitario", "solitário"], ["aparador", "aparador"]
   ];
 
   const products = [
@@ -35,11 +41,31 @@
     [/(?:^|\s)correntes?(?:\s|$)/, "corrente"],
     [/(?:^|\s)(?:cordao|cordoes)(?:\s|$)/, "cordão"],
     [/(?:^|\s)colares?(?:\s|$)/, "colar"],
+    [/(?:^|\s)chokers?(?:\s|$)/, "choker"],
     [/(?:^|\s)pulseiras?(?:\s|$)/, "pulseira"],
     [/(?:^|\s)pingentes?(?:\s|$)/, "pingente"],
     [/(?:^|\s)brincos?(?:\s|$)/, "brinco"],
-    [/(?:^|\s)tornozeleiras?(?:\s|$)/, "tornozeleira"]
+    [/(?:^|\s)tornozeleiras?(?:\s|$)/, "tornozeleira"],
+    [/(?:^|\s)piercings?(?:\s|$)/, "piercing"],
+    [/(?:^|\s)escapularios?(?:\s|$)/, "escapulário"]
   ];
+
+  const STOPWORDS = new Set([
+    "eu","voce","voces","vc","vcs","me","nos","tem","teria","possui","possuem",
+    "vende","vendem","trabalha","trabalham","quero","queria","gostaria","procuro",
+    "busco","buscando","preciso","comprar","ver","mostrar","mostra","mostre","confere",
+    "conferir","favor","por","pra","para","qual","quais","quanto","custa","valor","preco",
+    "modelo","modelos","estilo","tipo","opcao","opcoes","algum","alguma","algo","disponivel",
+    "disponiveis","de","da","do","das","dos","um","uma","uns","umas","em","com","e","ou",
+    "a","o","as","os","assim","igual","parecido","parecida","referente","referentes","site"
+  ]);
+
+  const PLURALS = Object.freeze({
+    aneis:"anel", correntes:"corrente", cordoes:"cordao", colares:"colar", chokers:"choker",
+    pulseiras:"pulseira", pingentes:"pingente", brincos:"brinco", tornozeleiras:"tornozeleira",
+    piercings:"piercing", escapularios:"escapulario", semijoias:"semijoia", banhadas:"banhada",
+    banhados:"banhado"
+  });
 
   function firstMapped(text, map){
     for(const [key, label] of map){
@@ -49,63 +75,107 @@
   }
 
   function isBlocked(text){
-    if(/(?:^|\s)aliancas?(?:\s|$)/.test(text)) return true;
+    if(/(?:^|\s)(?:alianca|aliancas|aliansa|aliansas|alinca|alincas)(?:\s|$)/.test(text)) return true;
     return includesAny(text, [
-      "polimento", "polir", "conserto", "consertar", "reparar", "quebrou",
-      "quero vender", "gostaria de vender", "avaliar meu", "compram meu",
-      "rastreio", "rastreamento", "garantia", "nota fiscal", "certificado",
-      "frete", "sedex", "entrega", "pagamento", "pix", "boleto", "cartao",
-      "encapada", "meu ouro", "ouro do cliente", "abater no valor",
-      "personalizada", "personalizado", "sob medida", "do meu jeito", "igual a foto"
+      "polimento", "polir", "conserto", "consertar", "reparar", "quebrou", "ajustar aro",
+      "quero vender", "gostaria de vender", "eu quero vender", "tenho para vender", "vender minha",
+      "vender meu", "vender uma", "vender um", "avaliar meu", "avaliar minha", "compram meu",
+      "compram minha", "rastreio", "rastreamento", "garantia", "nota fiscal", "certificado",
+      "frete", "sedex", "entrega", "pagamento", "pix", "boleto", "cartao", "encapada",
+      "meu ouro", "ouro do cliente", "abater no valor", "personalizada", "personalizado",
+      "sob medida", "do meu jeito", "igual a foto", "foto de referencia"
     ]);
   }
 
+  function materialLabel(text){
+    const gold = /\b(ouro|18k|10k|14k)\b/.test(text);
+    const silver = /\b(prata|925)\b/.test(text);
+    const semi = /\b(semijoia|semijoias|banhada|banhado|folheada|folheado)\b/.test(text);
+    if(semi && gold) return "semijoia banhada a ouro";
+    if(semi && silver) return "semijoia banhada a prata";
+    if(gold) return text.includes("10k") ? "ouro 10k" : text.includes("14k") ? "ouro 14k" : "ouro 18k";
+    if(silver) return "prata 925";
+    if(semi) return "semijoia";
+    return "";
+  }
+
+  function explicitModel(text){
+    const match = text.match(/\b(?:modelo|estilo)\s+([a-z0-9. ]{2,70})/);
+    if(!match) return "";
+    return match[1]
+      .split(" ")
+      .filter((word) => word && !STOPWORDS.has(word))
+      .slice(0, 5)
+      .join(" ");
+  }
+
+  function buildSearchQuery(text, product, model){
+    const normalizedTokens = text.split(" ")
+      .map((token) => PLURALS[token] || token)
+      .filter((token) => token && !STOPWORDS.has(token));
+
+    const parts = [];
+    if(product) parts.push(normalize(product));
+    if(model) parts.push(normalize(model));
+
+    const phrase = explicitModel(text);
+    if(phrase) parts.push(phrase);
+
+    const material = materialLabel(text);
+    if(material) parts.push(normalize(material));
+
+    const measurements = text.match(/\b\d+(?:\.\d+)?\s*(?:mm|cm)\b/g) || [];
+    parts.push(...measurements.map((item) => item.replace(/\s+/g, "")));
+
+    parts.push(...normalizedTokens);
+
+    const words = [];
+    parts.join(" ").split(" ").forEach((word) => {
+      if(!word || STOPWORDS.has(word) || words.includes(word)) return;
+      words.push(word);
+    });
+
+    return words.slice(0, 9).join(" ").trim();
+  }
+
   function classify(text){
-    if(!text || text.length > 220 || isBlocked(text)) return null;
+    if(!text || text.length > 240 || isBlocked(text)) return null;
 
     const model = firstMapped(text, models);
     const product = firstMapped(text, products);
-    const intent = /\b(quero|queria|gostaria|procuro|busco|preciso|tenho interesse|tem|teria|vendem|vende|comprar|valor|preco|quanto custa)\b/.test(text);
-    const detail = /\b\d+(?:\.\d+)?\s*(?:mm|cm)\b/.test(text) || /\b(ouro|18k|prata|925|semijoia|banhada|banhado)\b/.test(text);
+    const namedModel = explicitModel(text);
+    const intent = /\b(quero|queria|gostaria|procuro|busco|preciso|tenho interesse|tem|teria|possuem|possui|vendem|vende|comprar|valor|preco|quanto custa|mostrar|ver)\b/.test(text);
+    const detail = /\b\d+(?:\.\d+)?\s*(?:mm|cm)\b/.test(text) || /\b(ouro|18k|10k|14k|prata|925|semijoia|banhada|banhado|folheada|folheado)\b/.test(text);
+    const shortSpecific = text.split(" ").length <= 7;
 
-    if(model && (intent || detail || product)) return { model, product, text };
-    if(product && intent && detail) return { model, product, text };
-    if(product && intent && text.split(" ").length <= 8) return { model, product, text };
-    return null;
+    if(!(product || model || namedModel)) return null;
+    if(!intent && !detail && !(model && shortSpecific) && !(product && shortSpecific)) return null;
+
+    const query = buildSearchQuery(text, product, model || namedModel);
+    if(!query) return null;
+    return {text, product, model:model || namedModel || null, query};
   }
 
-  function destination(data){
-    const text = data.text;
-    const gold = /\b(ouro|18k)\b/.test(text);
-    const semi = /\b(semijoia|banhada|banhado)\b/.test(text);
+  function searchUrl(query){
+    return `${SEARCH_BASE}${encodeURIComponent(query)}`;
+  }
 
-    if(data.model === "Cartier"){
-      if(gold) return [{ url: OURO_CORRENTES, label: "Ver Cartier em ouro 18k" }];
-      if(semi) return [{ url: CARTIER_SEMI, label: "Ver Cartier em semijoia" }];
-      return [
-        { url: CARTIER_SEMI, label: "Ver Cartier em semijoia" },
-        { url: OURO_CORRENTES, label: "Ver Cartier em ouro 18k" }
-      ];
-    }
-
-    if(gold && ["corrente", "cordão", "colar", "pulseira"].includes(data.product)){
-      return [{ url: OURO_CORRENTES, label: "Ver opções em ouro 18k" }];
-    }
-
-    if(semi || data.model){
-      return [{ url: SEMIJOIAS_MASC, label: "Ver modelos no site" }];
-    }
-
-    if(data.product) return [{ url: SEMIJOIAS, label: "Ver joias e semijoias" }];
-    return [{ url: STORE, label: "Ver produtos no site" }];
+  function itemLabel(data){
+    if(data.product && data.model) return `${data.product} ${data.model}`;
+    return data.product || data.model || data.query;
   }
 
   function response(data){
-    const item = data.product ? `${data.product}${data.model ? ` modelo ${data.model}` : ""}` : `modelo ${data.model}`;
-    if(data.model === "Cartier"){
-      return `Temos modelos <strong>estilo Cartier</strong> cadastrados na loja online. Você pode conferir opções, medidas, valores e disponibilidade diretamente no site.`;
-    }
-    return `Ótima escolha! Para <strong>${escapeHtml(item)}</strong>, os modelos prontos, valores e disponibilidade atualizados ficam na nossa loja online.`;
+    const item = itemLabel(data);
+    return `Separei a busca por <strong>${escapeHtml(item)}</strong>. O botão abaixo abre os resultados relacionados a esse modelo no catálogo da loja.`;
+  }
+
+  function destination(data){
+    const visibleQuery = data.query.length > 45 ? `${data.query.slice(0, 42)}…` : data.query;
+    return [{
+      url:searchUrl(data.query),
+      label:`Ver opções de ${visibleQuery}`
+    }];
   }
 
   function clock(){
@@ -153,7 +223,7 @@
     const card = document.createElement("div");
     card.className = "action-card store-card";
     const text = document.createElement("p");
-    text.textContent = "Consulte os modelos e a disponibilidade atualizada no site:";
+    text.textContent = "Resultados específicos no catálogo:";
     card.appendChild(text);
 
     const grid = document.createElement("div");
@@ -179,7 +249,7 @@
     const input = document.querySelector("#question");
     if(input) input.value = "";
     addMessage(escapeHtml(raw), "user");
-    await new Promise((resolve) => setTimeout(resolve, 240));
+    await new Promise((resolve) => setTimeout(resolve, 220));
     addMessage(response(data));
     addButtons(destination(data));
     state.busy = false;
@@ -201,5 +271,5 @@
     }, true);
   });
 
-  window.__rotaProdutosSiteV1 = { normalize, classify, destination };
+  window.__rotaProdutosSiteV1 = {normalize, classify, buildSearchQuery, searchUrl, destination};
 })();
