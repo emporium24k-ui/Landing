@@ -27,6 +27,30 @@
       "Pode enviar a foto ou o desenho de referência."
     ],
     [
+      "Adorei esse conceito! Dá para a equipe analisar e transformar em um projeto exclusivo. Envie a referência e os detalhes para montarmos o orçamento.",
+      "Essa ideia pode ficar linda. Pode enviar a referência e me contar os detalhes que deseja."
+    ],
+    [
+      "Essa ideia tem tudo para ficar linda! O próximo passo é conferir material, medidas e viabilidade do desenho.",
+      "Essa ideia tem tudo para ficar linda! Qual material, medidas e detalhes você imagina?"
+    ],
+    [
+      "Muito boa a ideia! Vamos analisar os detalhes e preparar uma proposta personalizada para você.",
+      "Gostei da ideia! Qual material e medidas você tem em mente?"
+    ],
+    [
+      "Ficaria uma peça muito especial! A equipe pode desenvolver o projeto com base nesses detalhes.",
+      "Ficaria uma peça muito especial! Podemos desenvolver o projeto a partir desses detalhes."
+    ],
+    [
+      "Para calcular o valor, precisamos entender o modelo, o material, as medidas e os detalhes da personalização. Envie sua ideia para a equipe montar o orçamento.",
+      "Para calcular o valor, preciso saber o modelo, o material, as medidas e os detalhes da personalização. Me conte como você imagina a peça."
+    ],
+    [
+      "O orçamento depende do projeto. Com a referência e os detalhes, a equipe calcula a melhor configuração para você.",
+      "O orçamento depende do projeto. Com a referência e os detalhes, calculamos a configuração mais adequada."
+    ],
+    [
       "O prazo depende da peça. O atendente confirma antes do fechamento.",
       "O prazo depende da peça. Para alianças, a produção leva até 7 dias."
     ],
@@ -98,10 +122,33 @@
       "Entendi: $1. Com esses detalhes, já dá para confirmar disponibilidade, valor e prazo."
     );
 
+    result = result.replace(
+      /^Ótima escolha!\s*👑?\s*Você selecionou o modelo\s*(<strong>.*?<\/strong>)\s*em\s*(<strong>.*?<\/strong>),\s*por\s*(<strong>.*?<\/strong>)(.*?)\.\s*Para deixar o pedido pronto, envie as duas numerações e a gravação desejada\./i,
+      "O modelo $1 em $2 sai por $3$4. Quais são as duas numerações e a gravação desejada?"
+    );
+
+    result = result.replace(
+      /^Perfeito!\s*Seu interesse ficou organizado:<br><strong>(.*?)<\/strong><br>Agora o atendimento consegue confirmar numerações, promoção vigente, prazo e fechamento com muito mais rapidez\./i,
+      "Recebi estes detalhes:<br><strong>$1</strong><br>Agora só falta confirmar as numerações, a condição atual e o prazo."
+    );
+
+    result = result.replace(
+      /^Perfeito!\s*Organizei sua solicitação:<br><strong>(.*?)<\/strong><br>A equipe poderá analisar a viabilidade, calcular o valor e orientar os próximos passos sem você precisar explicar tudo novamente\./i,
+      "Entendi seu projeto:<br><strong>$1</strong><br>Com esses detalhes, já dá para calcular o valor e confirmar a produção."
+    );
+
+    result = result.replace(
+      /^Sua ideia ficou muito interessante!\s*👑?\s*Anotei o projeto em\s*(<strong>.*?<\/strong>):\s*“(.*?)”\.\s*Para deixar a solicitação pronta, quais são as numerações dos dois aros\?/i,
+      "Gostei da ideia para $1: “$2”. Quais são as numerações dos dois aros?"
+    );
+
     result = result
+      .replace(/^Parabéns[!,.]?\s*/i, "")
       .replace(/^Ótima escolha!\s*/i, "")
       .replace(/^Excelente escolha!\s*/i, "")
       .replace(/Para direcionar o orçamento certinho, falta só confirmar/gi, "Só preciso confirmar")
+      .replace(/Para deixar o pedido pronto, envie/gi, "Agora me diga")
+      .replace(/Para deixar a solicitação pronta,/gi, "Agora,")
       .replace(/Já deixei sua solicitação pronta para o vendedor\.?/gi, "")
       .replace(/Agora o atendimento consegue/gi, "Com essas informações, já dá para")
       .replace(/A equipe poderá analisar/gi, "Com esses detalhes, dá para analisar")
