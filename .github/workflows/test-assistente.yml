@@ -8,7 +8,11 @@ on:
       - "assistente/core-intencoes-v1.js"
       - "assistente/coordenador-central-v1.js"
       - "assistente/top-cta-v1.js"
+      - "assistente/catalogo-loja-visual-v1.js"
+      - "assistente/recuperacao-conversa-v1.js"
+      - "assistente/index.html"
       - "scripts/test_assistente_core.js"
+      - "scripts/test_assistente_invariants.js"
       - ".github/workflows/test-assistente.yml"
 
 permissions:
@@ -31,11 +35,24 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: "22"
-      - name: Run assistant tests
+      - name: Validate JavaScript syntax
+        run: |
+          node --check assistente/config-negocio-v1.js
+          node --check assistente/core-intencoes-v1.js
+          node --check assistente/coordenador-central-v1.js
+          node --check assistente/top-cta-v1.js
+          node --check assistente/metricas-v1.js
+          node --check assistente/catalogo-loja-visual-v1.js
+          node --check assistente/recuperacao-conversa-v1.js
+          node --check scripts/test_assistente_core.js
+          node --check scripts/test_assistente_invariants.js
+      - name: Run intent and business-rule tests
         run: node scripts/test_assistente_core.js
+      - name: Run preservation and architecture tests
+        run: node scripts/test_assistente_invariants.js
       - name: Record tested version
         run: |
-          printf '{"status":"passed","commit":"%s","tested_at":"%s","suite":"scripts/test_assistente_core.js"}\n' "$GITHUB_SHA" "$(date -u +%Y-%m-%dT%H:%M:%SZ)" > assistente/test-status.json
+          printf '{"status":"passed","commit":"%s","tested_at":"%s","suites":["scripts/test_assistente_core.js","scripts/test_assistente_invariants.js"]}\n' "$GITHUB_SHA" "$(date -u +%Y-%m-%dT%H:%M:%SZ)" > assistente/test-status.json
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add assistente/test-status.json
