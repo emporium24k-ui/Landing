@@ -4,7 +4,9 @@ on:
   workflow_dispatch:
   push:
     paths:
-      - "assistente/**"
+      - "assistente/*.js"
+      - "assistente/index.html"
+      - "assistente/style.css"
       - "tests-browser/**"
       - "playwright.config.js"
       - "package.json"
