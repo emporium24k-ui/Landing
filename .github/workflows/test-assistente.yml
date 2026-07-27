@@ -1,0 +1,29 @@
+name: Test assistant rules
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - "assistente/config-negocio-v1.js"
+      - "assistente/core-intencoes-v1.js"
+      - "assistente/coordenador-central-v1.js"
+      - "assistente/top-cta-v1.js"
+      - "scripts/test_assistente_core.js"
+      - ".github/workflows/test-assistente.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Use Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Run assistant tests
+        run: node scripts/test_assistente_core.js
