@@ -26,6 +26,11 @@
     "cordao baiano","rabo de rato","3 por 1"
   ]);
 
+  const ALLIANCE_MODELS = Object.freeze([
+    "atlas","curve","prime","vow","spark","bond","eternal","luna","horizon","lustre",
+    "legacy","flare","aura","roots","celeste","lux","gleam","pulse","halo"
+  ]);
+
   const PRODUCT_TERMS = Object.freeze([
     "alianca","anel","solitario","aparador","corrente","cordao","colar","choker","pulseira",
     "pingente","brinco","tornozeleira","piercing","escapulario","joia","semijoia"
@@ -81,6 +86,8 @@
   function modelFrom(text){
     const known = firstPhrase(text, MODEL_TERMS);
     if(known) return known;
+    const allianceModel = ALLIANCE_MODELS.find((item) => exactWord(text, item));
+    if(allianceModel) return allianceModel;
     const explicit = text.match(/\b(?:modelo|estilo)\s+([a-z0-9. ]{2,60})/);
     return explicit ? explicit[1].trim().split(" ").slice(0, 5).join(" ") : null;
   }
@@ -99,6 +106,7 @@
     if(!text) return {intent:"empty", confidence:1, text, entities};
 
     const alliance = /\balianca(?:s)?\b/.test(text);
+    const allianceModel = ALLIANCE_MODELS.some((item) => exactWord(text, item));
     const price = /\b(valor|valores|preco|precos|quanto custa|quanto fica|quanto sai|orcamento)\b/.test(text);
     const browse = /\b(modelo|modelos|catalogo|opcoes|ver|mostrar|mostra|conhecer|escolher)\b/.test(text);
     const custom = anyPhrase(text, ["personalizada","personalizado","sob medida","do meu jeito","minha ideia","modelo proprio","igual a foto","foto de referencia","desenho"]);
@@ -108,13 +116,14 @@
     if(anyPhrase(text, ["rastreio","rastreamento","codigo de rastreio","acompanhar pedido","onde esta meu pedido"]))
       return {intent:"tracking", confidence:.99, text, entities};
 
-    if(anyPhrase(text, ["ajustar aro","ajustar minha alianca","ajustar minhas aliancas","aumentar aro","diminuir aro","alianca apertada","alianca larga","alianca folgada"]))
+    if(anyPhrase(text, ["ajustar aro","ajustar minha alianca","ajustar minhas aliancas","aumentar aro","diminuir aro","alianca apertada","alianca larga","alianca folgada"]) || /\balianca(?:s)?\b.*\b(apertada|apertadas|larga|largas|folgada|folgadas)\b/.test(text))
       return {intent:"ring_resize", confidence:.99, text, entities};
 
-    if(anyPhrase(text, ["meu ouro","ouro do cliente","eu dou o ouro","eu tenho o ouro","usar meu ouro","levar meu ouro","so mao de obra","somente mao de obra"]) && (alliance || anyPhrase(text,["fabricar","fazer","produzir"])))
+    const customerGold = anyPhrase(text, ["meu ouro","ouro do cliente","eu dou o ouro","eu der o ouro","se eu der o ouro","eu tenho o ouro","usar meu ouro","levar meu ouro","se eu levar o ouro","so mao de obra","somente mao de obra"]);
+    if(customerGold && (alliance || anyPhrase(text,["fabricar","fazer","produzir"])))
       return {intent:"customer_gold_alliance", confidence:.99, text, entities};
 
-    if(anyPhrase(text, ["quero vender","gostaria de vender","tenho para vender","avaliar meu ouro","avaliar minha prata","quanto pagam","compram meu ouro","compram minha prata","vender ouro","vender prata"]) || /\bvoces compram (?:ouro|prata)\b/.test(text))
+    if(anyPhrase(text, ["quero vender","gostaria de vender","tenho para vender","avaliar meu ouro","avaliar minha prata","quanto pagam","compram meu ouro","compram minha prata","vender ouro","vender prata"]) || /\bvoces compram (?:ouro|prata)\b/.test(text) || /\bquanto (?:voces )?pagam\b.*\b(ouro|prata)\b/.test(text))
       return {intent:"sell_metals", confidence:.99, text, entities};
 
     if(anyPhrase(text, ["conserto","consertar","reparar","soldar","quebrou","polimento","polir","pedra caiu"]))
@@ -127,7 +136,8 @@
     }
 
     if(karatQuestion) return {intent:"material_education", confidence:.98, text, entities};
-    if(alliance && custom) return {intent:"alliance_custom", confidence:.98, text, entities};
+    if((alliance || allianceModel) && custom) return {intent:"alliance_custom", confidence:.98, text, entities:{...entities, product:"alianca"}};
+    if(allianceModel && (browse || price || material || /\b(tem|quero|valor|preco)\b/.test(text))) return {intent:"alliance_catalog", confidence:.98, text, entities:{...entities, product:"alianca"}};
     if(alliance && (browse || price || model || material)) return {intent:"alliance_catalog", confidence:.97, text, entities};
     if(alliance) return {intent:"alliance_interest", confidence:.9, text, entities};
 
