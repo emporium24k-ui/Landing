@@ -1,0 +1,180 @@
+[WebServer] 127.0.0.1 - - [27/Jul/2026 21:12:57] "GET /assistente/teores-materiais-v1.js?v=20260727-1 HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [27/Jul/2026 21:12:57] "GET /assistente/venda-metais-v1.js?v=20260727-1 HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [27/Jul/2026 21:12:57] "GET /assistente/banho-semijoias-v1.js?v=20260724-1 HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [27/Jul/2026 21:12:57] "GET /assistente/seguranca-entrega-v1.js?v=20260724-1 HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [27/Jul/2026 21:12:57] "GET /assistente/catalogo-dados-oficiais.js?v=20260727-46 HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [27/Jul/2026 21:12:57] "GET /assistente/catalogo-oficial-v1.js?v=20260727-46 HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [27/Jul/2026 21:12:57] "GET /assistente/catalogo-aliancas-v1.js?v=20260727-2 HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [27/Jul/2026 21:12:57] "GET /assistente/gravacao-limite-v2.js?v=20260727-1 HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [27/Jul/2026 21:12:57] "GET /assistente/catalogo-conversa-v2.js?v=20260727-1 HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [27/Jul/2026 21:12:57] "GET /assistente/valor-personalizado-v1.js?v=20260727-2 HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [27/Jul/2026 21:12:57] "GET /assistente/frete-prata-v1.js?v=20260727-48 HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [27/Jul/2026 21:12:57] "GET /assistente/rota-produtos-site-v1.js?v=20260727-3 HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [27/Jul/2026 21:12:57] "GET /assistente/modelo-especifico-v1.js?v=20260724-2 HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [27/Jul/2026 21:12:57] "GET /assistente/rastreamento-v1.js?v=20260724-1 HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [27/Jul/2026 21:12:57] "GET /assistente/primeiro-contato-v3.js?v=20260724-1 HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [27/Jul/2026 21:12:57] "GET /assistente/desconto-catalogo-v1.js?v=20260727-2 HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [27/Jul/2026 21:12:57] "GET /assistente/maquininha-v1.js?v=20260724-1 HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [27/Jul/2026 21:12:57] "GET /assistente/encapada-hotfix-v1.js?v=20260724-1 HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [27/Jul/2026 21:12:57] "GET /assistente/pagamento-v2.js?v=20260724-1 HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [27/Jul/2026 21:12:57] "GET /assistente/cartao-distancia-prazo-v1.js?v=20260724-1 HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [27/Jul/2026 21:12:57] "GET /assistente/trust-v2.js?v=20260724-1 HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [27/Jul/2026 21:12:57] "GET /assistente/endereco-polimento-v2.js?v=20260724-2 HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [27/Jul/2026 21:12:57] "GET /assistente/personalizados-v1.js?v=20260724-2 HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [27/Jul/2026 21:12:57] "GET /assistente/entrega-presencial-v1.js?v=20260724-1 HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [27/Jul/2026 21:12:57] "GET /assistente/catalog-hotfix-v3.js?v=20260724-1 HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [27/Jul/2026 21:12:57] "GET /assistente/app-concise-v3.js?v=20260724-2 HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [27/Jul/2026 21:12:57] "GET /assistente/recuperacao-conversa-v1.js?v=20260727-53 HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [27/Jul/2026 21:12:58] "GET /assistente/catalogo-imagens/silver-vow.webp HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [27/Jul/2026 21:12:58] "GET /assistente/catalogo-imagens/silver-gleam.webp HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [27/Jul/2026 21:12:58] "GET /assistente/catalogo-imagens/silver-celeste.webp HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [27/Jul/2026 21:12:58] "GET /assistente/catalogo-imagens/silver-pulse.webp HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [27/Jul/2026 21:12:58] "GET /assistente/catalogo-imagens/silver-lux.webp HTTP/1.1" 200 -
+·
+
+  1) [mobile-chromium] › tests-browser/assistente.spec.js:14:1 › carrega e o atendimento superior usa o telefone do chefe 
+
+    Error: expect(locator).toBeVisible() failed
+
+    Locator:  locator('#newConversation')
+    Expected: visible
+    Received: hidden
+    Timeout:  8000ms
+
+    Call log:
+      - Expect "toBeVisible" with timeout 8000ms
+      - waiting for locator('#newConversation')
+        20 × locator resolved to <button type="button" class="top-store" id="newConversation" title="Iniciar nova conversa" aria-label="Iniciar nova conversa">Nova</button>
+           - unexpected value "hidden"
+
+
+      16 |   const url = await page.evaluate(() => window.__topCtaV1?.whatsappUrl?.());
+      17 |   expect(url).toContain('phone=5541998518452');
+    > 18 |   await expect(page.locator('#newConversation')).toBeVisible();
+         |                                                  ^
+      19 | });
+      20 |
+      21 | test('busca específica mostra produtos ou pesquisa exata sem vendedor', async ({ page }) => {
+        at /home/runner/work/Landing/Landing/tests-browser/assistente.spec.js:18:50
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/assistente-carrega-e-o-ate-4fca8-ior-usa-o-telefone-do-chefe-mobile-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/assistente-carrega-e-o-ate-4fca8-ior-usa-o-telefone-do-chefe-mobile-chromium/error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/assistente-carrega-e-o-ate-4fca8-ior-usa-o-telefone-do-chefe-mobile-chromium/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/assistente-carrega-e-o-ate-4fca8-ior-usa-o-telefone-do-chefe-mobile-chromium/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Retry #1 ───────────────────────────────────────────────────────────────────────────────────────
+
+    Error: expect(locator).toBeVisible() failed
+
+    Locator:  locator('#newConversation')
+    Expected: visible
+    Received: hidden
+    Timeout:  8000ms
+
+    Call log:
+      - Expect "toBeVisible" with timeout 8000ms
+      - waiting for locator('#newConversation')
+        20 × locator resolved to <button type="button" class="top-store" id="newConversation" title="Iniciar nova conversa" aria-label="Iniciar nova conversa">Nova</button>
+           - unexpected value "hidden"
+
+
+      16 |   const url = await page.evaluate(() => window.__topCtaV1?.whatsappUrl?.());
+      17 |   expect(url).toContain('phone=5541998518452');
+    > 18 |   await expect(page.locator('#newConversation')).toBeVisible();
+         |                                                  ^
+      19 | });
+      20 |
+      21 | test('busca específica mostra produtos ou pesquisa exata sem vendedor', async ({ page }) => {
+        at /home/runner/work/Landing/Landing/tests-browser/assistente.spec.js:18:50
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/assistente-carrega-e-o-ate-4fca8-ior-usa-o-telefone-do-chefe-mobile-chromium-retry1/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/assistente-carrega-e-o-ate-4fca8-ior-usa-o-telefone-do-chefe-mobile-chromium-retry1/error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/assistente-carrega-e-o-ate-4fca8-ior-usa-o-telefone-do-chefe-mobile-chromium-retry1/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/assistente-carrega-e-o-ate-4fca8-ior-usa-o-telefone-do-chefe-mobile-chromium-retry1/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  2) [mobile-chromium] › tests-browser/assistente.spec.js:44:1 › nova conversa limpa a interface e a memória 
+
+    Test timeout of 30000ms exceeded.
+
+    Error: page.waitForNavigation: Test timeout of 30000ms exceeded.
+    =========================== logs ===========================
+    waiting for navigation until "load"
+    ============================================================
+
+      47 |   await expect(page.locator('.row.user')).toHaveCount(1);
+      48 |   await Promise.all([
+    > 49 |     page.waitForNavigation(),
+         |          ^
+      50 |     page.locator('#newConversation').click()
+      51 |   ]);
+      52 |   await expect(page.locator('.row.user')).toHaveCount(0);
+        at /home/runner/work/Landing/Landing/tests-browser/assistente.spec.js:49:10
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/assistente-nova-conversa-limpa-a-interface-e-a-memória-mobile-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/assistente-nova-conversa-limpa-a-interface-e-a-memória-mobile-chromium/error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/assistente-nova-conversa-limpa-a-interface-e-a-memória-mobile-chromium/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/assistente-nova-conversa-limpa-a-interface-e-a-memória-mobile-chromium/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Retry #1 ───────────────────────────────────────────────────────────────────────────────────────
+
+    Test timeout of 30000ms exceeded.
+
+    Error: page.waitForNavigation: Test timeout of 30000ms exceeded.
+    =========================== logs ===========================
+    waiting for navigation until "load"
+    ============================================================
+
+      47 |   await expect(page.locator('.row.user')).toHaveCount(1);
+      48 |   await Promise.all([
+    > 49 |     page.waitForNavigation(),
+         |          ^
+      50 |     page.locator('#newConversation').click()
+      51 |   ]);
+      52 |   await expect(page.locator('.row.user')).toHaveCount(0);
+        at /home/runner/work/Landing/Landing/tests-browser/assistente.spec.js:49:10
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/assistente-nova-conversa-limpa-a-interface-e-a-memória-mobile-chromium-retry1/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/assistente-nova-conversa-limpa-a-interface-e-a-memória-mobile-chromium-retry1/error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/assistente-nova-conversa-limpa-a-interface-e-a-memória-mobile-chromium-retry1/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/assistente-nova-conversa-limpa-a-interface-e-a-memória-mobile-chromium-retry1/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  2 failed
+    [mobile-chromium] › tests-browser/assistente.spec.js:14:1 › carrega e o atendimento superior usa o telefone do chefe 
+    [mobile-chromium] › tests-browser/assistente.spec.js:44:1 › nova conversa limpa a interface e a memória 
+  8 passed (1.5m)
