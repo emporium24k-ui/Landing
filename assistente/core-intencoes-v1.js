@@ -116,7 +116,7 @@
     if(anyPhrase(text, ["rastreio","rastreamento","codigo de rastreio","acompanhar pedido","onde esta meu pedido"]))
       return {intent:"tracking", confidence:.99, text, entities};
 
-    if(anyPhrase(text, ["ajustar aro","ajustar minha alianca","ajustar minhas aliancas","aumentar aro","diminuir aro","alianca apertada","alianca larga","alianca folgada"]) || /\balianca(?:s)?\b.*\b(apertada|apertadas|larga|largas|folgada|folgadas)\b/.test(text))
+    if(anyPhrase(text, ["ajustar aro","ajustar o aro","ajustar minha alianca","ajustar minhas aliancas","aumentar aro","aumentar o aro","diminuir aro","diminuir o aro","alianca apertada","alianca larga","alianca folgada"]) || /\balianca(?:s)?\b.*\b(apertada|apertadas|larga|largas|folgada|folgadas)\b/.test(text))
       return {intent:"ring_resize", confidence:.99, text, entities};
 
     const customerGold = anyPhrase(text, ["meu ouro","ouro do cliente","eu dou o ouro","eu der o ouro","se eu der o ouro","eu tenho o ouro","usar meu ouro","levar meu ouro","se eu levar o ouro","so mao de obra","somente mao de obra"]);
