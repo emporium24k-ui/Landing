@@ -39,9 +39,11 @@
     const alliance = /\b(alianca|aliancas|aliansa|aliansas|alinca|alincas)\b/.test(text);
     const silver = /\b(prata|925)\b/.test(text);
     const gold = /\b(ouro|18k|10k)\b/.test(text);
+    const otherProduct = /\b(joia|joias|semijoia|semijoias|corrente|correntes|cordao|cordoes|colar|colares|pulseira|pulseiras|pingente|pingentes|brinco|brincos|anel|aneis|tornozeleira|tornozeleiras)\b/.test(text);
 
     if(alliance && silver) return "silver";
     if(alliance && gold) return "gold";
+    if(otherProduct && !alliance) return "other";
     return catalogContext();
   }
 
@@ -56,6 +58,11 @@
       return presencial
         ? "Atendemos presencialmente em Curitiba e região. Para outras cidades, as alianças de ouro são enviadas gratuitamente por Sedex."
         : "Nas alianças de ouro, o envio é gratuito por Sedex para todo o Brasil.";
+    }
+    if(context === "other"){
+      return presencial
+        ? "Atendemos presencialmente em Curitiba e região. Para outras cidades, joias e semijoias são enviadas gratuitamente por Sedex."
+        : "Para joias e semijoias, o envio é gratuito por Sedex para todo o Brasil.";
     }
     return presencial
       ? "Atendemos presencialmente em Curitiba e região e enviamos por Sedex para todo o Brasil. Alianças de ouro, joias e semijoias têm frete grátis; nas alianças de prata 925, o frete é calculado conforme o CEP."
