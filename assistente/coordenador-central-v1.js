@@ -8,12 +8,14 @@
   const STORAGE_KEY = "emp24kAssistantStateV1";
   const state = {
     intent: null,
+    lastIntent: null,
     material: null,
     product: null,
     model: null,
     stage: null,
     lastUserMessage: "",
     messages: 0,
+    unknownStreak: 0,
     history: []
   };
 
@@ -26,13 +28,67 @@
     try{ sessionStorage.setItem(STORAGE_KEY, JSON.stringify({...state, history:state.history.slice(-12)})); }catch(_){ /* armazenamento opcional */ }
   }
 
+  const isAllianceIntent = (intent) => ["alliance_interest","alliance_catalog","alliance_custom","customer_gold_alliance","ring_resize","engraving"].includes(intent);
+  const isNeutralIntent = (intent) => ["empty","greeting","thanks","unknown"].includes(intent);
+
+  function applyContextTransition(result){
+    const intent = result.intent;
+    const entities = result.entities || {};
+    const previousProduct = state.product;
+
+    if(intent === "unknown"){
+      state.unknownStreak += 1;
+      return;
+    }
+    state.unknownStreak = 0;
+    if(!isNeutralIntent(intent)){
+      state.lastIntent = state.intent;
+      state.intent = intent;
+    }
+
+    if(isAllianceIntent(intent)){
+      const enteringAlliance = previousProduct !== "alianca";
+      state.product = "alianca";
+      if(enteringAlliance && !entities.material) state.material = null;
+      if(enteringAlliance && !entities.model) state.model = null;
+      if(entities.material) state.material = entities.material;
+      if(entities.model) state.model = entities.model;
+      if(intent === "alliance_interest" && enteringAlliance) state.model = null;
+      return;
+    }
+
+    if(intent === "ready_product_search"){
+      state.product = entities.product || null;
+      state.material = entities.material || null;
+      state.model = entities.model || null;
+      return;
+    }
+
+    if(intent === "sell_metals"){
+      state.product = entities.product || "ouro/prata";
+      state.material = entities.material || null;
+      state.model = null;
+      return;
+    }
+
+    if(intent === "repair_service"){
+      state.product = entities.product || (state.intent === "repair_service" ? state.product : null);
+      state.material = entities.material || null;
+      state.model = null;
+      return;
+    }
+
+    if(["identity","location","greeting","thanks"].includes(intent)) return;
+
+    if(entities.product) state.product = entities.product;
+    if(entities.material) state.material = entities.material;
+    if(entities.model) state.model = entities.model;
+  }
+
   function updateFromResult(result, raw){
-    state.intent = result.intent;
     state.lastUserMessage = String(raw || "").trim();
     state.messages += 1;
-    if(result.entities?.material) state.material = result.entities.material;
-    if(result.entities?.product) state.product = result.entities.product;
-    if(result.entities?.model) state.model = result.entities.model;
+    applyContextTransition(result);
 
     const stageByIntent = {
       alliance_interest:"escolhendo material",
@@ -45,9 +101,10 @@
       repair_service:"serviço ou conserto",
       tracking:"rastreamento",
       payment:"formas de pagamento",
-      shipping:"frete e envio"
+      shipping:"frete e envio",
+      engraving:"definindo gravação"
     };
-    state.stage = stageByIntent[result.intent] || state.stage;
+    if(stageByIntent[result.intent]) state.stage = stageByIntent[result.intent];
     state.history.push({intent:result.intent, message:state.lastUserMessage, at:Date.now()});
     state.history = state.history.slice(-12);
     save();
@@ -57,8 +114,9 @@
   function setFromButton(button){
     if(button.dataset.ringCatalog){
       state.intent = "alliance_catalog";
-      state.material = button.dataset.ringCatalog === "silver" ? "prata 925" : "ouro 18k";
       state.product = "alianca";
+      state.material = button.dataset.ringCatalog === "silver" ? "prata 925" : "ouro 18k";
+      state.model = null;
       state.stage = "vendo modelos";
     }
     if(button.dataset.ringModel){
@@ -74,6 +132,7 @@
     if(button.dataset.personalizedMaterial){
       state.intent = "alliance_custom";
       state.product = "alianca";
+      state.model = null;
       state.material = button.dataset.personalizedMaterial === "silver" ? "prata 925" : button.dataset.personalizedMaterial === "gold" ? "ouro 18k" : state.material;
       state.stage = "descrevendo personalizada";
     }
@@ -96,12 +155,14 @@
       trust:"segurança e documentos",
       location:"endereço",
       material_education:"dúvida sobre materiais",
-      engraving:"gravação interna"
+      engraving:"gravação interna",
+      semijewelry_bath_service:"banho em semijoia"
     })[intent] || "atendimento geral";
   }
 
   function buildSummary(){
-    const parts = [`Olá! Vim pelo assistente Coroa 24K e preciso de ajuda com ${contextLabel(state.intent)}.`];
+    const activeIntent = isNeutralIntent(state.intent) ? state.lastIntent : state.intent;
+    const parts = [`Olá! Vim pelo assistente Coroa 24K e preciso de ajuda com ${contextLabel(activeIntent)}.`];
     if(state.product) parts.push(`Produto: ${state.product}.`);
     if(state.material) parts.push(`Material: ${state.material}.`);
     if(state.model) parts.push(`Modelo: ${state.model}.`);
@@ -111,12 +172,12 @@
   }
 
   function rewritePolicy(bubble){
-    if(!(bubble instanceof HTMLElement) || bubble.closest(".row.user") || bubble.dataset.centralPolicy === "1") return;
+    if(!(bubble instanceof HTMLElement) || bubble.closest(".row.user")) return;
     const plain = core.normalize(bubble.textContent);
     if(!plain) return;
     let replacement = null;
 
-    if(plain.includes("nao produzimos em ouro 10k ou 14k") || plain.includes("trabalhamos somente com ouro 18k") && state.product === "alianca"){
+    if(plain.includes("nao produzimos em ouro 10k ou 14k") || (plain.includes("trabalhamos somente com ouro 18k") && state.product === "alianca")){
       replacement = "Para alianças, trabalhamos com <strong>ouro 10k e ouro 18k</strong>. O ouro 14k ainda não está disponível, e não fazemos em ouro 24k porque ele é macio demais para o uso diário.";
     }
 
@@ -142,7 +203,15 @@
       replacement = "Fazemos o aumento ou a diminuição do aro. Caso você não saiba quantos números precisa ajustar, o atendente ajuda a descobrir a medida correta.";
     }
 
-    if(replacement) bubble.innerHTML = replacement;
+    if(!replacement && state.intent === "semijewelry_bath_service" && /fazemos|realizamos|aceitamos/.test(plain) && /banho/.test(plain)){
+      replacement = "Não realizamos banho de ouro ou prata em peças de clientes. Vendemos semijoias prontas, banhadas com várias camadas, disponíveis na loja online.";
+    }
+
+    if(!replacement && state.intent === "ready_product_search" && /vendedor|atendente comercial|encaminhar/.test(plain) && !/site|loja online/.test(plain)){
+      replacement = "As joias e semijoias prontas são compradas pela loja online. Posso abrir a busca já filtrada pelo modelo que você informou.";
+    }
+
+    if(replacement && bubble.innerHTML !== replacement) bubble.innerHTML = replacement;
     bubble.dataset.centralPolicy = "1";
   }
 
@@ -173,8 +242,8 @@
     const observer = new MutationObserver((mutations) => mutations.forEach((mutation) => mutation.addedNodes.forEach((node) => {
       if(node instanceof HTMLElement) scan(node);
     })));
-    observer.observe(messages, {childList:true, subtree:true});
+    observer.observe(messages, {childList:true, subtree:true, characterData:false});
   });
 
-  window.__coordenadorCentralV1 = Object.freeze({state, buildSummary, classify:core.classify, save});
+  window.__coordenadorCentralV1 = Object.freeze({state, buildSummary, classify:core.classify, save, applyContextTransition});
 })();
