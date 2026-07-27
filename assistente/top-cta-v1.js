@@ -1,22 +1,20 @@
 (() => {
   "use strict";
 
-  const SALES = ["5541995888995", "5541995776736"];
-  const MESSAGE = "Olá! Vim pelo assistente Coroa 24K e gostaria de falar com um atendente.";
+  function config(){
+    return window.__EMP24K_CONFIG__ || {
+      contacts:{boss:"5541998518452"}
+    };
+  }
 
-  function choosePhone(){
-    try{
-      const data = new Uint32Array(1);
-      crypto.getRandomValues(data);
-      return SALES[data[0] % SALES.length];
-    }catch(_){
-      return SALES[Math.random() < 0.5 ? 0 : 1];
-    }
+  function message(){
+    const summary = window.__coordenadorCentralV1?.buildSummary?.();
+    return summary || "Olá! Vim pelo assistente Coroa 24K e gostaria de falar com um atendente.";
   }
 
   function whatsappUrl(){
-    const phone = choosePhone();
-    return `https://api.whatsapp.com/send/?phone=${phone}&text=${encodeURIComponent(MESSAGE)}&type=phone_number&app_absent=0`;
+    const phone = config().contacts.boss || "5541998518452";
+    return `https://api.whatsapp.com/send/?phone=${phone}&text=${encodeURIComponent(message())}&type=phone_number&app_absent=0`;
   }
 
   document.addEventListener("DOMContentLoaded", () => {
@@ -32,4 +30,6 @@
       window.open(whatsappUrl(), "_blank", "noopener,noreferrer");
     }, true);
   });
+
+  window.__topCtaV1 = {whatsappUrl, message};
 })();
