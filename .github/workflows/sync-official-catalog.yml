@@ -1,0 +1,49 @@
+name: Sync official alliance catalog
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "25 8 * * 1"
+  push:
+    paths:
+      - ".github/workflows/sync-official-catalog.yml"
+      - "scripts/sync_official_catalog.py"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: official-alliance-catalog
+  cancel-in-progress: false
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Sync prices, details and images
+        run: python -c "import urllib.parse; exec(compile(open('scripts/sync_official_catalog.py', encoding='utf-8').read(), 'scripts/sync_official_catalog.py', 'exec'))"
+
+      - name: Validate generated manifest
+        run: |
+          test -s assistente/catalogo-dados-oficiais.js
+          test -d assistente/catalogo-imagens
+          test "$(find assistente/catalogo-imagens -type f | wc -l)" -ge 20
+          grep -q 'gold-celeste' assistente/catalogo-dados-oficiais.js
+
+      - name: Commit synchronized catalog
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add assistente/catalogo-dados-oficiais.js assistente/catalogo-imagens
+          if git diff --cached --quiet; then
+            echo "Catalog already synchronized."
+            exit 0
+          fi
+          git commit -m "Sync official alliance catalog data and images"
+          git push
