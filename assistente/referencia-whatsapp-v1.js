@@ -122,10 +122,42 @@
     if(input) input.focus();
   }
 
+  function clarifyBubble(bubble){
+    if(!(bubble instanceof HTMLElement) || bubble.closest(".row.user") || bubble.dataset.referenceClarified === "1") return;
+
+    let html = bubble.innerHTML;
+    html = html
+      .replace(/Envie a referência e os detalhes para montarmos o orçamento\./gi, "Para enviar a foto ou o desenho, use o botão do WhatsApp abaixo. Aqui você pode continuar me contando os detalhes por texto.")
+      .replace(/Pode enviar a referência e me contar os detalhes que deseja\./gi, "Para enviar a foto ou o desenho, use o botão do WhatsApp abaixo. Aqui você pode continuar me contando os detalhes por texto.")
+      .replace(/Pode enviar a foto ou o desenho de referência\./gi, "Use o botão do WhatsApp abaixo para enviar a foto ou o desenho.")
+      .replace(/Envie sua ideia para a equipe montar o orçamento\./gi, "Conte a ideia por texto. Para enviar uma foto ou desenho, use o botão do WhatsApp.")
+      .replace(/caso possua, diga que tem uma foto ou desenho de referência\./gi, "caso tenha uma foto ou desenho, diga “tenho uma referência” e eu mostro o botão para enviar pelo WhatsApp.");
+
+    if(html !== bubble.innerHTML) bubble.innerHTML = html;
+    bubble.dataset.referenceClarified = "1";
+  }
+
+  function clarifyButton(element){
+    if(!(element instanceof HTMLElement)) return;
+    const text = normalize(element.textContent);
+    if(text === "enviar referencia") element.textContent = "Enviar foto pelo WhatsApp";
+    if(text === "enviar ideia ao atendimento") element.textContent = "Enviar ideia pelo WhatsApp";
+    if(text === "enviar projeto personalizado") element.textContent = "Enviar projeto pelo WhatsApp";
+  }
+
+  function processNode(node){
+    if(!(node instanceof HTMLElement)) return;
+    if(node.matches(".row:not(.user) .bubble")) clarifyBubble(node);
+    if(node.matches("a,button")) clarifyButton(node);
+    node.querySelectorAll?.(".row:not(.user) .bubble").forEach(clarifyBubble);
+    node.querySelectorAll?.("a,button").forEach(clarifyButton);
+  }
+
   document.addEventListener("DOMContentLoaded", () => {
     const form = document.querySelector("#composer");
     const input = document.querySelector("#question");
-    if(!form || !input) return;
+    const messages = document.querySelector("#messages");
+    if(!form || !input || !messages) return;
 
     form.addEventListener("submit", (event) => {
       const raw = String(input.value || "").trim();
@@ -134,7 +166,13 @@
       event.stopImmediatePropagation();
       answer(raw);
     }, true);
+
+    processNode(messages);
+    const observer = new MutationObserver((mutations) => {
+      mutations.forEach((mutation) => mutation.addedNodes.forEach(processNode));
+    });
+    observer.observe(messages, {childList:true, subtree:true});
   });
 
-  window.__referenciaWhatsappV1 = {normalize, classify};
+  window.__referenciaWhatsappV1 = {normalize, classify, clarifyBubble};
 })();
