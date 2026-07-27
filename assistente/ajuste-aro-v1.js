@@ -2,13 +2,15 @@
   "use strict";
 
   const SERVICE_PHONE = "5541998518452";
-  const state = { busy: false, lastReply: -1 };
+  const state = { busy: false, lastReply: -1, awaitingDetails: false };
 
   const replies = [
-    "Fazemos, sim, <strong>ajuste de aro em alianças e anéis</strong>. É possível aumentar ou diminuir a numeração; precisamos apenas analisar a peça para verificar quantos números serão alterados e calcular o valor do serviço.",
-    "Sim! Fazemos <strong>ajuste do tamanho da aliança</strong>, tanto para aumentar quanto para diminuir o aro. A análise serve para identificar a numeração atual, a desejada e o procedimento adequado para a peça.",
-    "Trabalhamos com <strong>aumento e diminuição de aro</strong> em alianças e anéis. Envie uma foto e informe se a peça ficou apertada ou larga, além da numeração atual e da desejada, caso saiba, para calcularmos o ajuste."
+    "Fazemos, sim, <strong>ajuste de aro em alianças e anéis</strong>. É possível aumentar ou diminuir a numeração. Caso você não saiba quanto precisa ajustar, não tem problema: o atendente ajuda a identificar a medida correta e calcula o valor do serviço.",
+    "Sim! Fazemos <strong>ajuste do tamanho da aliança</strong>, tanto para aumentar quanto para diminuir o aro. Você não precisa saber a diferença exata de numeração; o atendente pode orientar e ajudar a descobrir o ajuste necessário.",
+    "Trabalhamos com <strong>aumento e diminuição de aro</strong> em alianças e anéis. Se souber, informe a numeração atual e a desejada. Caso não saiba, envie uma foto e explique se a peça está apertada ou larga que o atendente orienta como descobrir a medida correta."
   ];
+
+  const unknownReply = "Sem problema! Você <strong>não precisa saber quantos números</strong> deve aumentar ou diminuir. O atendente pode ajudar a descobrir a medida correta e orientar o ajuste. Basta informar se a peça está apertada ou larga e, se possível, enviar uma foto.";
 
   const normalize = (value) => String(value || "")
     .toLowerCase()
@@ -20,8 +22,17 @@
 
   const includesAny = (text, list) => list.some((item) => text.includes(item));
 
+  function isUnknownSize(text){
+    return includesAny(text, [
+      "nao sei quanto", "nao sei quantos", "nao sei a numeracao", "nao sei o numero",
+      "nao sei o aro", "nao sei a medida", "nao sei quanto ajustar", "nao sei quanto aumentar",
+      "nao sei quanto diminuir", "nao tenho ideia", "nao sei dizer", "nao faco ideia"
+    ]);
+  }
+
   function classify(text){
     if(!text || text.length > 220) return false;
+    if(state.awaitingDetails && isUnknownSize(text)) return "unknown_size";
 
     const ring = /\b(alianca|aliancas|aliansa|aliansas|alinca|alincas|anel|aneis|solitario|solitarios|aparador|aparadores)\b/.test(text);
     const resizeVerb = /\b(ajustar|ajuste|aumentar|aumento|diminuir|diminuicao|reduzir|alargar|apertar|redimensionar|redimensionamento|alterar|mudar|corrigir)\b/.test(text);
@@ -41,9 +52,9 @@
       "alianca pequena", "alianca grande", "anel pequeno", "anel grande"
     ]);
 
-    if(direct) return true;
-    if(ring && resizeVerb) return true;
-    if(ring && sizeWord && includesAny(text, ["ficou", "esta", "preciso", "quero", "gostaria", "da para", "tem como"])) return true;
+    if(direct) return "resize";
+    if(ring && resizeVerb) return "resize";
+    if(ring && sizeWord && includesAny(text, ["ficou", "esta", "preciso", "quero", "gostaria", "da para", "tem como"])) return "resize";
     return false;
   }
 
@@ -95,7 +106,7 @@
   }
 
   function whatsappUrl(raw){
-    const message = `Olá! Quero solicitar um ajuste de aro em uma aliança ou anel.\n\nMinha dúvida: ${raw}`;
+    const message = `Olá! Quero solicitar um ajuste de aro em uma aliança ou anel. Ainda preciso de orientação para descobrir quanto aumentar ou diminuir.\n\nMinha dúvida: ${raw}`;
     return `https://api.whatsapp.com/send/?phone=${SERVICE_PHONE}&text=${encodeURIComponent(message)}&type=phone_number&app_absent=0`;
   }
 
@@ -109,21 +120,22 @@
     link.href = whatsappUrl(raw);
     link.target = "_blank";
     link.rel = "noopener noreferrer";
-    link.textContent = "Solicitar ajuste de aro";
+    link.textContent = "Receber ajuda com a medida";
     card.appendChild(link);
     messages.appendChild(card);
     messages.scrollTop = messages.scrollHeight;
   }
 
-  async function answer(raw){
+  async function answer(raw, topic){
     if(state.busy) return;
     state.busy = true;
     const input = document.querySelector("#question");
     if(input) input.value = "";
     addMessage(escapeHtml(raw), "user");
     await new Promise((resolve) => setTimeout(resolve, 240));
-    addMessage(pickReply());
+    addMessage(topic === "unknown_size" ? unknownReply : pickReply());
     addButton(raw);
+    state.awaitingDetails = true;
     state.busy = false;
     if(input) input.focus();
   }
@@ -135,12 +147,13 @@
 
     form.addEventListener("submit", (event) => {
       const raw = String(input.value || "").trim();
-      if(!classify(normalize(raw))) return;
+      const topic = classify(normalize(raw));
+      if(!topic) return;
       event.preventDefault();
       event.stopImmediatePropagation();
-      answer(raw);
+      answer(raw, topic);
     }, true);
   });
 
-  window.__ajusteAroV1 = {normalize, classify, replies};
+  window.__ajusteAroV1 = {normalize, classify, replies, unknownReply, state};
 })();
