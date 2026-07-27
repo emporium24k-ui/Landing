@@ -7,6 +7,9 @@ on:
       - "assistente/config-negocio-v1.js"
       - "assistente/core-intencoes-v1.js"
       - "assistente/coordenador-central-v1.js"
+      - "assistente/sessao-conversa-v1.js"
+      - "assistente/roteamento-legado-v1.js"
+      - "assistente/analytics-bridge-v1.js"
       - "assistente/top-cta-v1.js"
       - "assistente/catalogo-loja-visual-v1.js"
       - "assistente/recuperacao-conversa-v1.js"
@@ -14,6 +17,7 @@ on:
       - "scripts/test_assistente_core.js"
       - "scripts/test_assistente_invariants.js"
       - ".github/workflows/test-assistente.yml"
+      - ".github/workflows/sync-store-catalog.yml"
 
 permissions:
   contents: write
@@ -40,6 +44,9 @@ jobs:
           node --check assistente/config-negocio-v1.js
           node --check assistente/core-intencoes-v1.js
           node --check assistente/coordenador-central-v1.js
+          node --check assistente/sessao-conversa-v1.js
+          node --check assistente/roteamento-legado-v1.js
+          node --check assistente/analytics-bridge-v1.js
           node --check assistente/top-cta-v1.js
           node --check assistente/metricas-v1.js
           node --check assistente/catalogo-loja-visual-v1.js
