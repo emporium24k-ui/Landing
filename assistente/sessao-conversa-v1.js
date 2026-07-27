@@ -44,11 +44,10 @@
       const button = document.createElement("button");
       button.id = "newConversation";
       button.type = "button";
-      button.className = "top-store";
+      button.className = "new-conversation";
       button.textContent = "Nova";
       button.setAttribute("aria-label", "Iniciar nova conversa");
       button.title = "Iniciar nova conversa";
-      button.style.cursor = "pointer";
       button.addEventListener("click", startNewConversation);
       actions.insertBefore(button, actions.firstChild);
     }
