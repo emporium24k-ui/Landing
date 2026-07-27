@@ -8,6 +8,7 @@ on:
     paths:
       - ".github/workflows/sync-official-catalog.yml"
       - "scripts/sync_official_catalog.py"
+      - "scripts/run_catalog_sync.py"
 
 permissions:
   contents: write
@@ -27,7 +28,7 @@ jobs:
           fetch-depth: 0
 
       - name: Sync prices, details and images
-        run: python -c "import urllib.parse; exec(compile(open('scripts/sync_official_catalog.py', encoding='utf-8').read(), 'scripts/sync_official_catalog.py', 'exec'))"
+        run: python scripts/run_catalog_sync.py
 
       - name: Validate generated manifest
         run: |
