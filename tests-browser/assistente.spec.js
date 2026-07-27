@@ -45,10 +45,9 @@ test('nova conversa limpa a interface e a memória', async ({ page }) => {
   await openAssistant(page);
   await send(page, 'oi boa tarde');
   await expect(page.locator('.row.user')).toHaveCount(1);
-  await Promise.all([
-    page.waitForNavigation(),
-    page.locator('#newConversation').click()
-  ]);
+  await page.locator('#newConversation').click();
+  await page.waitForLoadState('domcontentloaded');
+  await expect(page.locator('#question')).toBeVisible();
   await expect(page.locator('.row.user')).toHaveCount(0);
   const stored = await page.evaluate(() => sessionStorage.getItem('emp24kAssistantStateV1'));
   expect(stored).toBeNull();
