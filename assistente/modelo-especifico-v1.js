@@ -23,11 +23,11 @@
 
   const productMap = [
     [/(?:^|\s)aliancas?(?:\s|$)/, "aliança"],
-    [/(?:^|\s)aneis?(?:\s|$)/, "anel"],
+    [/(?:^|\s)(?:anel|aneis)(?:\s|$)/, "anel"],
     [/(?:^|\s)solitarios?(?:\s|$)/, "solitário"],
     [/(?:^|\s)aparadores?(?:\s|$)/, "aparador"],
     [/(?:^|\s)correntes?(?:\s|$)/, "corrente"],
-    [/(?:^|\s)cordoes?(?:\s|$)/, "cordão"],
+    [/(?:^|\s)(?:cordao|cordoes)(?:\s|$)/, "cordão"],
     [/(?:^|\s)colares?(?:\s|$)/, "colar"],
     [/(?:^|\s)pulseiras?(?:\s|$)/, "pulseira"],
     [/(?:^|\s)pingentes?(?:\s|$)/, "pingente"],
