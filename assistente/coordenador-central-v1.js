@@ -31,9 +31,16 @@
   const isAllianceIntent = (intent) => ["alliance_interest","alliance_catalog","alliance_custom","customer_gold_alliance","ring_resize","engraving"].includes(intent);
   const isNeutralIntent = (intent) => ["empty","greeting","thanks","unknown"].includes(intent);
 
+  function clearProductContext(){
+    state.product = null;
+    state.material = null;
+    state.model = null;
+  }
+
   function applyContextTransition(result){
     const intent = result.intent;
     const entities = result.entities || {};
+    const previousIntent = state.intent;
     const previousProduct = state.product;
 
     if(intent === "unknown"){
@@ -42,7 +49,7 @@
     }
     state.unknownStreak = 0;
     if(!isNeutralIntent(intent)){
-      state.lastIntent = state.intent;
+      state.lastIntent = previousIntent;
       state.intent = intent;
     }
 
@@ -58,6 +65,7 @@
     }
 
     if(intent === "ready_product_search"){
+      clearProductContext();
       state.product = entities.product || null;
       state.material = entities.material || null;
       state.model = entities.model || null;
@@ -65,16 +73,30 @@
     }
 
     if(intent === "sell_metals"){
+      clearProductContext();
       state.product = entities.product || "ouro/prata";
       state.material = entities.material || null;
-      state.model = null;
       return;
     }
 
     if(intent === "repair_service"){
-      state.product = entities.product || (state.intent === "repair_service" ? state.product : null);
+      const continuingRepair = previousIntent === "repair_service";
+      const previousRepairProduct = continuingRepair ? previousProduct : null;
+      clearProductContext();
+      state.product = entities.product || previousRepairProduct;
       state.material = entities.material || null;
-      state.model = null;
+      return;
+    }
+
+    if(intent === "semijewelry_bath_service"){
+      clearProductContext();
+      state.product = "semijoia";
+      state.stage = "dúvida sobre banho";
+      return;
+    }
+
+    if(intent === "tracking"){
+      clearProductContext();
       return;
     }
 
@@ -102,7 +124,8 @@
       tracking:"rastreamento",
       payment:"formas de pagamento",
       shipping:"frete e envio",
-      engraving:"definindo gravação"
+      engraving:"definindo gravação",
+      semijewelry_bath_service:"dúvida sobre banho"
     };
     if(stageByIntent[result.intent]) state.stage = stageByIntent[result.intent];
     state.history.push({intent:result.intent, message:state.lastUserMessage, at:Date.now()});
@@ -245,5 +268,5 @@
     observer.observe(messages, {childList:true, subtree:true, characterData:false});
   });
 
-  window.__coordenadorCentralV1 = Object.freeze({state, buildSummary, classify:core.classify, save, applyContextTransition});
+  window.__coordenadorCentralV1 = Object.freeze({state, buildSummary, classify:core.classify, save, applyContextTransition, clearProductContext});
 })();
