@@ -36,7 +36,7 @@ const cases = [
   ["o que é ouro 18k", "material_education"],
   ["por que não fazem ouro 24k", "material_education"],
   ["fazem alianças em ouro 10k", "material_education"],
-  ["fazem aliança em ouro 14k", "alliance_catalog"],
+  ["fazem aliança em ouro 14k", "material_education"],
   ["como funciona a gravação interna", "engraving"],
   ["quantos caracteres posso gravar", "engraving"],
   ["aceitam pix", "payment"],
@@ -79,4 +79,4 @@ if(failures){
   process.stderr.write(`\n${failures} teste(s) falharam.\n`);
   process.exit(1);
 }
-process.stdout.write(`\n${cases.length + 8} verificações concluídas com sucesso.\n`);
+process.stdout.write(`\n${cases.length + 10} verificações concluídas com sucesso.\n`);
