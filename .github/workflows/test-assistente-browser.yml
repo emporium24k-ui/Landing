@@ -22,7 +22,7 @@ concurrency:
 jobs:
   browser:
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 20
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -33,23 +33,37 @@ jobs:
         with:
           node-version: "22"
       - name: Install test dependencies
+        id: dependencies
+        continue-on-error: true
         run: npm install --no-audit --no-fund
       - name: Install Chromium
+        id: chromium
+        continue-on-error: true
+        if: steps.dependencies.outcome == 'success'
         run: npx playwright install --with-deps chromium
       - name: Run mobile and desktop tests
+        id: browser_tests
+        continue-on-error: true
+        if: steps.dependencies.outcome == 'success' && steps.chromium.outcome == 'success'
         run: npm run test:browser
       - name: Record browser-tested version
+        if: always()
         run: |
-          printf '{"status":"passed","commit":"%s","tested_at":"%s","projects":["mobile-chromium","desktop-chromium"]}\n' "$GITHUB_SHA" "$(date -u +%Y-%m-%dT%H:%M:%SZ)" > assistente/browser-test-status.json
+          STATUS="passed"
+          if [ "${{ steps.dependencies.outcome }}" != "success" ] || [ "${{ steps.chromium.outcome }}" != "success" ] || [ "${{ steps.browser_tests.outcome }}" != "success" ]; then
+            STATUS="failed"
+          fi
+          printf '{"status":"%s","commit":"%s","tested_at":"%s","dependencies":"%s","chromium":"%s","browser_tests":"%s","projects":["mobile-chromium","desktop-chromium"]}\n' "$STATUS" "$GITHUB_SHA" "$(date -u +%Y-%m-%dT%H:%M:%SZ)" "${{ steps.dependencies.outcome }}" "${{ steps.chromium.outcome }}" "${{ steps.browser_tests.outcome }}" > assistente/browser-test-status.json
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add assistente/browser-test-status.json
-          if git diff --cached --quiet; then
-            exit 0
+          if ! git diff --cached --quiet; then
+            git commit -m "Record assistant browser test result"
+            for attempt in 1 2 3; do
+              git pull --rebase origin "$GITHUB_REF_NAME" && git push && break
+              sleep $((attempt * 3))
+            done
           fi
-          git commit -m "Record assistant browser test pass"
-          for attempt in 1 2 3; do
-            git pull --rebase origin "$GITHUB_REF_NAME" && git push && exit 0
-            sleep $((attempt * 3))
-          done
-          exit 1
+          if [ "$STATUS" != "passed" ]; then
+            exit 1
+          fi
