@@ -2,23 +2,23 @@
   "use strict";
 
   const SALES = ["5541995888995", "5541995776736"];
-  const state = { awaitingChoice: false, busy: false, last: {} };
+  const state = { awaitingChoice: false, busy: false, last: {}, phone: null };
 
   const replies = {
     discount: [
-      "Aceitamos, sim. O ouro é avaliado e o valor pode ser abatido da aliança.",
-      "Sim. Avaliamos o teor e o peso do ouro para descontar no valor da aliança.",
-      "Dá para usar seu ouro como parte do pagamento. A equipe faz a avaliação antes."
+      "Aceitamos, sim. Primeiro avaliamos o teor e o peso do ouro; depois, o valor pode ser abatido da sua aliança.",
+      "Sim! Seu ouro pode entrar como parte do pagamento. A equipe avalia o material e desconta o valor no orçamento da aliança.",
+      "Dá para usar seu ouro para reduzir o valor da aliança. A avaliação do teor e do peso é feita antes do orçamento final."
     ],
     ownGold: [
-      "Sim. Podemos fazer a aliança com o seu próprio ouro e cobrar somente a mão de obra, após avaliar o material.",
-      "Aceitamos o ouro do cliente para a confecção. Depois da análise, é cobrada apenas a mão de obra.",
-      "Dá para produzir a aliança com o ouro que você trouxer. Primeiro avaliamos o teor e a quantidade."
+      "Sim! Podemos fabricar as alianças usando o ouro que você já possui. Primeiro avaliamos o teor, a quantidade e as condições do material; sendo adequado, cobramos somente a mão de obra da confecção.",
+      "Podemos, sim, produzir as alianças com o ouro do cliente. Após analisar o material e confirmar que a quantidade é suficiente, o orçamento considera apenas a mão de obra.",
+      "Sim, fazemos com o seu próprio ouro. A equipe avalia o teor e o peso para verificar a viabilidade e, depois disso, calcula somente a mão de obra da fabricação."
     ],
     clarify: [
-      "Aceitamos, sim. Você quer abater o ouro no valor da aliança ou usar o próprio ouro na confecção?",
-      "Sim. Você pretende usar o ouro como pagamento ou fazer a aliança com esse material?",
-      "Aceitamos. É para descontar no valor ou para produzir a aliança com o seu ouro?"
+      "Aceitamos ouro, sim. Você quer usá-lo para abater no valor da aliança ou quer que a aliança seja fabricada com o próprio material?",
+      "Temos as duas possibilidades: avaliar o ouro como parte do pagamento ou fabricar a aliança usando o seu ouro. Qual delas você procura?",
+      "Sim! O ouro pode reduzir o valor do pedido ou ser utilizado na própria confecção da aliança. Como você pretende usar o material?"
     ]
   };
 
@@ -34,34 +34,57 @@
 
   function classify(text){
     const mentionsGold = /\bouro\b/.test(text);
+    const alliance = /\b(alianca|aliancas|aliansa|aliansas|alinca|alincas|anel|aneis)\b/.test(text);
+    const manufacture = /\b(fazer|fazem|faco|fabricar|fabricam|produzir|produzem|confeccionar|confeccionam|montar|montam)\b/.test(text);
+    const ownership = /\b(meu|meus|proprio|proprios|tenho|possuo|trago|levo|der|dou|dar)\b/.test(text);
+
+    const laborOnly = includesAny(text, [
+      "so a mao de obra", "somente a mao de obra", "apenas a mao de obra",
+      "quanto fica a mao de obra", "quanto custa a mao de obra", "cobram so mao de obra"
+    ]);
+    if(laborOnly) return "ownGold";
+
     if(!mentionsGold && !state.awaitingChoice) return null;
 
-    const ownGold = includesAny(text, [
-      "fazer a alianca com meu ouro", "fazer alianca com meu ouro", "fazer com meu ouro",
-      "usar meu ouro para fazer", "usar o meu ouro para fazer", "levar meu ouro para fazer",
-      "trazer meu ouro para fazer", "fazer a alianca com o proprio ouro", "usar o proprio ouro",
-      "reaproveitar meu ouro", "transformar meu ouro em alianca", "derreter meu ouro para fazer",
-      "tenho ouro e quero fazer uma alianca", "cobram so a mao de obra", "somente a mao de obra"
+    const ownGoldPhrase = includesAny(text, [
+      "fazer a alianca com meu ouro", "fazer alianca com meu ouro", "fazer as aliancas com meu ouro",
+      "fabricar a alianca com meu ouro", "fabricar as aliancas com meu ouro",
+      "fabricam a alianca com meu ouro", "fabricam as aliancas com meu ouro",
+      "fazer com meu ouro", "fabricar com meu ouro", "produzir com meu ouro",
+      "usar meu ouro para fazer", "usar o meu ouro para fazer", "usar meu ouro na confeccao",
+      "levar meu ouro para fazer", "trazer meu ouro para fazer", "fazer a alianca com o proprio ouro",
+      "usar o proprio ouro", "reaproveitar meu ouro", "transformar meu ouro em alianca",
+      "derreter meu ouro para fazer", "tenho ouro e quero fazer uma alianca",
+      "tenho o ouro e quero fazer", "tenho o ouro ja", "eu tenho o ouro ja",
+      "se eu der o ouro", "se eu der meu ouro", "se eu levar o ouro", "se eu levar meu ouro",
+      "eu dou o ouro", "eu levo o ouro", "ouro para voces fabricarem", "ouro pra voces fabricarem",
+      "voces fabricam para mim", "voces fazem para mim com meu ouro"
     ]);
+
+    const flexibleOwnGold = mentionsGold && manufacture && (
+      alliance || ownership || /\b(se eu|para mim|pra mim|com ele|com esse material)\b/.test(text)
+    );
 
     const discount = includesAny(text, [
       "abater no valor", "abater o valor", "descontar no valor", "desconto na alianca",
       "ouro como entrada", "ouro de entrada", "ouro como pagamento", "parte do pagamento",
       "usar meu ouro no pagamento", "dar ouro na troca", "ouro na troca", "trocar ouro por alianca",
-      "aceitam ouro para abater", "usar ouro para comprar alianca", "usar meu ouro na compra"
+      "aceitam ouro para abater", "usar ouro para comprar alianca", "usar meu ouro na compra",
+      "diminuir o valor com ouro", "reduzir o valor com ouro"
     ]);
 
-    if(ownGold) return "ownGold";
+    if(ownGoldPhrase || flexibleOwnGold) return "ownGold";
     if(discount) return "discount";
 
     if(state.awaitingChoice){
-      if(includesAny(text, ["fazer a alianca", "usar na confeccao", "meu proprio ouro", "mao de obra"])) return "ownGold";
-      if(includesAny(text, ["abater", "descontar", "pagamento", "entrada", "troca"])) return "discount";
+      if(includesAny(text, ["fazer a alianca", "fabricar", "usar na confeccao", "meu proprio ouro", "mao de obra"])) return "ownGold";
+      if(includesAny(text, ["abater", "descontar", "pagamento", "entrada", "troca", "reduzir o valor"])) return "discount";
     }
 
     if(mentionsGold && includesAny(text, [
       "aceitam ouro", "pega ouro", "pegam ouro", "posso levar ouro", "posso usar ouro",
-      "da para usar ouro", "recebem ouro", "trabalho com ouro do cliente"
+      "da para usar ouro", "recebem ouro", "trabalham com ouro do cliente",
+      "trabalha com ouro do cliente", "o que posso fazer com meu ouro"
     ])) return "clarify";
 
     return null;
@@ -71,24 +94,29 @@
     const list = replies[topic];
     let index;
     do index = Math.floor(Math.random() * list.length);
-    while(index === state.last[topic]);
+    while(index === state.last[topic] && list.length > 1);
     state.last[topic] = index;
     return list[index];
   }
 
   function choosePhone(){
+    if(state.phone) return state.phone;
     try{
+      const saved = sessionStorage.getItem("coroa24kSalesPhone");
+      if(SALES.includes(saved)) return state.phone = saved;
       const data = new Uint32Array(1);
       crypto.getRandomValues(data);
-      return SALES[data[0] % SALES.length];
+      state.phone = SALES[data[0] % SALES.length];
+      sessionStorage.setItem("coroa24kSalesPhone", state.phone);
     }catch(_){
-      return SALES[Math.random() < 0.5 ? 0 : 1];
+      state.phone = SALES[Math.random() < 0.5 ? 0 : 1];
     }
+    return state.phone;
   }
 
   function whatsappUrl(topic, raw){
     const message = topic === "ownGold"
-      ? `Olá! Quero fazer uma aliança usando meu próprio ouro. Minha dúvida: ${raw}`
+      ? `Olá! Quero fabricar alianças usando meu próprio ouro. Minha dúvida: ${raw}`
       : `Olá! Quero usar ouro para abater no valor de uma aliança. Minha dúvida: ${raw}`;
     return `https://api.whatsapp.com/send/?phone=${choosePhone()}&text=${encodeURIComponent(message)}&type=phone_number&app_absent=0`;
   }
@@ -98,7 +126,7 @@
   }
 
   function escapeHtml(value){
-    return value.replace(/[&<>"']/g, (char) => ({
+    return String(value || "").replace(/[&<>"']/g, (char) => ({
       "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;", "'":"&#039;"
     }[char]));
   }
@@ -119,12 +147,12 @@
     }
 
     const stack = document.createElement("div");
-    stack.className = "message-stack";
     const bubble = document.createElement("div");
-    bubble.className = "bubble";
-    bubble.innerHTML = html;
     const meta = document.createElement("div");
+    stack.className = "message-stack";
+    bubble.className = "bubble";
     meta.className = "bubble-meta";
+    bubble.innerHTML = html;
     meta.textContent = who === "user" ? clock() : `Coroa 24K · ${clock()}`;
     stack.append(bubble, meta);
     row.appendChild(stack);
@@ -136,13 +164,13 @@
     const messages = document.querySelector("#messages");
     if(!messages) return;
     const card = document.createElement("div");
-    card.className = "action-card compact-card";
     const link = document.createElement("a");
+    card.className = "action-card compact-card";
     link.className = "action-btn wa";
     link.target = "_blank";
     link.rel = "noopener noreferrer";
     link.href = whatsappUrl(topic, raw);
-    link.textContent = topic === "ownGold" ? "Calcular mão de obra" : "Avaliar ouro e aliança";
+    link.textContent = topic === "ownGold" ? "Avaliar ouro para fabricação" : "Avaliar ouro e aliança";
     card.appendChild(link);
     messages.appendChild(card);
     messages.scrollTop = messages.scrollHeight;
@@ -154,7 +182,7 @@
     const input = document.querySelector("#question");
     if(input) input.value = "";
     addMessage(escapeHtml(raw), "user");
-    await new Promise((resolve) => setTimeout(resolve, 280));
+    await new Promise((resolve) => setTimeout(resolve, 260));
     addMessage(pick(topic));
 
     state.awaitingChoice = topic === "clarify";
@@ -180,5 +208,5 @@
     }, true);
   });
 
-  window.__ouroNaAliancaV1 = {normalize, classify, replies, state};
+  window.__ouroNaAliancaV2 = {normalize, classify, replies, state};
 })();
