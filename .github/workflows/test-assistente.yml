@@ -12,7 +12,7 @@ on:
       - ".github/workflows/test-assistente.yml"
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
   test:
@@ -21,9 +21,22 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
       - name: Use Node.js
         uses: actions/setup-node@v4
         with:
           node-version: "22"
       - name: Run assistant tests
         run: node scripts/test_assistente_core.js
+      - name: Record tested version
+        run: |
+          printf '{"status":"passed","commit":"%s","tested_at":"%s","suite":"scripts/test_assistente_core.js"}\n' "$GITHUB_SHA" "$(date -u +%Y-%m-%dT%H:%M:%SZ)" > assistente/test-status.json
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add assistente/test-status.json
+          if git diff --cached --quiet; then
+            exit 0
+          fi
+          git commit -m "Record assistant test pass"
+          git push
