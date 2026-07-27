@@ -103,9 +103,9 @@
   function response(data){
     const item = data.product ? `${data.product}${data.model ? ` modelo ${data.model}` : ""}` : `modelo ${data.model}`;
     if(data.model === "Cartier"){
-      return `Temos modelos <strong>estilo Cartier</strong> cadastrados na loja online. Você pode conferir opções, medidas, valores e disponibilidade diretamente no site. As compras de joias e semijoias prontas são feitas por lá; o atendimento por vendedor fica para alianças.`;
+      return `Temos modelos <strong>estilo Cartier</strong> cadastrados na loja online. Você pode conferir opções, medidas, valores e disponibilidade diretamente no site.`;
     }
-    return `Ótima escolha! Para <strong>${escapeHtml(item)}</strong>, os modelos prontos, valores e disponibilidade atualizados ficam na nossa loja online. As compras de joias e semijoias são concluídas pelo site; o vendedor atende pedidos de alianças.`;
+    return `Ótima escolha! Para <strong>${escapeHtml(item)}</strong>, os modelos prontos, valores e disponibilidade atualizados ficam na nossa loja online.`;
   }
 
   function clock(){
