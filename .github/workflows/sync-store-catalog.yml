@@ -1,0 +1,53 @@
+name: Sync ready product catalog
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "40 8 * * 1"
+  push:
+    paths:
+      - "scripts/sync_store_catalog.py"
+      - ".github/workflows/sync-store-catalog.yml"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: ready-product-catalog
+  cancel-in-progress: false
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Sync ready products
+        run: python scripts/sync_store_catalog.py
+      - name: Validate generated catalog
+        run: |
+          test -s assistente/catalogo-loja-dados.js
+          grep -q 'window.__CATALOGO_LOJA_EMP24K__' assistente/catalogo-loja-dados.js
+          python - <<'PY'
+          import pathlib, re, json
+          text = pathlib.Path('assistente/catalogo-loja-dados.js').read_text(encoding='utf-8')
+          payload = re.search(r'Object\.freeze\((.*)\);', text).group(1)
+          products = json.loads(payload)
+          assert len(products) >= 20, len(products)
+          assert all(item.get('title') and item.get('page') and item.get('image') and item.get('price') for item in products)
+          print(f'{len(products)} produtos validados')
+          PY
+      - name: Commit synchronized ready catalog
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add assistente/catalogo-loja-dados.js
+          if git diff --cached --quiet; then
+            echo "Ready product catalog already synchronized."
+            exit 0
+          fi
+          git commit -m "Sync ready jewelry catalog"
+          git push
