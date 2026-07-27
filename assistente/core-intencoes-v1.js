@@ -6,6 +6,7 @@
   "use strict";
 
   const ALIASES = Object.freeze({
+    vc:"voce", vcs:"voces", conpra:"compram", conprao:"compram", comprao:"compram",
     aliansa:"alianca", aliansas:"aliancas", alinca:"alianca", alincas:"aliancas",
     aliaca:"alianca", aliacas:"aliancas", aliamca:"alianca", aliamcas:"aliancas",
     semijoa:"semijoia", semijoas:"semijoias", corente:"corrente", corentes:"correntes",
@@ -102,6 +103,7 @@
     const browse = /\b(modelo|modelos|catalogo|opcoes|ver|mostrar|mostra|conhecer|escolher)\b/.test(text);
     const custom = anyPhrase(text, ["personalizada","personalizado","sob medida","do meu jeito","minha ideia","modelo proprio","igual a foto","foto de referencia","desenho"]);
     const shipping = anyPhrase(text, ["frete","sedex","correios","forma de envio","como enviam","envio gratis","frete gratis","entrega em"]);
+    const karatQuestion = /\b(10k|14k|18k|24k|10 quilates|14 quilates|18 quilates|24 quilates|ouro puro)\b/.test(text) && anyPhrase(text,["fazem","fazer","trabalham","trabalha","por que","porque","o que e","qual diferenca"]);
 
     if(anyPhrase(text, ["rastreio","rastreamento","codigo de rastreio","acompanhar pedido","onde esta meu pedido"]))
       return {intent:"tracking", confidence:.99, text, entities};
@@ -112,7 +114,7 @@
     if(anyPhrase(text, ["meu ouro","ouro do cliente","eu dou o ouro","eu tenho o ouro","usar meu ouro","levar meu ouro","so mao de obra","somente mao de obra"]) && (alliance || anyPhrase(text,["fabricar","fazer","produzir"])))
       return {intent:"customer_gold_alliance", confidence:.99, text, entities};
 
-    if(anyPhrase(text, ["quero vender","gostaria de vender","tenho para vender","avaliar meu ouro","avaliar minha prata","quanto pagam","compram meu ouro","compram minha prata","vender ouro","vender prata"]))
+    if(anyPhrase(text, ["quero vender","gostaria de vender","tenho para vender","avaliar meu ouro","avaliar minha prata","quanto pagam","compram meu ouro","compram minha prata","vender ouro","vender prata"]) || /\bvoces compram (?:ouro|prata)\b/.test(text))
       return {intent:"sell_metals", confidence:.99, text, entities};
 
     if(anyPhrase(text, ["conserto","consertar","reparar","soldar","quebrou","polimento","polir","pedra caiu"]))
@@ -124,6 +126,7 @@
       return {intent:"shipping", confidence:.97, text, entities:{...entities, material:inheritedMaterial, product:inheritedProduct}};
     }
 
+    if(karatQuestion) return {intent:"material_education", confidence:.98, text, entities};
     if(alliance && custom) return {intent:"alliance_custom", confidence:.98, text, entities};
     if(alliance && (browse || price || model || material)) return {intent:"alliance_catalog", confidence:.97, text, entities};
     if(alliance) return {intent:"alliance_interest", confidence:.9, text, entities};
@@ -137,7 +140,7 @@
     if(anyPhrase(text, ["ouro 24k","24 quilates","ouro puro","ouro 14k","14 quilates","ouro 10k","10 quilates","ouro 18k","prata 925","o que e ouro","o que e prata","diferenca entre ouro e prata"]))
       return {intent:"material_education", confidence:.97, text, entities};
 
-    if(anyPhrase(text, ["gravacao","gravar","nome dentro","data dentro","frase dentro"]))
+    if(anyPhrase(text, ["gravacao","gravar","nome dentro","data dentro","frase dentro","quantos caracteres"]))
       return {intent:"engraving", confidence:.97, text, entities};
 
     if(anyPhrase(text, ["pix","cartao","boleto","pagamento","parcelamento","parcela","entrada","pagar na entrega"]))
