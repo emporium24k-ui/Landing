@@ -5,9 +5,9 @@
   const state = { busy: false, lastReply: -1 };
 
   const replies = [
-    "Fazemos, sim, <strong>ajuste de aro em alianças e anéis</strong>, quando tecnicamente possível. Para confirmar o serviço, precisamos analisar o material, o modelo, a presença de pedras ou gravações e quantos números será necessário aumentar ou diminuir.",
-    "Sim! Podemos avaliar o <strong>ajuste do tamanho da sua aliança</strong>. A possibilidade do serviço depende do material, da espessura, do formato, das pedras e da diferença entre a numeração atual e a desejada.",
-    "Trabalhamos com <strong>aumento e diminuição de aro</strong> em alianças e anéis, após análise da peça. Envie uma foto e informe se ela ficou apertada ou larga, além da numeração atual e da numeração desejada, caso saiba."
+    "Fazemos, sim, <strong>ajuste de aro em alianças e anéis</strong>. É possível aumentar ou diminuir a numeração; precisamos apenas analisar a peça para verificar quantos números serão alterados e calcular o valor do serviço.",
+    "Sim! Fazemos <strong>ajuste do tamanho da aliança</strong>, tanto para aumentar quanto para diminuir o aro. A análise serve para identificar a numeração atual, a desejada e o procedimento adequado para a peça.",
+    "Trabalhamos com <strong>aumento e diminuição de aro</strong> em alianças e anéis. Envie uma foto e informe se a peça ficou apertada ou larga, além da numeração atual e da desejada, caso saiba, para calcularmos o ajuste."
   ];
 
   const normalize = (value) => String(value || "")
@@ -95,7 +95,7 @@
   }
 
   function whatsappUrl(raw){
-    const message = `Olá! Quero avaliar um ajuste de aro em uma aliança ou anel.\n\nMinha dúvida: ${raw}`;
+    const message = `Olá! Quero solicitar um ajuste de aro em uma aliança ou anel.\n\nMinha dúvida: ${raw}`;
     return `https://api.whatsapp.com/send/?phone=${SERVICE_PHONE}&text=${encodeURIComponent(message)}&type=phone_number&app_absent=0`;
   }
 
