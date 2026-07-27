@@ -45,7 +45,10 @@ jobs:
         id: browser_tests
         continue-on-error: true
         if: steps.dependencies.outcome == 'success' && steps.chromium.outcome == 'success'
-        run: npm run test:browser
+        shell: bash
+        run: |
+          set -o pipefail
+          npm run test:browser 2>&1 | tee browser-test.log
       - name: Record browser-tested version
         if: always()
         run: |
@@ -54,9 +57,14 @@ jobs:
             STATUS="failed"
           fi
           printf '{"status":"%s","commit":"%s","tested_at":"%s","dependencies":"%s","chromium":"%s","browser_tests":"%s","projects":["mobile-chromium","desktop-chromium"]}\n' "$STATUS" "$GITHUB_SHA" "$(date -u +%Y-%m-%dT%H:%M:%SZ)" "${{ steps.dependencies.outcome }}" "${{ steps.chromium.outcome }}" "${{ steps.browser_tests.outcome }}" > assistente/browser-test-status.json
+          if [ -f browser-test.log ]; then
+            tail -n 180 browser-test.log > assistente/browser-test-log.txt
+          else
+            printf 'O teste de navegador não chegou a gerar um relatório.\n' > assistente/browser-test-log.txt
+          fi
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add assistente/browser-test-status.json
+          git add assistente/browser-test-status.json assistente/browser-test-log.txt
           if ! git diff --cached --quiet; then
             git commit -m "Record assistant browser test result"
             for attempt in 1 2 3; do
