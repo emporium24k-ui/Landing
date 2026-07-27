@@ -1,0 +1,53 @@
+name: Test assistant in browsers
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - "assistente/**"
+      - "tests-browser/**"
+      - "playwright.config.js"
+      - "package.json"
+      - ".github/workflows/test-assistente-browser.yml"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: assistant-browser-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  browser:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Use Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Install test dependencies
+        run: npm install --no-audit --no-fund
+      - name: Install Chromium
+        run: npx playwright install --with-deps chromium
+      - name: Run mobile and desktop tests
+        run: npm run test:browser
+      - name: Record browser-tested version
+        run: |
+          printf '{"status":"passed","commit":"%s","tested_at":"%s","projects":["mobile-chromium","desktop-chromium"]}\n' "$GITHUB_SHA" "$(date -u +%Y-%m-%dT%H:%M:%SZ)" > assistente/browser-test-status.json
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add assistente/browser-test-status.json
+          if git diff --cached --quiet; then
+            exit 0
+          fi
+          git commit -m "Record assistant browser test pass"
+          for attempt in 1 2 3; do
+            git pull --rebase origin "$GITHUB_REF_NAME" && git push && exit 0
+            sleep $((attempt * 3))
+          done
+          exit 1
