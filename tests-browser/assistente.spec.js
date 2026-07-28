@@ -62,25 +62,25 @@ test('aliança de prata não recebe frete grátis', async ({ page }) => {
   await expect(page.getByText(/não é grátis|calculado conforme o CEP/i).last()).toBeVisible();
 });
 
-test('modelo oferece reto chapado como formato original sem opção duplicada', async ({ page }) => {
+test('modelo usa uma única escolha de formato e segue direto para os aros', async ({ page }) => {
   await openAssistant(page);
   await send(page, 'quero ver alianças de prata 925');
   const model = page.locator('button[data-ring-model]').first();
   await expect(model).toBeVisible();
   await model.click();
 
-  await expect(page.getByRole('button', { name: 'Abaulado (externo)' })).toBeVisible();
+  await expect(page.getByRole('button', { name: 'Abaulado' })).toBeVisible();
   await expect(page.getByRole('button', { name: 'Reto/chapado — formato original' })).toBeVisible();
-  await expect(page.getByRole('button', { name: 'Chanfrado/quinado (externo)' })).toBeVisible();
+  await expect(page.getByRole('button', { name: 'Chanfrado/quinado' })).toBeVisible();
   await expect(page.getByRole('button', { name: 'Manter o formato do modelo' })).toHaveCount(0);
 
-  await page.getByRole('button', { name: 'Reto/chapado — formato original' }).click();
-  await expect(page.getByRole('button', { name: /Anatômico — mais arredondado/ })).toBeVisible();
-  await expect(page.getByRole('button', { name: /Semianatômico — leve arredondamento/ })).toBeVisible();
-  await expect(page.getByRole('button', { name: /Reto — parte interna plana/ })).toBeVisible();
+  await page.getByRole('button', { name: 'Abaulado' }).click();
+  await expect(page.getByRole('button', { name: 'Ainda não sei os aros' })).toBeVisible();
+  await expect(page.locator('button[data-conversation-internal-comfort]')).toHaveCount(0);
+  await expect(page.getByText(/Agora escolha o conforto interno/i)).toHaveCount(0);
 });
 
-test('explica e mostra os três tipos de conforto interno', async ({ page }) => {
+test('explica e mostra os três tipos de conforto interno quando o cliente pergunta', async ({ page }) => {
   await openAssistant(page);
   await send(page, 'qual a diferença entre anatômica, semianatômica e reta?');
   await expect(page.getByText('Conforto interno das alianças', { exact: true })).toBeVisible();
