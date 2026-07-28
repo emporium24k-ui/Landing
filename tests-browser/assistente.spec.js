@@ -1,6 +1,6 @@
 const { test, expect } = require('@playwright/test');
 
-// Valida o assistente em celular e computador, incluindo formatos e proteção de leads.
+// Validação final do build 61 em celular e computador, incluindo proteção de leads de venda.
 async function openAssistant(page){
   await page.goto('/assistente/?build=browser-test');
   await expect(page.locator('#question')).toBeVisible();
