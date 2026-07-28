@@ -6,6 +6,8 @@
     busy: false,
     selected: null,
     stage: null,
+    externalProfile: "",
+    internalComfort: "",
     sizes: "",
     engraving: "",
     phone: null
@@ -130,11 +132,37 @@
     ]);
   }
 
+  function isUnknownChoice(text){
+    return includesAny(text, [
+      "nao sei", "ainda nao sei", "nao decidi", "ainda nao decidi",
+      "tanto faz", "quero ajuda", "preciso de ajuda"
+    ]);
+  }
+
   function isUnknownEngraving(text){
     return includesAny(text, [
       "nao sei", "ainda nao sei", "nao decidi", "sem gravacao", "nao quero gravacao",
       "depois eu vejo", "decido depois", "sem nome", "nenhuma gravacao"
     ]);
+  }
+
+  function normalizeExternalProfile(raw){
+    const text = normalize(raw);
+    if(text.includes("abaulad")) return "Abaulado";
+    if(text.includes("chanfrad") || text.includes("quinad")) return "Chanfrado/quinado";
+    if(text.includes("chapad") || /\breto\b/.test(text)) return "Reto/chapado";
+    if(includesAny(text, ["manter", "igual ao modelo", "como na foto", "formato do modelo"])) return "Manter o formato original do modelo";
+    if(isUnknownChoice(text)) return "Ainda não decidido";
+    return raw;
+  }
+
+  function normalizeInternalComfort(raw){
+    const text = normalize(raw);
+    if(text.includes("semi anatom") || text.includes("semianatom")) return "Semianatômico";
+    if(text.includes("anatom")) return "Anatômico";
+    if(/\breto\b/.test(text) || text.includes("interno plano")) return "Reto";
+    if(isUnknownChoice(text)) return "Ainda não decidido";
+    return raw;
   }
 
   function genericAllianceInterest(text){
@@ -160,13 +188,42 @@
 
   function selectModel(model){
     flow.selected = model;
-    flow.stage = "sizes";
+    flow.stage = "external_profile";
+    flow.externalProfile = "";
+    flow.internalComfort = "";
     flow.sizes = "";
     flow.engraving = "";
     removePrematureModelContacts();
 
     addMessage(`Quero o modelo ${escapeHtml(model.name)}`, "user");
-    addMessage(`O modelo <strong>${escapeHtml(model.name)}</strong> em <strong>${escapeHtml(model.material)}</strong> aparece por <strong>${escapeHtml(money(model.price))}</strong> como valor de referência. Quais são as numerações dos dois aros? Caso ainda não saiba, pode responder simplesmente <strong>“não sei os aros”</strong>.`);
+    addMessage(`O modelo <strong>${escapeHtml(model.name)}</strong> em <strong>${escapeHtml(model.material)}</strong> aparece por <strong>${escapeHtml(money(model.price))}</strong> como valor de referência.<br><br>Antes dos aros, qual <strong>formato externo</strong> você prefere? <strong>Abaulado</strong> é curvo por fora; <strong>reto/chapado</strong> é plano; e <strong>chanfrado/quinado</strong> possui as laterais marcadas. Você também pode manter exatamente o formato mostrado no modelo. Alterar o desenho original pode mudar o valor final.`);
+    addChoices([
+      {label:"Abaulado (externo)", data:{conversationExternalProfile:"Abaulado"}},
+      {label:"Reto/chapado (externo)", data:{conversationExternalProfile:"Reto/chapado"}},
+      {label:"Chanfrado/quinado (externo)", data:{conversationExternalProfile:"Chanfrado/quinado"}},
+      {label:"Manter o formato do modelo", data:{conversationExternalProfile:"Manter o formato original do modelo"}},
+      {label:"Ainda não decidi", data:{conversationExternalProfile:"Ainda não decidido"}}
+    ]);
+  }
+
+  function receiveExternalProfile(raw){
+    flow.externalProfile = normalizeExternalProfile(raw);
+    addMessage(escapeHtml(flow.externalProfile), "user");
+    flow.stage = "internal_comfort";
+    addMessage("Agora escolha o <strong>conforto interno</strong>, que é a parte que encosta no dedo. Essa escolha é separada do formato externo:");
+    addChoices([
+      {label:"Anatômico — mais arredondado", data:{conversationInternalComfort:"Anatômico"}},
+      {label:"Semianatômico — leve arredondamento", data:{conversationInternalComfort:"Semianatômico"}},
+      {label:"Reto — parte interna plana", data:{conversationInternalComfort:"Reto"}},
+      {label:"Ainda não decidi", data:{conversationInternalComfort:"Ainda não decidido"}}
+    ]);
+  }
+
+  function receiveInternalComfort(raw){
+    flow.internalComfort = normalizeInternalComfort(raw);
+    addMessage(escapeHtml(flow.internalComfort), "user");
+    flow.stage = "sizes";
+    addMessage("Perfeito. Quais são as numerações dos dois aros? Caso ainda não saiba, pode responder simplesmente <strong>“não sei os aros”</strong>.");
     addChoices([
       {label:"Ainda não sei os aros", data:{conversationUnknownSizes:"1"}}
     ]);
@@ -181,7 +238,7 @@
       addMessage("Sem problema. Você não precisa saber as numerações agora. O atendente pode orientar e ajudar a descobrir os dois aros. Você já sabe o que deseja gravar dentro das alianças?");
     }else{
       flow.sizes = raw;
-      addMessage("Anotei as numerações. O que você deseja gravar dentro das alianças? Pode ser nomes, uma data ou uma frase curta. Caso ainda não tenha decidido, pode dizer isso.");
+      addMessage("Anotei as numerações. O que você deseja gravar dentro das alianças? A gravação é somente interna e permite no máximo 15 caracteres. Pode ser nomes, uma data ou uma frase curta. Caso ainda não tenha decidido, pode dizer isso.");
     }
 
     flow.stage = "engraving";
@@ -200,7 +257,7 @@
 
   function summary(){
     const model = flow.selected;
-    return `${model.name} | ${model.material} | Valor de referência: ${money(model.price)} | Aros: ${flow.sizes} | Gravação: ${flow.engraving}`;
+    return `${model.name} | ${model.material} | Valor de referência: ${money(model.price)} | Formato externo: ${flow.externalProfile} | Conforto interno: ${flow.internalComfort} | Aros: ${flow.sizes} | Gravação: ${flow.engraving}`;
   }
 
   function whatsappUrl(){
@@ -246,7 +303,9 @@
     const input = document.querySelector("#question");
     if(input) input.value = "";
     await new Promise((resolve) => setTimeout(resolve, 160));
-    if(flow.stage === "sizes") receiveSizes(raw);
+    if(flow.stage === "external_profile") receiveExternalProfile(raw);
+    else if(flow.stage === "internal_comfort") receiveInternalComfort(raw);
+    else if(flow.stage === "sizes") receiveSizes(raw);
     else if(flow.stage === "engraving") receiveEngraving(raw);
     flow.busy = false;
     if(input) input.focus();
@@ -262,6 +321,22 @@
       event.preventDefault();
       event.stopImmediatePropagation();
       selectModel(model);
+      return;
+    }
+
+    if(target.dataset.conversationExternalProfile){
+      event.preventDefault();
+      event.stopImmediatePropagation();
+      target.closest(".action-card")?.remove();
+      if(flow.stage === "external_profile") receiveExternalProfile(target.dataset.conversationExternalProfile);
+      return;
+    }
+
+    if(target.dataset.conversationInternalComfort){
+      event.preventDefault();
+      event.stopImmediatePropagation();
+      target.closest(".action-card")?.remove();
+      if(flow.stage === "internal_comfort") receiveInternalComfort(target.dataset.conversationInternalComfort);
       return;
     }
 
@@ -312,5 +387,12 @@
     }
   }, true);
 
-  window.__catalogoConversaV2 = {flow, normalize, genericAllianceInterest, isUnknownSize};
+  window.__catalogoConversaV2 = {
+    flow,
+    normalize,
+    genericAllianceInterest,
+    isUnknownSize,
+    normalizeExternalProfile,
+    normalizeInternalComfort
+  };
 })();
