@@ -10,17 +10,17 @@
     Error: expect(received).toMatch(expected)
 
     Expected pattern: /Gravação:.*para sempre.*ambas as alianças/i
-    Received string:  "https://api.whatsapp.com/send/?phone=5541995888995&text=Olá!+Vim+pela+Coroa+24K+e+já+escolhi+um+modelo+de+aliança.·
+    Received string:  "https://api.whatsapp.com/send/?phone=5541995776736&text=Olá!+Vim+pela+Coroa+24K+e+já+escolhi+um+modelo+de+aliança.·
     Lux+|+Prata+925+|+Valor+de+referência:+R$ 240,00+|+Formato:+Abaulado+|+Aros:+Aros+ainda+não+medidos;+precisa+de+ajuda+para+descobrir+|+Gravação:+“para+sempre”+em+ambas+as+alianças&type=phone_number&app_absent=0"
 
-      61 |
-      62 |   const href = await page.locator('[data-correction-continue="1"] a').getAttribute('href');
-    > 63 |   expect(decodeURIComponent(href)).toMatch(/Gravação:.*para sempre.*ambas as alianças/i);
+      62 |
+      63 |   const href = await page.locator('[data-correction-continue="1"] a').getAttribute('href');
+    > 64 |   expect(decodeURIComponent(href)).toMatch(/Gravação:.*para sempre.*ambas as alianças/i);
          |                                    ^
-      64 | });
-      65 |
-      66 | test('oferece botões para alterar modelo, formato, aros ou gravação', async ({ page }) => {
-        at /home/runner/work/Landing/Landing/tests-browser/correcoes-contexto.spec.js:63:36
+      65 | });
+      66 |
+      67 | test('oferece botões para alterar modelo, formato, aros ou gravação', async ({ page }) => {
+        at /home/runner/work/Landing/Landing/tests-browser/correcoes-contexto.spec.js:64:36
 
     attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
     test-results/correcoes-contexto-corrige-3d57a-rder-modelo-formato-ou-aros-desktop-chromium-retry1/test-failed-1.png
@@ -36,21 +36,21 @@
 
     ────────────────────────────────────────────────────────────────────────────────────────────────
 
-  5) [desktop-chromium] › tests-browser/correcoes-contexto.spec.js:82:1 › aceita correção de outra escolha enquanto ainda pergunta os aros 
+  5) [desktop-chromium] › tests-browser/correcoes-contexto.spec.js:83:1 › aceita correção de outra escolha enquanto ainda pergunta os aros 
 
     Error: expect(received).toMatch(expected)
 
     Expected pattern: /Chanfrado/i
     Received string:  "Abaulado"
 
-      89 |     stage:window.__catalogoConversaV2.flow.stage
-      90 |   }));
-    > 91 |   expect(state.format).toMatch(/Chanfrado/i);
+      90 |     stage:window.__catalogoConversaV2.flow.stage
+      91 |   }));
+    > 92 |   expect(state.format).toMatch(/Chanfrado/i);
          |                        ^
-      92 |   expect(state.stage).toBe('sizes');
-      93 |   await expect(page.getByText(/Continuamos de onde paramos.*numerações/i).last()).toBeVisible();
-      94 |
-        at /home/runner/work/Landing/Landing/tests-browser/correcoes-contexto.spec.js:91:24
+      93 |   expect(state.stage).toBe('sizes');
+      94 |   await expect(page.getByText(/Continuamos de onde paramos.*numerações/i).last()).toBeVisible();
+      95 |
+        at /home/runner/work/Landing/Landing/tests-browser/correcoes-contexto.spec.js:92:24
 
     attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
     test-results/correcoes-contexto-aceita--c1511-anto-ainda-pergunta-os-aros-desktop-chromium/test-failed-1.png
@@ -73,14 +73,14 @@
     Expected pattern: /Chanfrado/i
     Received string:  "Abaulado"
 
-      89 |     stage:window.__catalogoConversaV2.flow.stage
-      90 |   }));
-    > 91 |   expect(state.format).toMatch(/Chanfrado/i);
+      90 |     stage:window.__catalogoConversaV2.flow.stage
+      91 |   }));
+    > 92 |   expect(state.format).toMatch(/Chanfrado/i);
          |                        ^
-      92 |   expect(state.stage).toBe('sizes');
-      93 |   await expect(page.getByText(/Continuamos de onde paramos.*numerações/i).last()).toBeVisible();
-      94 |
-        at /home/runner/work/Landing/Landing/tests-browser/correcoes-contexto.spec.js:91:24
+      93 |   expect(state.stage).toBe('sizes');
+      94 |   await expect(page.getByText(/Continuamos de onde paramos.*numerações/i).last()).toBeVisible();
+      95 |
+        at /home/runner/work/Landing/Landing/tests-browser/correcoes-contexto.spec.js:92:24
 
     attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
     test-results/correcoes-contexto-aceita--c1511-anto-ainda-pergunta-os-aros-desktop-chromium-retry1/test-failed-1.png
@@ -96,7 +96,7 @@
 
     ────────────────────────────────────────────────────────────────────────────────────────────────
 
-  6) [desktop-chromium] › tests-browser/correcoes-contexto.spec.js:110:1 › atualiza um projeto personalizado quando o cliente corrige a ideia 
+  6) [desktop-chromium] › tests-browser/correcoes-contexto.spec.js:111:1 › atualiza um projeto personalizado quando o cliente corrige a ideia 
 
     Error: expect(locator).toBeVisible() failed
 
@@ -110,14 +110,14 @@
       - waiting for getByRole('link', { name: /Enviar ideia ao atendimento|Enviar projeto pelo WhatsApp/ }).last()
 
 
-      112 |   await send(page, 'quero criar um pingente personalizado');
-      113 |   await send(page, 'pingente em ouro 18k com iniciais e uma pedra');
-    > 114 |   await expect(page.getByRole('link', { name: /Enviar ideia ao atendimento|Enviar projeto pelo WhatsApp/ }).last()).toBeVisible();
+      113 |   await send(page, 'quero criar um pingente personalizado');
+      114 |   await send(page, 'pingente em ouro 18k com iniciais e uma pedra');
+    > 115 |   await expect(page.getByRole('link', { name: /Enviar ideia ao atendimento|Enviar projeto pelo WhatsApp/ }).last()).toBeVisible();
           |                                                                                                                     ^
-      115 |
-      116 |   await send(page, 'na verdade quero em prata 925 sem pedra');
-      117 |   await expect(page.getByText(/Atualizei a descrição do projeto.*prata 925 sem pedra/i).last()).toBeVisible();
-        at /home/runner/work/Landing/Landing/tests-browser/correcoes-contexto.spec.js:114:117
+      116 |
+      117 |   await send(page, 'na verdade quero em prata 925 sem pedra');
+      118 |   await expect(page.getByText(/Atualizei a descrição do projeto.*prata 925 sem pedra/i).last()).toBeVisible();
+        at /home/runner/work/Landing/Landing/tests-browser/correcoes-contexto.spec.js:115:117
 
     attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
     test-results/correcoes-contexto-atualiz-46ddb-o-o-cliente-corrige-a-ideia-desktop-chromium/test-failed-1.png
@@ -147,14 +147,14 @@
       - waiting for getByRole('link', { name: /Enviar ideia ao atendimento|Enviar projeto pelo WhatsApp/ }).last()
 
 
-      112 |   await send(page, 'quero criar um pingente personalizado');
-      113 |   await send(page, 'pingente em ouro 18k com iniciais e uma pedra');
-    > 114 |   await expect(page.getByRole('link', { name: /Enviar ideia ao atendimento|Enviar projeto pelo WhatsApp/ }).last()).toBeVisible();
+      113 |   await send(page, 'quero criar um pingente personalizado');
+      114 |   await send(page, 'pingente em ouro 18k com iniciais e uma pedra');
+    > 115 |   await expect(page.getByRole('link', { name: /Enviar ideia ao atendimento|Enviar projeto pelo WhatsApp/ }).last()).toBeVisible();
           |                                                                                                                     ^
-      115 |
-      116 |   await send(page, 'na verdade quero em prata 925 sem pedra');
-      117 |   await expect(page.getByText(/Atualizei a descrição do projeto.*prata 925 sem pedra/i).last()).toBeVisible();
-        at /home/runner/work/Landing/Landing/tests-browser/correcoes-contexto.spec.js:114:117
+      116 |
+      117 |   await send(page, 'na verdade quero em prata 925 sem pedra');
+      118 |   await expect(page.getByText(/Atualizei a descrição do projeto.*prata 925 sem pedra/i).last()).toBeVisible();
+        at /home/runner/work/Landing/Landing/tests-browser/correcoes-contexto.spec.js:115:117
 
     attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
     test-results/correcoes-contexto-atualiz-46ddb-o-o-cliente-corrige-a-ideia-desktop-chromium-retry1/test-failed-1.png
@@ -171,10 +171,10 @@
     ────────────────────────────────────────────────────────────────────────────────────────────────
 
   6 failed
-    [mobile-chromium] › tests-browser/correcoes-contexto.spec.js:37:1 › corrige a gravação depois do resumo sem perder modelo, formato ou aros 
-    [mobile-chromium] › tests-browser/correcoes-contexto.spec.js:82:1 › aceita correção de outra escolha enquanto ainda pergunta os aros 
-    [mobile-chromium] › tests-browser/correcoes-contexto.spec.js:110:1 › atualiza um projeto personalizado quando o cliente corrige a ideia 
-    [desktop-chromium] › tests-browser/correcoes-contexto.spec.js:37:1 › corrige a gravação depois do resumo sem perder modelo, formato ou aros 
-    [desktop-chromium] › tests-browser/correcoes-contexto.spec.js:82:1 › aceita correção de outra escolha enquanto ainda pergunta os aros 
-    [desktop-chromium] › tests-browser/correcoes-contexto.spec.js:110:1 › atualiza um projeto personalizado quando o cliente corrige a ideia 
+    [mobile-chromium] › tests-browser/correcoes-contexto.spec.js:38:1 › corrige a gravação depois do resumo sem perder modelo, formato ou aros 
+    [mobile-chromium] › tests-browser/correcoes-contexto.spec.js:83:1 › aceita correção de outra escolha enquanto ainda pergunta os aros 
+    [mobile-chromium] › tests-browser/correcoes-contexto.spec.js:111:1 › atualiza um projeto personalizado quando o cliente corrige a ideia 
+    [desktop-chromium] › tests-browser/correcoes-contexto.spec.js:38:1 › corrige a gravação depois do resumo sem perder modelo, formato ou aros 
+    [desktop-chromium] › tests-browser/correcoes-contexto.spec.js:83:1 › aceita correção de outra escolha enquanto ainda pergunta os aros 
+    [desktop-chromium] › tests-browser/correcoes-contexto.spec.js:111:1 › atualiza um projeto personalizado quando o cliente corrige a ideia 
   44 passed (1.7m)
