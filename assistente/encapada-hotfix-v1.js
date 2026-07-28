@@ -71,7 +71,7 @@
       addMessage(escapeHtml(raw), "user");
 
       setTimeout(() => {
-        addMessage("Não trabalhamos mais com alianças encapadas. Hoje fazemos alianças em ouro 18k ou prata 925.");
+        addMessage("Não trabalhamos mais com alianças encapadas. Atualmente fazemos alianças em <strong>ouro 10k, ouro 18k ou prata 925</strong>.");
         input.focus();
       }, 260);
     }, true);

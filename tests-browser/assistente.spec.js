@@ -1,10 +1,11 @@
 const { test, expect } = require('@playwright/test');
 
-// Validação final do build 62 em celular e computador, incluindo proteção de leads de venda.
+// Validação do build 64 em celular e computador: roteamento, políticas comerciais e fluxos críticos.
 async function openAssistant(page){
-  await page.goto('/assistente/?build=browser-test');
+  await page.goto('/assistente/?build=browser-test-64');
   await expect(page.locator('#question')).toBeVisible();
   await expect(page.locator('#topCta')).toBeVisible();
+  await expect.poll(async () => page.evaluate(() => window.__EMP24K_CONFIG__?.version)).toBe('20260728-64');
 }
 
 async function send(page, text){
@@ -12,11 +13,36 @@ async function send(page, text){
   await page.locator('#composer').evaluate((form) => form.requestSubmit());
 }
 
-test('carrega, usa o telefone do chefe e não mostra botão Nova', async ({ page }) => {
+test('carrega build 64, distribui o botão geral para vendas e não mostra botão Nova', async ({ page }) => {
   await openAssistant(page);
   const url = await page.evaluate(() => window.__topCtaV1?.whatsappUrl?.());
-  expect(url).toContain('phone=5541998518452');
+  expect(url).toMatch(/phone=554199(5888995|5776736)/);
+  expect(url).not.toContain('phone=5541998518452');
   await expect(page.locator('#newConversation')).toHaveCount(0);
+});
+
+test('divisão estável usa os dois vendedores sem trocar o responsável do visitante', async ({ page }) => {
+  await openAssistant(page);
+  const routed = await page.evaluate(() => {
+    const routing = window.__EMP24K_ROUTING__;
+    const visitorKey = 'emp24kVisitorRoutingIdV1';
+    const agentKey = 'emp24kAllianceSalesAgentV1';
+
+    localStorage.setItem(visitorKey, 'visitor-a');
+    localStorage.removeItem(agentKey);
+    const firstA = routing.alliancePhone();
+    const secondA = routing.alliancePhone();
+
+    localStorage.setItem(visitorKey, 'visitor-b');
+    localStorage.removeItem(agentKey);
+    const firstB = routing.alliancePhone();
+
+    return {firstA, secondA, firstB, mode:routing.mode};
+  });
+
+  expect(routed.mode).toBe('stable-50-50');
+  expect(routed.firstA).toBe(routed.secondA);
+  expect(new Set([routed.firstA, routed.firstB])).toEqual(new Set(['5541995888995', '5541995776736']));
 });
 
 test('estou com ouro pra vender abre avaliação sem pergunta ambígua', async ({ page }) => {
@@ -75,7 +101,7 @@ test('busca específica mostra produtos ou pesquisa exata sem vendedor', async (
   await expect(sellerLinks).toHaveCount(0);
 });
 
-test('personalizado coleta detalhes antes de mostrar WhatsApp', async ({ page }) => {
+test('personalizado coleta detalhes e encaminha somente ao responsável', async ({ page }) => {
   await openAssistant(page);
   await send(page, 'quero criar um pingente personalizado');
   await expect(page.getByText(/Me conte qual peça deseja|Me conte.*detalhes/i)).toBeVisible();
@@ -85,6 +111,46 @@ test('personalizado coleta detalhes antes de mostrar WhatsApp', async ({ page })
   const contact = page.getByRole('link', { name: 'Enviar projeto pelo WhatsApp' });
   await expect(contact).toBeVisible();
   await expect(contact).toHaveAttribute('href', /phone=5541998518452/);
+});
+
+test('conserto e ajuste são encaminhados somente ao responsável', async ({ page }) => {
+  await openAssistant(page);
+  await send(page, 'quero consertar uma corrente de prata que quebrou');
+  const repair = page.getByRole('link', { name: /Enviar foto da peça|Solicitar|atendimento/i }).last();
+  await expect(repair).toBeVisible();
+  await expect(repair).toHaveAttribute('href', /phone=5541998518452/);
+});
+
+test('pagamentos seguem as condições atuais do site', async ({ page }) => {
+  await openAssistant(page);
+  await send(page, 'quais são as formas de pagamento?');
+  const answer = page.getByText(/Pix com 10% de desconto/i).last();
+  await expect(answer).toBeVisible();
+  await expect(page.getByText(/boleto com 5% de desconto/i).last()).toBeVisible();
+  await expect(page.getByText(/cartão de crédito em até 10x sem juros/i).last()).toBeVisible();
+  await expect(page.getByText(/12 vezes|acréscimo elevado|encarece/i)).toHaveCount(0);
+});
+
+test('boleto parcelado é corrigido para boleto à vista e cartão em 10x', async ({ page }) => {
+  await openAssistant(page);
+  await send(page, 'vocês têm boleto parcelado?');
+  await expect(page.getByText(/boleto.*à vista.*5% de desconto/i).last()).toBeVisible();
+  await expect(page.getByText(/cartão de crédito.*até 10x sem juros/i).last()).toBeVisible();
+});
+
+test('ouro 10k permanece disponível e ouro 14k indisponível', async ({ page }) => {
+  await openAssistant(page);
+  await send(page, 'vocês fazem aliança em ouro 10k?');
+  await expect(page.getByText(/Fazemos.*ouro 10k/i).last()).toBeVisible();
+
+  await send(page, 'e ouro 14k vocês fazem?');
+  await expect(page.getByText(/não trabalhamos.*ouro 14k|ouro 14k.*não/i).last()).toBeVisible();
+});
+
+test('aliança encapada oferece 10k, 18k e prata 925 como alternativas', async ({ page }) => {
+  await openAssistant(page);
+  await send(page, 'vocês fazem aliança encapada?');
+  await expect(page.getByText(/ouro 10k.*ouro 18k.*prata 925/i).last()).toBeVisible();
 });
 
 test('catálogo de alianças mostra imagens realmente carregadas', async ({ page }) => {
