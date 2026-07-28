@@ -12,6 +12,7 @@ const configSource = read("assistente/config-negocio-v1.js");
 const coordinator = read("assistente/coordenador-central-v1.js");
 const topCta = read("assistente/top-cta-v1.js");
 const visualCatalog = read("assistente/catalogo-loja-visual-v1.js");
+const officialCatalog = read("assistente/catalogo-oficial-v1.js");
 const comfort = read("assistente/conforto-interno-v1.js");
 const formatFlow = read("assistente/formato-externo-v1.js");
 const catalogConversation = read("assistente/catalogo-conversa-v2.js");
@@ -40,6 +41,7 @@ const order = [
   "config-negocio-v1.js", "core-intencoes-v1.js", "sessao-conversa-v1.js", "coordenador-central-v1.js",
   "metricas-v1.js", "analytics-bridge-v1.js", "top-cta-v1.js", "catalogo-loja-dados.js",
   "roteamento-legado-v1.js", "catalogo-loja-visual-v1.js", "conforto-interno-v1.js",
+  "catalogo-dados-oficiais.js", "catalogo-aliancas-v1.js", "catalogo-oficial-v1.js",
   "formato-externo-v1.js", "catalogo-conversa-v2.js", "rota-produtos-site-v1.js",
   "recuperacao-conversa-v1.js", "app-concise-v3.js"
 ];
@@ -68,6 +70,12 @@ assert.ok(coordinator.includes("anexado no WhatsApp"), "Referências precisam se
 
 assert.ok(visualCatalog.includes("hasSpecificRequest"), "Catálogo visual precisa bloquear buscas vagas");
 assert.ok(visualCatalog.includes('product.category === "alianca"'), "Catálogo visual de produtos prontos não pode misturar alianças");
+assert.ok(officialCatalog.includes('const IMAGE_BUILD = "20260728-59"'), "Imagens oficiais precisam usar versão própria contra cache antigo");
+assert.ok(officialCatalog.includes("model.imageSource = official.image_source"), "Catálogo precisa manter uma fonte direta alternativa da loja");
+assert.ok(officialCatalog.includes('button.dataset.imageLoaded = "1"'), "Imagem precisa marcar carregamento real para validação");
+assert.ok(officialCatalog.includes("naturalWidth") === false, "Validação de dimensão real pertence aos testes de navegador, não ao código de produção");
+assert.ok(index.includes('catalogo-oficial-v1.js?v=20260728-59'), "Página precisa carregar a versão nova do catálogo visual");
+
 assert.ok(comfort.includes("Conforto interno das alianças"), "Explicação visual de conforto interno precisa estar presente");
 assert.ok(comfort.includes("Anatômico") && comfort.includes("Semianatômico") && comfort.includes("Reto"), "Os três tipos de conforto interno precisam ser explicados quando perguntados");
 assert.ok(comfort.includes("addVisual"), "Conforto interno precisa ter comparação visual educativa");
@@ -85,8 +93,9 @@ assert.ok(recovery.includes("Falar com atendente"), "Recuperação deve oferecer
 assert.ok(recovery.includes("config.contacts.boss"), "Recuperação deve usar o telefone do chefe");
 
 assert.ok(session.includes("30 * 60 * 1000"), "Sessão precisa expirar após 30 minutos");
-assert.ok(session.includes("newConversation"), "Interface precisa oferecer nova conversa");
-assert.ok(session.includes("clearConversationStorage"), "Nova conversa precisa limpar a memória");
+assert.ok(session.includes("clearConversationStorage"), "Expiração precisa continuar limpando a memória antiga");
+assert.ok(!session.includes('button.textContent = "Nova"'), "Interface não deve voltar a mostrar o botão Nova");
+assert.ok(!session.includes("startNewConversation"), "Fluxo manual de nova conversa deve permanecer removido");
 
 assert.ok(legacyRouting.includes("config.contacts.boss"), "Joias personalizadas devem seguir para o chefe");
 assert.ok(!legacyRouting.includes("5541995888995"), "Roteamento prioritário de joias não pode usar vendedor aleatório");
@@ -98,4 +107,4 @@ assert.ok(analytics.includes("window.dataLayer"), "Eventos precisam estar prepar
 assert.ok(analytics.includes("assistant_whatsapp_click"), "Clique no WhatsApp precisa gerar evento de analytics");
 assert.ok(syncWorkflow.includes('cron: "40 8 * * *"'), "Catálogo da loja precisa ser sincronizado diariamente");
 
-console.log(`${expectedFallbacks.length + order.length + 42} invariantes verificadas com sucesso.`);
+console.log(`${expectedFallbacks.length + order.length + 48} invariantes verificadas com sucesso.`);
