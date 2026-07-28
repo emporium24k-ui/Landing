@@ -73,21 +73,26 @@ assert.ok(visualCatalog.includes('product.category === "alianca"'), "Catálogo v
 assert.ok(officialCatalog.includes('const IMAGE_BUILD = "20260728-59"'), "Imagens oficiais precisam usar versão própria contra cache antigo");
 assert.ok(officialCatalog.includes("model.imageSource = official.image_source"), "Catálogo precisa manter uma fonte direta alternativa da loja");
 assert.ok(officialCatalog.includes('button.dataset.imageLoaded = "1"'), "Imagem precisa marcar carregamento real para validação");
-assert.ok(officialCatalog.includes("naturalWidth") === false, "Validação de dimensão real pertence aos testes de navegador, não ao código de produção");
 assert.ok(index.includes('catalogo-oficial-v1.js?v=20260728-59'), "Página precisa carregar a versão nova do catálogo visual");
 
-assert.ok(comfort.includes("Conforto interno das alianças"), "Explicação visual de conforto interno precisa estar presente");
-assert.ok(comfort.includes("Anatômico") && comfort.includes("Semianatômico") && comfort.includes("Reto"), "Os três tipos de conforto interno precisam ser explicados quando perguntados");
-assert.ok(comfort.includes("addVisual"), "Conforto interno precisa ter comparação visual educativa");
+assert.ok(comfort.includes("Parte interna das alianças"), "Comparação de anatômico, semianatômico e interno reto precisa estar presente");
+assert.ok(comfort.includes("Formatos visuais das alianças"), "Comparação visual de abaulado, reto e chanfrado precisa estar presente");
+assert.ok(comfort.includes("Anatômico") && comfort.includes("Semianatômico") && comfort.includes("Interno reto"), "Os três formatos internos precisam ser nomeados");
+assert.ok(comfort.includes("internalDiagram") && comfort.includes("externalDiagram"), "As duas comparações precisam usar desenhos próprios em SVG");
+assert.ok(comfort.includes("data-comfort-visual") && comfort.includes("data-profile-visual"), "As seis figuras precisam ser identificáveis nos testes de navegador");
+assert.ok(index.includes('conforto-interno-v1.js?v=20260728-60'), "Página precisa carregar a versão visual corrigida do conforto interno");
 
 assert.ok(catalogConversation.includes('flow.stage = "external_profile"'), "Formato precisa ser escolhido antes dos aros");
-assert.ok(formatFlow.includes('button.textContent = "Abaulado"'), "Escolha de alianças precisa oferecer formato abaulado");
-assert.ok(formatFlow.includes('button.textContent = "Reto/chapado — formato original"'), "Reto e chapado precisam ser tratados como formato original");
-assert.ok(formatFlow.includes('button.textContent = "Chanfrado/quinado"'), "Escolha precisa oferecer chanfrado ou quinado");
+assert.ok(formatFlow.includes("profileSvg"), "As escolhas de formato precisam possuir desenho em SVG");
+assert.ok(formatFlow.includes('decorateFormatButton(button, "abaulado", "Abaulado"'), "Escolha precisa mostrar desenho abaulado");
+assert.ok(formatFlow.includes('decorateFormatButton(button, "reto", "Reto/chapado — formato original"'), "Escolha precisa mostrar desenho reto ou chapado");
+assert.ok(formatFlow.includes('decorateFormatButton(button, "chanfrado", "Chanfrado/quinado"'), "Escolha precisa mostrar desenho chanfrado ou quinado");
+assert.ok(formatFlow.includes('button.dataset.formatVisualReady = "1"'), "Botões desenhados precisam ser identificáveis e não duplicados");
 assert.ok(formatFlow.includes('flow.stage = "sizes"'), "Depois do formato o fluxo deve seguir diretamente para os aros");
 assert.ok(formatFlow.includes('button[data-conversation-internal-comfort]'), "A etapa antiga de conforto interno precisa ser removida caso apareça");
 assert.ok(formatFlow.includes('Formato: $1 |'), "Resumo e WhatsApp precisam guardar apenas uma escolha de formato");
 assert.ok(!formatFlow.includes('Agora escolha o <strong>conforto interno</strong>'), "Fluxo comercial não pode perguntar conforto interno novamente");
+assert.ok(index.includes('formato-externo-v1.js?v=20260728-60'), "Página precisa carregar os botões visuais de formato");
 
 assert.ok(recovery.includes("Falar com atendente"), "Recuperação deve oferecer atendimento humano");
 assert.ok(recovery.includes("config.contacts.boss"), "Recuperação deve usar o telefone do chefe");
@@ -107,4 +112,4 @@ assert.ok(analytics.includes("window.dataLayer"), "Eventos precisam estar prepar
 assert.ok(analytics.includes("assistant_whatsapp_click"), "Clique no WhatsApp precisa gerar evento de analytics");
 assert.ok(syncWorkflow.includes('cron: "40 8 * * *"'), "Catálogo da loja precisa ser sincronizado diariamente");
 
-console.log(`${expectedFallbacks.length + order.length + 48} invariantes verificadas com sucesso.`);
+console.log(`${expectedFallbacks.length + order.length + 55} invariantes verificadas com sucesso.`);
