@@ -41,9 +41,9 @@ for(const file of expectedFallbacks){
 
 const order = [
   "config-negocio-v1.js", "core-intencoes-v1.js", "sessao-conversa-v1.js", "coordenador-central-v1.js",
-  "metricas-v1.js", "analytics-bridge-v1.js", "top-cta-v1.js", "catalogo-loja-dados.js",
-  "roteamento-legado-v1.js", "catalogo-loja-visual-v1.js", "conforto-interno-v1.js",
-  "venda-metais-v1.js", "catalogo-dados-oficiais.js", "catalogo-aliancas-v1.js", "catalogo-oficial-v1.js",
+  "venda-metais-v1.js", "metricas-v1.js", "analytics-bridge-v1.js", "top-cta-v1.js",
+  "catalogo-loja-dados.js", "roteamento-legado-v1.js", "catalogo-loja-visual-v1.js", "conforto-interno-v1.js",
+  "catalogo-dados-oficiais.js", "catalogo-aliancas-v1.js", "catalogo-oficial-v1.js",
   "formato-externo-v1.js", "catalogo-conversa-v2.js", "rota-produtos-site-v1.js",
   "recuperacao-conversa-v1.js", "app-concise-v3.js"
 ];
@@ -73,7 +73,8 @@ assert.ok(metalSales.includes("syncCentralState"), "Recuperação precisa corrig
 assert.ok(metalSales.includes("avaliar uma peca sua"), "Fluxo precisa reconhecer a pergunta ambígua anterior para recuperar o lead");
 assert.ok(metalSales.includes('const EVALUATION_PHONE = "5541998518452"'), "Avaliação precisa seguir para o telefone do chefe");
 assert.ok(metalSales.includes("Falar com o responsável pela avaliação"), "Lead de venda precisa receber ação clara de avaliação");
-assert.ok(index.includes('venda-metais-v1.js?v=20260728-62'), "Página precisa carregar o fluxo reforçado de venda de metais");
+assert.ok(index.includes('venda-metais-v1.js?v=20260728-63'), "Página precisa carregar o fluxo prioritário de venda de metais");
+assert.ok(index.indexOf("venda-metais-v1.js") < index.indexOf("roteamento-legado-v1.js"), "Venda de metais precisa ser analisada antes dos fluxos genéricos");
 
 assert.ok(topCta.includes("contacts.boss"), "Botão superior deve usar o telefone central do chefe");
 assert.ok(!topCta.includes("Math.random"), "Botão superior não pode distribuir o contato aleatoriamente");
@@ -129,4 +130,4 @@ assert.ok(analytics.includes("window.dataLayer"), "Eventos precisam estar prepar
 assert.ok(analytics.includes("assistant_whatsapp_click"), "Clique no WhatsApp precisa gerar evento de analytics");
 assert.ok(syncWorkflow.includes('cron: "40 8 * * *"'), "Catálogo da loja precisa ser sincronizado diariamente");
 
-console.log(`${expectedFallbacks.length + order.length + 69} invariantes verificadas com sucesso.`);
+console.log(`${expectedFallbacks.length + order.length + 70} invariantes verificadas com sucesso.`);
