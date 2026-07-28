@@ -6,7 +6,7 @@
   "use strict";
 
   return Object.freeze({
-    version: "20260727-49",
+    version: "20260728-64",
     company: Object.freeze({
       name: "Emporium24k",
       assistant: "Coroa 24K",
@@ -17,7 +17,13 @@
       boss: "5541998518452",
       allianceSales: Object.freeze(["5541995888995", "5541995776736"]),
       services: "5541998518452",
+      personalized: "5541998518452",
       metalsEvaluation: "5541998518452"
+    }),
+    routing: Object.freeze({
+      allianceDistribution: "stable-50-50",
+      allianceStickyByVisitor: true,
+      specialistHandles: Object.freeze(["compra e avaliação de ouro ou prata", "consertos, polimento e ajuste", "peças personalizadas"])
     }),
     store: Object.freeze({
       home: "https://www.emporium24k.com.br/",
@@ -40,12 +46,19 @@
         semijewelryFree: true,
         method: "Sedex"
       }),
+      payment: Object.freeze({
+        pix: true,
+        creditCardMaximumInstallments: 12,
+        interestDependsOnSimulation: true,
+        boletoRequiresSimulation: true
+      }),
       silverAlliancePromotionsMention: false,
       goldAllianceSellerDiscount: true,
       referenceImageChannel: "WhatsApp",
       readyJewelryPurchaseChannel: "site",
       alliancePurchaseChannel: "vendedor",
-      adjustsRingSizeAlways: true,
+      adjustsRingSizeAlways: false,
+      adjustsRingSizeAfterAnalysis: true,
       customWithCustomerGold: true
     })
   });
