@@ -38,11 +38,18 @@
     return normalize(bubbles.at(-1)?.textContent || "");
   }
 
+  function previousUserText(){
+    const bubbles = [...document.querySelectorAll("#messages .row.user .bubble")];
+    return normalize(bubbles.at(-1)?.textContent || "");
+  }
+
   function isOwnershipFollowUp(text){
     const shortOwnership = /^(?:sim )?(?:e |eh )?(?:meu|minha|meus|minhas|o meu|a minha|meu mesmo|minha mesmo|e minha peca|e meu ouro)$/.test(text);
     if(!shortOwnership) return false;
-    const previous = lastBotText();
-    return includesAny(previous, [
+    const previousBot = lastBotText();
+    const previousUser = previousUserText();
+    const previousSaleMessage = /\b(ouro|prata|joia|joias|peca|pecas)\b.*\b(?:para vender|vender|avaliar)\b/.test(previousUser);
+    return previousSaleMessage || includesAny(previousBot, [
       "avaliar uma peca sua", "vender uma peca sua", "quer vender a sua",
       "comprar uma joia ou vender", "ver joias da loja ou avaliar",
       "procura uma joia ou quer vender"
@@ -86,7 +93,9 @@
     const directOwnedSale = material && /\b(?:vender|avaliar)\b/.test(text) &&
       /\b(meu|minha|meus|minhas|tenho|estou|possuo|comigo)\b/.test(text) && !looksLikeStoreOffering(text);
 
-    return firstPersonSell || ownedForSale || sellToStorePhrase || storeBuys || priceForSelling || directOwnedSale;
+    const bareForSale = /^(?:ouro|prata|joia|joias|peca|pecas|corrente|correntes|anel|aneis|alianca|aliancas)(?: de ouro| de prata)? (?:para vender|para avaliar)$/.test(text) && !looksLikeStoreOffering(text);
+
+    return firstPersonSell || ownedForSale || sellToStorePhrase || storeBuys || priceForSelling || directOwnedSale || bareForSale;
   }
 
   function pickReply(){
@@ -105,6 +114,20 @@
     const current = String(raw || "").trim();
     if(current && userMessages.at(-1) !== current) userMessages.push(current);
     return userMessages.slice(-3).join(" | ") || current;
+  }
+
+  function syncCentralState(raw){
+    const central = window.__coordenadorCentralV1;
+    if(!central?.state) return;
+    central.state.lastIntent = central.state.intent;
+    central.state.intent = "sell_metals";
+    central.state.product = "ouro/prata";
+    const text = normalize(raw);
+    if(/\bouro\b/.test(text)) central.state.material = "ouro";
+    else if(/\bprata\b/.test(text)) central.state.material = "prata";
+    central.state.stage = "avaliação para venda";
+    central.state.lastUserMessage = String(raw || "").trim();
+    central.save?.();
   }
 
   function whatsappUrl(raw){
@@ -170,6 +193,7 @@
   async function answer(raw){
     if(state.busy) return;
     state.busy = true;
+    syncCentralState(raw);
     const input = document.querySelector("#question");
     if(input) input.value = "";
     addMessage(escapeHtml(raw), "user");
