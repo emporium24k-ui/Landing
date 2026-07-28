@@ -12,6 +12,8 @@ on:
       - "assistente/analytics-bridge-v1.js"
       - "assistente/top-cta-v1.js"
       - "assistente/catalogo-loja-visual-v1.js"
+      - "assistente/catalogo-dados-oficiais.js"
+      - "assistente/catalogo-oficial-v1.js"
       - "assistente/catalogo-conversa-v2.js"
       - "assistente/conforto-interno-v1.js"
       - "assistente/formato-externo-v1.js"
@@ -53,6 +55,8 @@ jobs:
           node --check assistente/top-cta-v1.js
           node --check assistente/metricas-v1.js
           node --check assistente/catalogo-loja-visual-v1.js
+          node --check assistente/catalogo-dados-oficiais.js
+          node --check assistente/catalogo-oficial-v1.js
           node --check assistente/catalogo-conversa-v2.js
           node --check assistente/conforto-interno-v1.js
           node --check assistente/formato-externo-v1.js
