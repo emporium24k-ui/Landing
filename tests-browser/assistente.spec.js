@@ -61,6 +61,22 @@ test('aliança de prata não recebe frete grátis', async ({ page }) => {
   await expect(page.getByText(/não é grátis|calculado conforme o CEP/i).last()).toBeVisible();
 });
 
+test('modelo de aliança oferece abaulado antes do conforto interno e dos aros', async ({ page }) => {
+  await openAssistant(page);
+  await send(page, 'quero ver alianças de prata 925');
+  const model = page.locator('button[data-ring-model]').first();
+  await expect(model).toBeVisible();
+  await model.click();
+
+  const rounded = page.getByRole('button', { name: 'Abaulado (externo)' });
+  await expect(rounded).toBeVisible();
+  await rounded.click();
+
+  await expect(page.getByRole('button', { name: /Anatômico — mais arredondado/ })).toBeVisible();
+  await expect(page.getByRole('button', { name: /Semianatômico — leve arredondamento/ })).toBeVisible();
+  await expect(page.getByRole('button', { name: /Reto — parte interna plana/ })).toBeVisible();
+});
+
 test('explica e mostra os três tipos de conforto interno', async ({ page }) => {
   await openAssistant(page);
   await send(page, 'qual a diferença entre anatômica, semianatômica e reta?');
