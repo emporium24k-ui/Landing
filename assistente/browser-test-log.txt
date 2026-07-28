@@ -1,180 +1,180 @@
-[WebServer] 127.0.0.1 - - [28/Jul/2026 20:38:53] "GET /assistente/catalogo-oficial-v1.js?v=20260728-59 HTTP/1.1" 200 -
-[WebServer] 127.0.0.1 - - [28/Jul/2026 20:38:53] "GET /assistente/gravacao-limite-v2.js?v=20260727-1 HTTP/1.1" 200 -
-[WebServer] 127.0.0.1 - - [28/Jul/2026 20:38:53] "GET /assistente/formato-externo-v1.js?v=20260728-60 HTTP/1.1" 200 -
-[WebServer] 127.0.0.1 - - [28/Jul/2026 20:38:53] "GET /assistente/desconto-catalogo-v1.js?v=20260727-2 HTTP/1.1" 200 -
-[WebServer] 127.0.0.1 - - [28/Jul/2026 20:38:53] "GET /assistente/catalogo-conversa-v2.js?v=20260728-59 HTTP/1.1" 200 -
-[WebServer] 127.0.0.1 - - [28/Jul/2026 20:38:53] "GET /assistente/frete-prata-v1.js?v=20260727-48 HTTP/1.1" 200 -
-[WebServer] 127.0.0.1 - - [28/Jul/2026 20:38:53] "GET /assistente/rota-produtos-site-v1.js?v=20260727-3 HTTP/1.1" 200 -
-[WebServer] 127.0.0.1 - - [28/Jul/2026 20:38:53] "GET /assistente/primeiro-contato-v3.js?v=20260724-1 HTTP/1.1" 200 -
-[WebServer] 127.0.0.1 - - [28/Jul/2026 20:38:53] "GET /assistente/modelo-especifico-v1.js?v=20260724-2 HTTP/1.1" 200 -
-[WebServer] 127.0.0.1 - - [28/Jul/2026 20:38:53] "GET /assistente/rastreamento-v1.js?v=20260724-1 HTTP/1.1" 200 -
-[WebServer] 127.0.0.1 - - [28/Jul/2026 20:38:53] "GET /assistente/maquininha-v1.js?v=20260724-1 HTTP/1.1" 200 -
-[WebServer] 127.0.0.1 - - [28/Jul/2026 20:38:53] "GET /assistente/cartao-distancia-prazo-v1.js?v=20260724-1 HTTP/1.1" 200 -
-[WebServer] 127.0.0.1 - - [28/Jul/2026 20:38:53] "GET /assistente/encapada-hotfix-v1.js?v=20260728-64 HTTP/1.1" 200 -
-[WebServer] 127.0.0.1 - - [28/Jul/2026 20:38:54] "GET /assistente/pagamento-v2.js?v=20260724-1 HTTP/1.1" 200 -
-[WebServer] 127.0.0.1 - - [28/Jul/2026 20:38:54] "GET /assistente/personalizados-v1.js?v=20260724-2 HTTP/1.1" 200 -
-[WebServer] 127.0.0.1 - - [28/Jul/2026 20:38:54] "GET /assistente/entrega-presencial-v1.js?v=20260724-1 HTTP/1.1" 200 -
-[WebServer] 127.0.0.1 - - [28/Jul/2026 20:38:54] "GET /assistente/catalog-hotfix-v3.js?v=20260724-1 HTTP/1.1" 200 -
-[WebServer] 127.0.0.1 - - [28/Jul/2026 20:38:54] "GET /assistente/endereco-polimento-v2.js?v=20260724-2 HTTP/1.1" 200 -
-[WebServer] 127.0.0.1 - - [28/Jul/2026 20:38:54] "GET /assistente/trust-v2.js?v=20260724-1 HTTP/1.1" 200 -
-[WebServer] 127.0.0.1 - - [28/Jul/2026 20:38:54] "GET /assistente/recuperacao-conversa-v1.js?v=20260728-59 HTTP/1.1" 200 -
-[WebServer] 127.0.0.1 - - [28/Jul/2026 20:38:54] "GET /assistente/app-concise-v3.js?v=20260724-2 HTTP/1.1" 200 -
-·[WebServer] 127.0.0.1 - - [28/Jul/2026 20:38:55] "GET /assistente/?build=browser-test-64 HTTP/1.1" 200 -
-[WebServer] 127.0.0.1 - - [28/Jul/2026 20:38:55] "GET /assistente/style.css?v=20260728-60 HTTP/1.1" 200 -
-[WebServer] 127.0.0.1 - - [28/Jul/2026 20:38:55] "GET /assistente/config-negocio-v1.js?v=20260728-64 HTTP/1.1" 200 -
-[WebServer] 127.0.0.1 - - [28/Jul/2026 20:38:55] "GET /assistente/roteamento-equilibrado-v1.js?v=20260728-64 HTTP/1.1" 200 -
-[WebServer] 127.0.0.1 - - [28/Jul/2026 20:38:55] "GET /assistente/pagamento-site-v1.js?v=20260728-64 HTTP/1.1" 200 -
-[WebServer] 127.0.0.1 - - [28/Jul/2026 20:38:55] "GET /assistente/core-intencoes-v1.js?v=20260728-61 HTTP/1.1" 200 -
-[WebServer] 127.0.0.1 - - [28/Jul/2026 20:38:55] "GET /assistente/sessao-conversa-v1.js?v=20260728-59 HTTP/1.1" 200 -
-[WebServer] 127.0.0.1 - - [28/Jul/2026 20:38:55] "GET /assistente/coordenador-central-v1.js?v=20260728-59 HTTP/1.1" 200 -
-[WebServer] 127.0.0.1 - - [28/Jul/2026 20:38:55] "GET /assistente/correcoes-contexto-v1.js?v=20260728-65 HTTP/1.1" 200 -
-[WebServer] 127.0.0.1 - - [28/Jul/2026 20:38:55] "GET /assistente/ortografia-v1.js?v=20260727-1 HTTP/1.1" 200 -
-[WebServer] 127.0.0.1 - - [28/Jul/2026 20:38:55] "GET /assistente/venda-metais-v1.js?v=20260728-63 HTTP/1.1" 200 -
-[WebServer] 127.0.0.1 - - [28/Jul/2026 20:38:55] "GET /assistente/catalogo-loja-dados.js?v=20260728-59 HTTP/1.1" 200 -
-[WebServer] 127.0.0.1 - - [28/Jul/2026 20:38:55] "GET /assistente/top-cta-v1.js?v=20260728-64 HTTP/1.1" 200 -
-[WebServer] 127.0.0.1 - - [28/Jul/2026 20:38:55] "GET /assistente/catalogo-loja-visual-v1.js?v=20260728-59 HTTP/1.1" 200 -
-[WebServer] 127.0.0.1 - - [28/Jul/2026 20:38:55] "GET /assistente/roteamento-legado-v1.js?v=20260728-59 HTTP/1.1" 200 -
-[WebServer] 127.0.0.1 - - [28/Jul/2026 20:38:55] "GET /assistente/metricas-v1.js?v=20260728-59 HTTP/1.1" 200 -
-[WebServer] 127.0.0.1 - - [28/Jul/2026 20:38:55] "GET /assistente/analytics-bridge-v1.js?v=20260728-59 HTTP/1.1" 200 -
-[WebServer] 127.0.0.1 - - [28/Jul/2026 20:38:55] "GET /assistente/referencia-whatsapp-v1.js?v=20260727-1 HTTP/1.1" 200 -
-[WebServer] 127.0.0.1 - - [28/Jul/2026 20:38:55] "GET /assistente/conforto-interno-v1.js?v=20260728-60 HTTP/1.1" 200 -
-[WebServer] 127.0.0.1 - - [28/Jul/2026 20:38:55] "GET /assistente/tom-humano-v1.js?v=20260727-2 HTTP/1.1" 200 -
-[WebServer] 127.0.0.1 - - [28/Jul/2026 20:38:55] "GET /assistente/valor-variacoes-v1.js?v=20260727-1 HTTP/1.1" 200 -
-[WebServer] 127.0.0.1 - - [28/Jul/2026 20:38:55] "GET /assistente/ajuste-aro-v1.js?v=20260727-3 HTTP/1.1" 200 -
-[WebServer] 127.0.0.1 - - [28/Jul/2026 20:38:55] "GET /assistente/identidade-v1.js?v=20260727-1 HTTP/1.1" 200 -
-[WebServer] 127.0.0.1 - - [28/Jul/2026 20:38:55] "GET /assistente/teores-materiais-v1.js?v=20260727-1 HTTP/1.1" 200 -
-[WebServer] 127.0.0.1 - - [28/Jul/2026 20:38:55] "GET /assistente/ouro-na-alianca-v1.js?v=20260727-2 HTTP/1.1" 200 -
-[WebServer] 127.0.0.1 - - [28/Jul/2026 20:38:55] "GET /assistente/seguranca-entrega-v1.js?v=20260724-1 HTTP/1.1" 200 -
-[WebServer] 127.0.0.1 - - [28/Jul/2026 20:38:55] "GET /assistente/banho-semijoias-v1.js?v=20260724-1 HTTP/1.1" 200 -
-[WebServer] 127.0.0.1 - - [28/Jul/2026 20:38:55] "GET /assistente/valor-personalizado-v1.js?v=20260727-2 HTTP/1.1" 200 -
-[WebServer] 127.0.0.1 - - [28/Jul/2026 20:38:55] "GET /assistente/gravacao-limite-v2.js?v=20260727-1 HTTP/1.1" 200 -
-[WebServer] 127.0.0.1 - - [28/Jul/2026 20:38:55] "GET /assistente/catalogo-dados-oficiais.js?v=20260728-59 HTTP/1.1" 200 -
-[WebServer] 127.0.0.1 - - [28/Jul/2026 20:38:55] "GET /assistente/catalogo-oficial-v1.js?v=20260728-59 HTTP/1.1" 200 -
-[WebServer] 127.0.0.1 - - [28/Jul/2026 20:38:55] "GET /assistente/catalogo-aliancas-v1.js?v=20260728-59 HTTP/1.1" 200 -
-[WebServer] 127.0.0.1 - - [28/Jul/2026 20:38:55] "GET /assistente/formato-externo-v1.js?v=20260728-60 HTTP/1.1" 200 -
-[WebServer] 127.0.0.1 - - [28/Jul/2026 20:38:55] "GET /assistente/catalogo-conversa-v2.js?v=20260728-59 HTTP/1.1" 200 -
-[WebServer] 127.0.0.1 - - [28/Jul/2026 20:38:55] "GET /assistente/frete-prata-v1.js?v=20260727-48 HTTP/1.1" 200 -
-[WebServer] 127.0.0.1 - - [28/Jul/2026 20:38:55] "GET /assistente/desconto-catalogo-v1.js?v=20260727-2 HTTP/1.1" 200 -
-[WebServer] 127.0.0.1 - - [28/Jul/2026 20:38:55] "GET /assistente/rota-produtos-site-v1.js?v=20260727-3 HTTP/1.1" 200 -
-[WebServer] 127.0.0.1 - - [28/Jul/2026 20:38:55] "GET /assistente/modelo-especifico-v1.js?v=20260724-2 HTTP/1.1" 200 -
-[WebServer] 127.0.0.1 - - [28/Jul/2026 20:38:55] "GET /assistente/primeiro-contato-v3.js?v=20260724-1 HTTP/1.1" 200 -
-[WebServer] 127.0.0.1 - - [28/Jul/2026 20:38:55] "GET /assistente/rastreamento-v1.js?v=20260724-1 HTTP/1.1" 200 -
-[WebServer] 127.0.0.1 - - [28/Jul/2026 20:38:55] "GET /assistente/maquininha-v1.js?v=20260724-1 HTTP/1.1" 200 -
-[WebServer] 127.0.0.1 - - [28/Jul/2026 20:38:55] "GET /assistente/cartao-distancia-prazo-v1.js?v=20260724-1 HTTP/1.1" 200 -
-[WebServer] 127.0.0.1 - - [28/Jul/2026 20:38:55] "GET /assistente/personalizados-v1.js?v=20260724-2 HTTP/1.1" 200 -
-[WebServer] 127.0.0.1 - - [28/Jul/2026 20:38:55] "GET /assistente/pagamento-v2.js?v=20260724-1 HTTP/1.1" 200 -
-[WebServer] 127.0.0.1 - - [28/Jul/2026 20:38:55] "GET /assistente/encapada-hotfix-v1.js?v=20260728-64 HTTP/1.1" 200 -
-[WebServer] 127.0.0.1 - - [28/Jul/2026 20:38:55] "GET /assistente/entrega-presencial-v1.js?v=20260724-1 HTTP/1.1" 200 -
-[WebServer] 127.0.0.1 - - [28/Jul/2026 20:38:55] "GET /assistente/catalog-hotfix-v3.js?v=20260724-1 HTTP/1.1" 200 -
-[WebServer] 127.0.0.1 - - [28/Jul/2026 20:38:55] "GET /assistente/recuperacao-conversa-v1.js?v=20260728-59 HTTP/1.1" 200 -
-[WebServer] 127.0.0.1 - - [28/Jul/2026 20:38:55] "GET /assistente/trust-v2.js?v=20260724-1 HTTP/1.1" 200 -
-[WebServer] 127.0.0.1 - - [28/Jul/2026 20:38:55] "GET /assistente/app-concise-v3.js?v=20260724-2 HTTP/1.1" 200 -
-[WebServer] 127.0.0.1 - - [28/Jul/2026 20:38:55] "GET /assistente/endereco-polimento-v2.js?v=20260724-2 HTTP/1.1" 200 -
-F[WebServer] 127.0.0.1 - - [28/Jul/2026 20:38:56] "GET /assistente/?build=correction-test-65 HTTP/1.1" 200 -
-[WebServer] 127.0.0.1 - - [28/Jul/2026 20:38:56] "GET /assistente/style.css?v=20260728-60 HTTP/1.1" 200 -
-[WebServer] 127.0.0.1 - - [28/Jul/2026 20:38:56] "GET /assistente/config-negocio-v1.js?v=20260728-64 HTTP/1.1" 200 -
-[WebServer] 127.0.0.1 - - [28/Jul/2026 20:38:56] "GET /assistente/roteamento-equilibrado-v1.js?v=20260728-64 HTTP/1.1" 200 -
-[WebServer] 127.0.0.1 - - [28/Jul/2026 20:38:56] "GET /assistente/pagamento-site-v1.js?v=20260728-64 HTTP/1.1" 200 -
-[WebServer] 127.0.0.1 - - [28/Jul/2026 20:38:56] "GET /assistente/coordenador-central-v1.js?v=20260728-59 HTTP/1.1" 200 -
-[WebServer] 127.0.0.1 - - [28/Jul/2026 20:38:56] "GET /assistente/core-intencoes-v1.js?v=20260728-61 HTTP/1.1" 200 -
-[WebServer] 127.0.0.1 - - [28/Jul/2026 20:38:56] "GET /assistente/correcoes-contexto-v1.js?v=20260728-65 HTTP/1.1" 200 -
-[WebServer] 127.0.0.1 - - [28/Jul/2026 20:38:56] "GET /assistente/sessao-conversa-v1.js?v=20260728-59 HTTP/1.1" 200 -
-[WebServer] 127.0.0.1 - - [28/Jul/2026 20:38:56] "GET /assistente/ortografia-v1.js?v=20260727-1 HTTP/1.1" 200 -
-[WebServer] 127.0.0.1 - - [28/Jul/2026 20:38:56] "GET /assistente/metricas-v1.js?v=20260728-59 HTTP/1.1" 200 -
-[WebServer] 127.0.0.1 - - [28/Jul/2026 20:38:56] "GET /assistente/venda-metais-v1.js?v=20260728-63 HTTP/1.1" 200 -
-[WebServer] 127.0.0.1 - - [28/Jul/2026 20:38:56] "GET /assistente/analytics-bridge-v1.js?v=20260728-59 HTTP/1.1" 200 -
-[WebServer] 127.0.0.1 - - [28/Jul/2026 20:38:56] "GET /assistente/top-cta-v1.js?v=20260728-64 HTTP/1.1" 200 -
-[WebServer] 127.0.0.1 - - [28/Jul/2026 20:38:56] "GET /assistente/catalogo-loja-dados.js?v=20260728-59 HTTP/1.1" 200 -
-[WebServer] 127.0.0.1 - - [28/Jul/2026 20:38:56] "GET /assistente/roteamento-legado-v1.js?v=20260728-59 HTTP/1.1" 200 -
-[WebServer] 127.0.0.1 - - [28/Jul/2026 20:38:56] "GET /assistente/conforto-interno-v1.js?v=20260728-60 HTTP/1.1" 200 -
-[WebServer] 127.0.0.1 - - [28/Jul/2026 20:38:56] "GET /assistente/catalogo-loja-visual-v1.js?v=20260728-59 HTTP/1.1" 200 -
-[WebServer] 127.0.0.1 - - [28/Jul/2026 20:38:56] "GET /assistente/referencia-whatsapp-v1.js?v=20260727-1 HTTP/1.1" 200 -
-[WebServer] 127.0.0.1 - - [28/Jul/2026 20:38:56] "GET /assistente/tom-humano-v1.js?v=20260727-2 HTTP/1.1" 200 -
-[WebServer] 127.0.0.1 - - [28/Jul/2026 20:38:56] "GET /assistente/ajuste-aro-v1.js?v=20260727-3 HTTP/1.1" 200 -
-[WebServer] 127.0.0.1 - - [28/Jul/2026 20:38:56] "GET /assistente/valor-variacoes-v1.js?v=20260727-1 HTTP/1.1" 200 -
-[WebServer] 127.0.0.1 - - [28/Jul/2026 20:38:56] "GET /assistente/identidade-v1.js?v=20260727-1 HTTP/1.1" 200 -
-[WebServer] 127.0.0.1 - - [28/Jul/2026 20:38:56] "GET /assistente/teores-materiais-v1.js?v=20260727-1 HTTP/1.1" 200 -
-[WebServer] 127.0.0.1 - - [28/Jul/2026 20:38:56] "GET /assistente/banho-semijoias-v1.js?v=20260724-1 HTTP/1.1" 200 -
-[WebServer] 127.0.0.1 - - [28/Jul/2026 20:38:56] "GET /assistente/seguranca-entrega-v1.js?v=20260724-1 HTTP/1.1" 200 -
-[WebServer] 127.0.0.1 - - [28/Jul/2026 20:38:56] "GET /assistente/ouro-na-alianca-v1.js?v=20260727-2 HTTP/1.1" 200 -
-[WebServer] 127.0.0.1 - - [28/Jul/2026 20:38:56] "GET /assistente/catalogo-dados-oficiais.js?v=20260728-59 HTTP/1.1" 200 -
-[WebServer] 127.0.0.1 - - [28/Jul/2026 20:38:56] "GET /assistente/catalogo-aliancas-v1.js?v=20260728-59 HTTP/1.1" 200 -
-[WebServer] 127.0.0.1 - - [28/Jul/2026 20:38:56] "GET /assistente/valor-personalizado-v1.js?v=20260727-2 HTTP/1.1" 200 -
-[WebServer] 127.0.0.1 - - [28/Jul/2026 20:38:56] "GET /assistente/catalogo-oficial-v1.js?v=20260728-59 HTTP/1.1" 200 -
-[WebServer] 127.0.0.1 - - [28/Jul/2026 20:38:56] "GET /assistente/formato-externo-v1.js?v=20260728-60 HTTP/1.1" 200 -
-[WebServer] 127.0.0.1 - - [28/Jul/2026 20:38:56] "GET /assistente/catalogo-conversa-v2.js?v=20260728-59 HTTP/1.1" 200 -
-[WebServer] 127.0.0.1 - - [28/Jul/2026 20:38:56] "GET /assistente/gravacao-limite-v2.js?v=20260727-1 HTTP/1.1" 200 -
-[WebServer] 127.0.0.1 - - [28/Jul/2026 20:38:56] "GET /assistente/desconto-catalogo-v1.js?v=20260727-2 HTTP/1.1" 200 -
-[WebServer] 127.0.0.1 - - [28/Jul/2026 20:38:56] "GET /assistente/frete-prata-v1.js?v=20260727-48 HTTP/1.1" 200 -
-[WebServer] 127.0.0.1 - - [28/Jul/2026 20:38:56] "GET /assistente/rota-produtos-site-v1.js?v=20260727-3 HTTP/1.1" 200 -
-[WebServer] 127.0.0.1 - - [28/Jul/2026 20:38:56] "GET /assistente/modelo-especifico-v1.js?v=20260724-2 HTTP/1.1" 200 -
-[WebServer] 127.0.0.1 - - [28/Jul/2026 20:38:56] "GET /assistente/primeiro-contato-v3.js?v=20260724-1 HTTP/1.1" 200 -
-[WebServer] 127.0.0.1 - - [28/Jul/2026 20:38:56] "GET /assistente/rastreamento-v1.js?v=20260724-1 HTTP/1.1" 200 -
-[WebServer] 127.0.0.1 - - [28/Jul/2026 20:38:56] "GET /assistente/cartao-distancia-prazo-v1.js?v=20260724-1 HTTP/1.1" 200 -
-[WebServer] 127.0.0.1 - - [28/Jul/2026 20:38:56] "GET /assistente/maquininha-v1.js?v=20260724-1 HTTP/1.1" 200 -
-[WebServer] 127.0.0.1 - - [28/Jul/2026 20:38:56] "GET /assistente/encapada-hotfix-v1.js?v=20260728-64 HTTP/1.1" 200 -
-[WebServer] 127.0.0.1 - - [28/Jul/2026 20:38:56] "GET /assistente/pagamento-v2.js?v=20260724-1 HTTP/1.1" 200 -
-[WebServer] 127.0.0.1 - - [28/Jul/2026 20:38:56] "GET /assistente/personalizados-v1.js?v=20260724-2 HTTP/1.1" 200 -
-[WebServer] 127.0.0.1 - - [28/Jul/2026 20:38:56] "GET /assistente/endereco-polimento-v2.js?v=20260724-2 HTTP/1.1" 200 -
-[WebServer] 127.0.0.1 - - [28/Jul/2026 20:38:56] "GET /assistente/entrega-presencial-v1.js?v=20260724-1 HTTP/1.1" 200 -
-[WebServer] 127.0.0.1 - - [28/Jul/2026 20:38:56] "GET /assistente/trust-v2.js?v=20260724-1 HTTP/1.1" 200 -
-[WebServer] 127.0.0.1 - - [28/Jul/2026 20:38:56] "GET /assistente/catalog-hotfix-v3.js?v=20260724-1 HTTP/1.1" 200 -
-[WebServer] 127.0.0.1 - - [28/Jul/2026 20:38:56] "GET /assistente/app-concise-v3.js?v=20260724-2 HTTP/1.1" 200 -
-[WebServer] 127.0.0.1 - - [28/Jul/2026 20:38:56] "GET /assistente/recuperacao-conversa-v1.js?v=20260728-59 HTTP/1.1" 200 -
-·[WebServer] 127.0.0.1 - - [28/Jul/2026 20:38:57] "GET /assistente/?build=browser-test-64 HTTP/1.1" 200 -
-[WebServer] 127.0.0.1 - - [28/Jul/2026 20:38:57] "GET /assistente/style.css?v=20260728-60 HTTP/1.1" 200 -
-[WebServer] 127.0.0.1 - - [28/Jul/2026 20:38:57] "GET /assistente/config-negocio-v1.js?v=20260728-64 HTTP/1.1" 200 -
-[WebServer] 127.0.0.1 - - [28/Jul/2026 20:38:57] "GET /assistente/roteamento-equilibrado-v1.js?v=20260728-64 HTTP/1.1" 200 -
-[WebServer] 127.0.0.1 - - [28/Jul/2026 20:38:57] "GET /assistente/pagamento-site-v1.js?v=20260728-64 HTTP/1.1" 200 -
-[WebServer] 127.0.0.1 - - [28/Jul/2026 20:38:57] "GET /assistente/core-intencoes-v1.js?v=20260728-61 HTTP/1.1" 200 -
-[WebServer] 127.0.0.1 - - [28/Jul/2026 20:38:57] "GET /assistente/sessao-conversa-v1.js?v=20260728-59 HTTP/1.1" 200 -
-[WebServer] 127.0.0.1 - - [28/Jul/2026 20:38:57] "GET /assistente/coordenador-central-v1.js?v=20260728-59 HTTP/1.1" 200 -
-[WebServer] 127.0.0.1 - - [28/Jul/2026 20:38:57] "GET /assistente/ortografia-v1.js?v=20260727-1 HTTP/1.1" 200 -
-[WebServer] 127.0.0.1 - - [28/Jul/2026 20:38:57] "GET /assistente/analytics-bridge-v1.js?v=20260728-59 HTTP/1.1" 200 -
-[WebServer] 127.0.0.1 - - [28/Jul/2026 20:38:57] "GET /assistente/top-cta-v1.js?v=20260728-64 HTTP/1.1" 200 -
-[WebServer] 127.0.0.1 - - [28/Jul/2026 20:38:57] "GET /assistente/metricas-v1.js?v=20260728-59 HTTP/1.1" 200 -
-[WebServer] 127.0.0.1 - - [28/Jul/2026 20:38:57] "GET /assistente/correcoes-contexto-v1.js?v=20260728-65 HTTP/1.1" 200 -
-[WebServer] 127.0.0.1 - - [28/Jul/2026 20:38:57] "GET /assistente/catalogo-loja-dados.js?v=20260728-59 HTTP/1.1" 200 -
-[WebServer] 127.0.0.1 - - [28/Jul/2026 20:38:57] "GET /assistente/venda-metais-v1.js?v=20260728-63 HTTP/1.1" 200 -
-[WebServer] 127.0.0.1 - - [28/Jul/2026 20:38:57] "GET /assistente/roteamento-legado-v1.js?v=20260728-59 HTTP/1.1" 200 -
-[WebServer] 127.0.0.1 - - [28/Jul/2026 20:38:57] "GET /assistente/catalogo-loja-visual-v1.js?v=20260728-59 HTTP/1.1" 200 -
-[WebServer] 127.0.0.1 - - [28/Jul/2026 20:38:57] "GET /assistente/conforto-interno-v1.js?v=20260728-60 HTTP/1.1" 200 -
-[WebServer] 127.0.0.1 - - [28/Jul/2026 20:38:57] "GET /assistente/referencia-whatsapp-v1.js?v=20260727-1 HTTP/1.1" 200 -
-[WebServer] 127.0.0.1 - - [28/Jul/2026 20:38:57] "GET /assistente/tom-humano-v1.js?v=20260727-2 HTTP/1.1" 200 -
-[WebServer] 127.0.0.1 - - [28/Jul/2026 20:38:57] "GET /assistente/valor-variacoes-v1.js?v=20260727-1 HTTP/1.1" 200 -
-[WebServer] 127.0.0.1 - - [28/Jul/2026 20:38:57] "GET /assistente/ajuste-aro-v1.js?v=20260727-3 HTTP/1.1" 200 -
-[WebServer] 127.0.0.1 - - [28/Jul/2026 20:38:57] "GET /assistente/identidade-v1.js?v=20260727-1 HTTP/1.1" 200 -
-[WebServer] 127.0.0.1 - - [28/Jul/2026 20:38:57] "GET /assistente/teores-materiais-v1.js?v=20260727-1 HTTP/1.1" 200 -
-[WebServer] 127.0.0.1 - - [28/Jul/2026 20:38:57] "GET /assistente/banho-semijoias-v1.js?v=20260724-1 HTTP/1.1" 200 -
-[WebServer] 127.0.0.1 - - [28/Jul/2026 20:38:57] "GET /assistente/seguranca-entrega-v1.js?v=20260724-1 HTTP/1.1" 200 -
-[WebServer] 127.0.0.1 - - [28/Jul/2026 20:38:57] "GET /assistente/ouro-na-alianca-v1.js?v=20260727-2 HTTP/1.1" 200 -
-[WebServer] 127.0.0.1 - - [28/Jul/2026 20:38:57] "GET /assistente/valor-personalizado-v1.js?v=20260727-2 HTTP/1.1" 200 -
-[WebServer] 127.0.0.1 - - [28/Jul/2026 20:38:57] "GET /assistente/catalogo-dados-oficiais.js?v=20260728-59 HTTP/1.1" 200 -
-[WebServer] 127.0.0.1 - - [28/Jul/2026 20:38:57] "GET /assistente/catalogo-oficial-v1.js?v=20260728-59 HTTP/1.1" 200 -
-[WebServer] 127.0.0.1 - - [28/Jul/2026 20:38:57] "GET /assistente/gravacao-limite-v2.js?v=20260727-1 HTTP/1.1" 200 -
-[WebServer] 127.0.0.1 - - [28/Jul/2026 20:38:57] "GET /assistente/catalogo-aliancas-v1.js?v=20260728-59 HTTP/1.1" 200 -
-[WebServer] 127.0.0.1 - - [28/Jul/2026 20:38:57] "GET /assistente/formato-externo-v1.js?v=20260728-60 HTTP/1.1" 200 -
-[WebServer] 127.0.0.1 - - [28/Jul/2026 20:38:57] "GET /assistente/desconto-catalogo-v1.js?v=20260727-2 HTTP/1.1" 200 -
-[WebServer] 127.0.0.1 - - [28/Jul/2026 20:38:57] "GET /assistente/frete-prata-v1.js?v=20260727-48 HTTP/1.1" 200 -
-[WebServer] 127.0.0.1 - - [28/Jul/2026 20:38:57] "GET /assistente/catalogo-conversa-v2.js?v=20260728-59 HTTP/1.1" 200 -
-[WebServer] 127.0.0.1 - - [28/Jul/2026 20:38:57] "GET /assistente/rota-produtos-site-v1.js?v=20260727-3 HTTP/1.1" 200 -
-[WebServer] 127.0.0.1 - - [28/Jul/2026 20:38:57] "GET /assistente/modelo-especifico-v1.js?v=20260724-2 HTTP/1.1" 200 -
-[WebServer] 127.0.0.1 - - [28/Jul/2026 20:38:57] "GET /assistente/primeiro-contato-v3.js?v=20260724-1 HTTP/1.1" 200 -
-[WebServer] 127.0.0.1 - - [28/Jul/2026 20:38:57] "GET /assistente/rastreamento-v1.js?v=20260724-1 HTTP/1.1" 200 -
-[WebServer] 127.0.0.1 - - [28/Jul/2026 20:38:57] "GET /assistente/maquininha-v1.js?v=20260724-1 HTTP/1.1" 200 -
-[WebServer] 127.0.0.1 - - [28/Jul/2026 20:38:57] "GET /assistente/cartao-distancia-prazo-v1.js?v=20260724-1 HTTP/1.1" 200 -
-[WebServer] 127.0.0.1 - - [28/Jul/2026 20:38:57] "GET /assistente/encapada-hotfix-v1.js?v=20260728-64 HTTP/1.1" 200 -
-[WebServer] 127.0.0.1 - - [28/Jul/2026 20:38:57] "GET /assistente/personalizados-v1.js?v=20260724-2 HTTP/1.1" 200 -
-[WebServer] 127.0.0.1 - - [28/Jul/2026 20:38:57] "GET /assistente/pagamento-v2.js?v=20260724-1 HTTP/1.1" 200 -
-[WebServer] 127.0.0.1 - - [28/Jul/2026 20:38:57] "GET /assistente/endereco-polimento-v2.js?v=20260724-2 HTTP/1.1" 200 -
-[WebServer] 127.0.0.1 - - [28/Jul/2026 20:38:57] "GET /assistente/entrega-presencial-v1.js?v=20260724-1 HTTP/1.1" 200 -
-[WebServer] 127.0.0.1 - - [28/Jul/2026 20:38:57] "GET /assistente/catalog-hotfix-v3.js?v=20260724-1 HTTP/1.1" 200 -
-[WebServer] 127.0.0.1 - - [28/Jul/2026 20:38:57] "GET /assistente/app-concise-v3.js?v=20260724-2 HTTP/1.1" 200 -
-[WebServer] 127.0.0.1 - - [28/Jul/2026 20:38:57] "GET /assistente/trust-v2.js?v=20260724-1 HTTP/1.1" 200 -
-[WebServer] 127.0.0.1 - - [28/Jul/2026 20:38:57] "GET /assistente/recuperacao-conversa-v1.js?v=20260728-59 HTTP/1.1" 200 -
-[WebServer] 127.0.0.1 - - [28/Jul/2026 20:38:57] "GET /assistente/catalogo-imagens/silver-lux.webp?v=20260728-59 HTTP/1.1" 200 -
-[WebServer] 127.0.0.1 - - [28/Jul/2026 20:38:57] "GET /assistente/catalogo-imagens/silver-gleam.webp?v=20260728-59 HTTP/1.1" 200 -
-[WebServer] 127.0.0.1 - - [28/Jul/2026 20:38:57] "GET /assistente/catalogo-imagens/silver-pulse.webp?v=20260728-59 HTTP/1.1" 200 -
-[WebServer] 127.0.0.1 - - [28/Jul/2026 20:38:57] "GET /assistente/catalogo-imagens/silver-vow.webp?v=20260728-59 HTTP/1.1" 200 -
-[WebServer] 127.0.0.1 - - [28/Jul/2026 20:38:57] "GET /assistente/catalogo-imagens/silver-celeste.webp?v=20260728-59 HTTP/1.1" 200 -
-·
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Retry #1 ───────────────────────────────────────────────────────────────────────────────────────
+
+    Error: expect(locator).toBeVisible() failed
+
+    Locator: getByRole('link', { name: /Enviar ideia ao atendimento|Enviar projeto pelo WhatsApp/ }).last()
+    Expected: visible
+    Timeout: 8000ms
+    Error: element(s) not found
+
+    Call log:
+      - Expect "toBeVisible" with timeout 8000ms
+      - waiting for getByRole('link', { name: /Enviar ideia ao atendimento|Enviar projeto pelo WhatsApp/ }).last()
+
+
+      115 |   await send(page, 'quero criar um pingente personalizado');
+      116 |   await expect(page.getByText(/Me conte qual peça deseja|Me conte.*detalhes/i).last()).toBeVisible();
+    > 117 |   await expect(page.getByRole('link', { name: /Enviar ideia ao atendimento|Enviar projeto pelo WhatsApp/ }).last()).toBeVisible();
+          |                                                                                                                     ^
+      118 |
+      119 |   await send(page, 'pingente em ouro 18k com iniciais e uma pedra');
+      120 |   await expect(page.getByRole('link', { name: /Enviar ideia ao atendimento|Enviar projeto pelo WhatsApp/ }).last()).toBeVisible();
+        at /home/runner/work/Landing/Landing/tests-browser/correcoes-contexto.spec.js:117:117
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/correcoes-contexto-atualiz-46ddb-o-o-cliente-corrige-a-ideia-mobile-chromium-retry1/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/correcoes-contexto-atualiz-46ddb-o-o-cliente-corrige-a-ideia-mobile-chromium-retry1/error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/correcoes-contexto-atualiz-46ddb-o-o-cliente-corrige-a-ideia-mobile-chromium-retry1/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/correcoes-contexto-atualiz-46ddb-o-o-cliente-corrige-a-ideia-mobile-chromium-retry1/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  3) [desktop-chromium] › tests-browser/correcoes-contexto.spec.js:85:1 › aceita correção de outra escolha enquanto ainda pergunta os aros 
+
+    Error: expect(received).toMatch(expected)
+
+    Expected pattern: /Chanfrado/i
+    Received string:  "Abaulado"
+
+      92 |     stage:window.__catalogoConversaV2.flow.stage
+      93 |   }));
+    > 94 |   expect(state.format).toMatch(/Chanfrado/i);
+         |                        ^
+      95 |   expect(state.stage).toBe('sizes');
+      96 |   await expect(page.getByText(/Continuamos de onde paramos.*numerações/i).last()).toBeVisible();
+      97 |
+        at /home/runner/work/Landing/Landing/tests-browser/correcoes-contexto.spec.js:94:24
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/correcoes-contexto-aceita--c1511-anto-ainda-pergunta-os-aros-desktop-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/correcoes-contexto-aceita--c1511-anto-ainda-pergunta-os-aros-desktop-chromium/error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/correcoes-contexto-aceita--c1511-anto-ainda-pergunta-os-aros-desktop-chromium/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/correcoes-contexto-aceita--c1511-anto-ainda-pergunta-os-aros-desktop-chromium/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Retry #1 ───────────────────────────────────────────────────────────────────────────────────────
+
+    Error: expect(received).toMatch(expected)
+
+    Expected pattern: /Chanfrado/i
+    Received string:  "Abaulado"
+
+      92 |     stage:window.__catalogoConversaV2.flow.stage
+      93 |   }));
+    > 94 |   expect(state.format).toMatch(/Chanfrado/i);
+         |                        ^
+      95 |   expect(state.stage).toBe('sizes');
+      96 |   await expect(page.getByText(/Continuamos de onde paramos.*numerações/i).last()).toBeVisible();
+      97 |
+        at /home/runner/work/Landing/Landing/tests-browser/correcoes-contexto.spec.js:94:24
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/correcoes-contexto-aceita--c1511-anto-ainda-pergunta-os-aros-desktop-chromium-retry1/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/correcoes-contexto-aceita--c1511-anto-ainda-pergunta-os-aros-desktop-chromium-retry1/error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/correcoes-contexto-aceita--c1511-anto-ainda-pergunta-os-aros-desktop-chromium-retry1/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/correcoes-contexto-aceita--c1511-anto-ainda-pergunta-os-aros-desktop-chromium-retry1/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  4) [desktop-chromium] › tests-browser/correcoes-contexto.spec.js:113:1 › atualiza um projeto personalizado quando o cliente corrige a ideia 
+
+    Error: expect(locator).toBeVisible() failed
+
+    Locator: getByRole('link', { name: /Enviar ideia ao atendimento|Enviar projeto pelo WhatsApp/ }).last()
+    Expected: visible
+    Timeout: 8000ms
+    Error: element(s) not found
+
+    Call log:
+      - Expect "toBeVisible" with timeout 8000ms
+      - waiting for getByRole('link', { name: /Enviar ideia ao atendimento|Enviar projeto pelo WhatsApp/ }).last()
+
+
+      115 |   await send(page, 'quero criar um pingente personalizado');
+      116 |   await expect(page.getByText(/Me conte qual peça deseja|Me conte.*detalhes/i).last()).toBeVisible();
+    > 117 |   await expect(page.getByRole('link', { name: /Enviar ideia ao atendimento|Enviar projeto pelo WhatsApp/ }).last()).toBeVisible();
+          |                                                                                                                     ^
+      118 |
+      119 |   await send(page, 'pingente em ouro 18k com iniciais e uma pedra');
+      120 |   await expect(page.getByRole('link', { name: /Enviar ideia ao atendimento|Enviar projeto pelo WhatsApp/ }).last()).toBeVisible();
+        at /home/runner/work/Landing/Landing/tests-browser/correcoes-contexto.spec.js:117:117
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/correcoes-contexto-atualiz-46ddb-o-o-cliente-corrige-a-ideia-desktop-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/correcoes-contexto-atualiz-46ddb-o-o-cliente-corrige-a-ideia-desktop-chromium/error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/correcoes-contexto-atualiz-46ddb-o-o-cliente-corrige-a-ideia-desktop-chromium/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/correcoes-contexto-atualiz-46ddb-o-o-cliente-corrige-a-ideia-desktop-chromium/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Retry #1 ───────────────────────────────────────────────────────────────────────────────────────
+
+    Error: expect(locator).toBeVisible() failed
+
+    Locator: getByRole('link', { name: /Enviar ideia ao atendimento|Enviar projeto pelo WhatsApp/ }).last()
+    Expected: visible
+    Timeout: 8000ms
+    Error: element(s) not found
+
+    Call log:
+      - Expect "toBeVisible" with timeout 8000ms
+      - waiting for getByRole('link', { name: /Enviar ideia ao atendimento|Enviar projeto pelo WhatsApp/ }).last()
+
+
+      115 |   await send(page, 'quero criar um pingente personalizado');
+      116 |   await expect(page.getByText(/Me conte qual peça deseja|Me conte.*detalhes/i).last()).toBeVisible();
+    > 117 |   await expect(page.getByRole('link', { name: /Enviar ideia ao atendimento|Enviar projeto pelo WhatsApp/ }).last()).toBeVisible();
+          |                                                                                                                     ^
+      118 |
+      119 |   await send(page, 'pingente em ouro 18k com iniciais e uma pedra');
+      120 |   await expect(page.getByRole('link', { name: /Enviar ideia ao atendimento|Enviar projeto pelo WhatsApp/ }).last()).toBeVisible();
+        at /home/runner/work/Landing/Landing/tests-browser/correcoes-contexto.spec.js:117:117
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/correcoes-contexto-atualiz-46ddb-o-o-cliente-corrige-a-ideia-desktop-chromium-retry1/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/correcoes-contexto-atualiz-46ddb-o-o-cliente-corrige-a-ideia-desktop-chromium-retry1/error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/correcoes-contexto-atualiz-46ddb-o-o-cliente-corrige-a-ideia-desktop-chromium-retry1/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/correcoes-contexto-atualiz-46ddb-o-o-cliente-corrige-a-ideia-desktop-chromium-retry1/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  4 failed
+    [mobile-chromium] › tests-browser/correcoes-contexto.spec.js:85:1 › aceita correção de outra escolha enquanto ainda pergunta os aros 
+    [mobile-chromium] › tests-browser/correcoes-contexto.spec.js:113:1 › atualiza um projeto personalizado quando o cliente corrige a ideia 
+    [desktop-chromium] › tests-browser/correcoes-contexto.spec.js:85:1 › aceita correção de outra escolha enquanto ainda pergunta os aros 
+    [desktop-chromium] › tests-browser/correcoes-contexto.spec.js:113:1 › atualiza um projeto personalizado quando o cliente corrige a ideia 
+  46 passed (1.5m)
