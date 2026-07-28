@@ -13,6 +13,7 @@ const coordinator = read("assistente/coordenador-central-v1.js");
 const topCta = read("assistente/top-cta-v1.js");
 const visualCatalog = read("assistente/catalogo-loja-visual-v1.js");
 const comfort = read("assistente/conforto-interno-v1.js");
+const catalogConversation = read("assistente/catalogo-conversa-v2.js");
 const recovery = read("assistente/recuperacao-conversa-v1.js");
 const session = read("assistente/sessao-conversa-v1.js");
 const legacyRouting = read("assistente/roteamento-legado-v1.js");
@@ -68,6 +69,13 @@ assert.ok(visualCatalog.includes('product.category === "alianca"'), "Catálogo v
 assert.ok(comfort.includes("Conforto interno das alianças"), "Explicação visual de conforto interno precisa estar presente");
 assert.ok(comfort.includes("Anatômico") && comfort.includes("Semianatômico") && comfort.includes("Reto"), "Os três tipos de conforto interno precisam ser explicados");
 assert.ok(comfort.includes("addVisual"), "Conforto interno precisa ter comparação visual");
+
+assert.ok(catalogConversation.includes("Abaulado (externo)"), "Escolha de alianças precisa oferecer formato externo abaulado");
+assert.ok(catalogConversation.includes("Chanfrado/quinado (externo)"), "Escolha de alianças precisa oferecer formato externo chanfrado ou quinado");
+assert.ok(catalogConversation.includes('flow.stage = "external_profile"'), "Formato externo precisa ser escolhido antes dos aros");
+assert.ok(catalogConversation.includes('flow.stage = "internal_comfort"'), "Conforto interno precisa ser uma etapa separada");
+assert.ok(catalogConversation.includes("Formato externo:") && catalogConversation.includes("Conforto interno:"), "Resumo do pedido precisa guardar formato externo e conforto interno");
+
 assert.ok(recovery.includes("Falar com atendente"), "Recuperação deve oferecer atendimento humano");
 assert.ok(recovery.includes("config.contacts.boss"), "Recuperação deve usar o telefone do chefe");
 
@@ -85,4 +93,4 @@ assert.ok(analytics.includes("window.dataLayer"), "Eventos precisam estar prepar
 assert.ok(analytics.includes("assistant_whatsapp_click"), "Clique no WhatsApp precisa gerar evento de analytics");
 assert.ok(syncWorkflow.includes('cron: "40 8 * * *"'), "Catálogo da loja precisa ser sincronizado diariamente");
 
-console.log(`${expectedFallbacks.length + order.length + 33} invariantes verificadas com sucesso.`);
+console.log(`${expectedFallbacks.length + order.length + 38} invariantes verificadas com sucesso.`);
