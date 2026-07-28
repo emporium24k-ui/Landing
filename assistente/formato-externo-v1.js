@@ -25,6 +25,27 @@
     return String(raw || "").trim();
   }
 
+  function profileSvg(kind){
+    const shape = kind === "abaulado"
+      ? '<path d="M18 78 Q90 15 162 78 L162 92 L18 92 Z" fill="#d9aa48" stroke="#f7df94" stroke-width="3"/>'
+      : kind === "chanfrado"
+        ? '<path d="M30 22 H150 L166 42 V92 H14 V42 Z" fill="#d9aa48" stroke="#f7df94" stroke-width="3"/>'
+        : '<rect x="16" y="28" width="148" height="64" rx="5" fill="#d9aa48" stroke="#f7df94" stroke-width="3"/>';
+    return `<svg viewBox="0 0 180 108" role="img" aria-label="Formato ${kind}" style="display:block;width:100%;height:92px;margin:auto;background:#fff;border-radius:11px">
+      <path d="M8 96 H172" stroke="#d7d0bd" stroke-width="2"/>
+      ${shape}
+      <path d="M30 82 H150" stroke="#8b611e" stroke-width="3" opacity=".7"/>
+    </svg>`;
+  }
+
+  function decorateFormatButton(button, kind, label, description){
+    if(button.dataset.formatVisualReady === "1") return;
+    button.dataset.formatVisualReady = "1";
+    button.setAttribute("aria-label", label);
+    button.style.cssText = "display:grid;grid-template-columns:116px 1fr;gap:12px;align-items:center;width:100%;min-height:116px;padding:10px;text-align:left;border-radius:14px";
+    button.innerHTML = `<span style="display:block">${profileSvg(kind)}</span><span><strong style="display:block;font-size:.96rem;line-height:1.25">${label}</strong><small style="display:block;margin-top:5px;line-height:1.35;opacity:.78">${description}</small></span>`;
+  }
+
   function addMessage(html, who = "bot"){
     const messages = document.querySelector("#messages");
     const intro = document.querySelector("#intro");
@@ -96,19 +117,29 @@
 
   function rewriteChoices(root){
     const scope = root instanceof HTMLElement ? root : document;
-    scope.querySelectorAll?.("button[data-conversation-external-profile]").forEach((button) => {
+    const buttons = [...(scope.querySelectorAll?.("button[data-conversation-external-profile]") || [])];
+    const card = buttons[0]?.closest(".action-card");
+    if(card && !card.querySelector("[data-format-visual-title]")){
+      const title = document.createElement("div");
+      title.dataset.formatVisualTitle = "1";
+      title.innerHTML = "<strong>Escolha pelo desenho:</strong>";
+      title.style.cssText = "color:#f5df98;font-size:.9rem;margin-bottom:2px";
+      card.insertBefore(title, card.firstChild);
+    }
+
+    buttons.forEach((button) => {
       const value = normalize(button.dataset.conversationExternalProfile || button.textContent);
       if(value.includes("manter") || value.includes("formato original do modelo")){
         button.remove();
       }else if(value.includes("abaulad")){
         button.dataset.conversationExternalProfile = "Abaulado";
-        button.textContent = "Abaulado";
+        decorateFormatButton(button, "abaulado", "Abaulado", "Superfície curva e arredondada.");
       }else if(value.includes("reto") || value.includes("chapado")){
         button.dataset.conversationExternalProfile = "Reto/chapado";
-        button.textContent = "Reto/chapado — formato original";
+        decorateFormatButton(button, "reto", "Reto/chapado — formato original", "Superfície plana, igual ao modelo padrão.");
       }else if(value.includes("chanfrad") || value.includes("quinad")){
         button.dataset.conversationExternalProfile = "Chanfrado/quinado";
-        button.textContent = "Chanfrado/quinado";
+        decorateFormatButton(button, "chanfrado", "Chanfrado/quinado", "Laterais inclinadas e mais marcadas.");
       }
     });
 
@@ -173,5 +204,5 @@
     observer.observe(messages, {childList:true, subtree:true});
   });
 
-  window.__formatoExternoV1 = Object.freeze({normalizeFormat, continueToSizes, rewriteBubble, rewriteChoices});
+  window.__formatoExternoV1 = Object.freeze({normalizeFormat, continueToSizes, rewriteBubble, rewriteChoices, profileSvg});
 })();
