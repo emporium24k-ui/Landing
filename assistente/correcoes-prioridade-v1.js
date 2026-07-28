@@ -69,9 +69,9 @@
     }
   }
 
-  document.addEventListener("DOMContentLoaded", () => {
-    document.addEventListener("submit", handleCorrection, true);
-  });
+  // Este arquivo é carregado antes dos fluxos específicos. O listener precisa ser
+  // registrado imediatamente no document para vencer os tratadores de etapa.
+  document.addEventListener("submit", handleCorrection, true);
 
   window.__correcoesPrioridadeV1 = Object.freeze({handleCorrection, oldPersonalizedLinks, removeOldPersonalizedCards});
 })();
