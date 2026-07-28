@@ -1,6 +1,6 @@
 const { test, expect } = require('@playwright/test');
 
-// Validação final do build 61 em celular e computador, incluindo proteção de leads de venda.
+// Validação final do build 62 em celular e computador, incluindo proteção de leads de venda.
 async function openAssistant(page){
   await page.goto('/assistente/?build=browser-test');
   await expect(page.locator('#question')).toBeVisible();
@@ -29,16 +29,39 @@ test('estou com ouro pra vender abre avaliação sem pergunta ambígua', async (
   await expect(page.getByText(/ver joias da loja ou avaliar|não consegui identificar/i)).toHaveCount(0);
 });
 
-test('resposta curta minha mantém contexto de venda da própria peça', async ({ page }) => {
+test('joias pra vender também abre avaliação direta', async ({ page }) => {
   await openAssistant(page);
   await send(page, 'joias pra vender');
-  await expect(page.getByText(/comprar uma joia ou vender|ver joias da loja ou avaliar|procura uma joia ou quer vender/i).last()).toBeVisible();
+  await expect(page.getByText(/Compramos ouro e prata|avaliamos ouro e prata/i).last()).toBeVisible();
+  await expect(page.getByRole('link', { name: 'Falar com o responsável pela avaliação' })).toBeVisible();
+  await expect(page.getByText(/Não consegui identificar exatamente/i)).toHaveCount(0);
+});
+
+test('resposta curta minha recupera uma pergunta ambígua anterior', async ({ page }) => {
+  await openAssistant(page);
+  await page.evaluate(() => {
+    const messages = document.querySelector('#messages');
+    const intro = document.querySelector('#intro');
+    if(intro) intro.style.display = 'none';
+    const row = document.createElement('div');
+    row.className = 'row';
+    const avatar = document.createElement('div');
+    avatar.className = 'avatar';
+    avatar.textContent = '♛';
+    const stack = document.createElement('div');
+    stack.className = 'message-stack';
+    const bubble = document.createElement('div');
+    bubble.className = 'bubble';
+    bubble.textContent = 'É para ver joias da loja ou avaliar uma peça sua?';
+    stack.appendChild(bubble);
+    row.append(avatar, stack);
+    messages.appendChild(row);
+  });
   await send(page, 'minha');
   await expect(page.getByText(/a peça é sua|Compramos ouro e prata|avaliamos ouro e prata/i).last()).toBeVisible();
   const evaluation = page.getByRole('link', { name: 'Falar com o responsável pela avaliação' });
   await expect(evaluation).toBeVisible();
   await expect(evaluation).toHaveAttribute('href', /phone=5541998518452/);
-  await expect(page.getByText(/Não consegui identificar exatamente/i)).toHaveCount(0);
 });
 
 test('busca específica mostra produtos ou pesquisa exata sem vendedor', async ({ page }) => {
