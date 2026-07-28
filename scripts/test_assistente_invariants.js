@@ -12,6 +12,7 @@ const configSource = read("assistente/config-negocio-v1.js");
 const coordinator = read("assistente/coordenador-central-v1.js");
 const topCta = read("assistente/top-cta-v1.js");
 const visualCatalog = read("assistente/catalogo-loja-visual-v1.js");
+const comfort = read("assistente/conforto-interno-v1.js");
 const recovery = read("assistente/recuperacao-conversa-v1.js");
 const session = read("assistente/sessao-conversa-v1.js");
 const legacyRouting = read("assistente/roteamento-legado-v1.js");
@@ -36,7 +37,7 @@ for(const file of expectedFallbacks){
 const order = [
   "config-negocio-v1.js", "core-intencoes-v1.js", "sessao-conversa-v1.js", "coordenador-central-v1.js",
   "metricas-v1.js", "analytics-bridge-v1.js", "top-cta-v1.js", "catalogo-loja-dados.js",
-  "roteamento-legado-v1.js", "catalogo-loja-visual-v1.js", "rota-produtos-site-v1.js",
+  "roteamento-legado-v1.js", "catalogo-loja-visual-v1.js", "conforto-interno-v1.js", "rota-produtos-site-v1.js",
   "recuperacao-conversa-v1.js", "app-concise-v3.js"
 ];
 let previous = -1;
@@ -64,6 +65,9 @@ assert.ok(coordinator.includes("anexado no WhatsApp"), "Referências precisam se
 
 assert.ok(visualCatalog.includes("hasSpecificRequest"), "Catálogo visual precisa bloquear buscas vagas");
 assert.ok(visualCatalog.includes('product.category === "alianca"'), "Catálogo visual de produtos prontos não pode misturar alianças");
+assert.ok(comfort.includes("Conforto interno das alianças"), "Explicação visual de conforto interno precisa estar presente");
+assert.ok(comfort.includes("Anatômico") && comfort.includes("Semianatômico") && comfort.includes("Reto"), "Os três tipos de conforto interno precisam ser explicados");
+assert.ok(comfort.includes("addVisual"), "Conforto interno precisa ter comparação visual");
 assert.ok(recovery.includes("Falar com atendente"), "Recuperação deve oferecer atendimento humano");
 assert.ok(recovery.includes("config.contacts.boss"), "Recuperação deve usar o telefone do chefe");
 
@@ -81,4 +85,4 @@ assert.ok(analytics.includes("window.dataLayer"), "Eventos precisam estar prepar
 assert.ok(analytics.includes("assistant_whatsapp_click"), "Clique no WhatsApp precisa gerar evento de analytics");
 assert.ok(syncWorkflow.includes('cron: "40 8 * * *"'), "Catálogo da loja precisa ser sincronizado diariamente");
 
-console.log(`${expectedFallbacks.length + order.length + 30} invariantes verificadas com sucesso.`);
+console.log(`${expectedFallbacks.length + order.length + 33} invariantes verificadas com sucesso.`);
