@@ -60,3 +60,13 @@ test('aliança de prata não recebe frete grátis', async ({ page }) => {
   await send(page, 'o frete é grátis?');
   await expect(page.getByText(/não é grátis|calculado conforme o CEP/i).last()).toBeVisible();
 });
+
+test('explica e mostra os três tipos de conforto interno', async ({ page }) => {
+  await openAssistant(page);
+  await send(page, 'qual a diferença entre anatômica, semianatômica e reta?');
+  await expect(page.getByText('Conforto interno das alianças', { exact: true })).toBeVisible();
+  await expect(page.getByText('Anatômico', { exact: true })).toBeVisible();
+  await expect(page.getByText('Semianatômico', { exact: true })).toBeVisible();
+  await expect(page.getByText('Reto', { exact: true })).toBeVisible();
+  await expect(page.getByText(/parte interna mais arredondada/i)).toBeVisible();
+});
