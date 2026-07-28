@@ -60,6 +60,12 @@
     });
   }
 
+  function removePendingChoiceCards(field){
+    document.querySelectorAll(`#messages button[data-correction-field="${field}"]`).forEach((button) => {
+      button.closest(".action-card")?.remove();
+    });
+  }
+
   function handleEditClick(event){
     const button = event.target.closest?.("button");
     const api = window.__correcoesContextoV1;
@@ -96,6 +102,7 @@
       event.stopImmediatePropagation();
       input.value = "";
       api.state.pendingField = null;
+      removePendingChoiceCards(field);
       api.applyField(field, raw);
       input.focus();
       return;
@@ -138,6 +145,7 @@
     handleEditClick,
     resolveTarget,
     removeContinuationCards,
+    removePendingChoiceCards,
     oldPersonalizedLinks,
     removeOldPersonalizedCards,
     linkMessage,
