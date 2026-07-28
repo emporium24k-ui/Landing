@@ -1,1 +1,1 @@
-{"status":"passed","commit":"fdfb43e4d6071af899a159327e5468bc3d5db92b","tested_at":"2026-07-28T20:56:24Z","dependencies":"success","chromium":"success","browser_tests":"success","projects":["mobile-chromium","desktop-chromium"]}
+{"status":"failed","commit":"08f9bdf1dca55ec2df4d4d634fa3cd78e0e830f8","tested_at":"2026-07-28T20:58:33Z","dependencies":"success","chromium":"success","browser_tests":"cancelled","projects":["mobile-chromium","desktop-chromium"]}
