@@ -62,17 +62,19 @@ test('aliança de prata não recebe frete grátis', async ({ page }) => {
   await expect(page.getByText(/não é grátis|calculado conforme o CEP/i).last()).toBeVisible();
 });
 
-test('modelo de aliança oferece abaulado antes do conforto interno e dos aros', async ({ page }) => {
+test('modelo oferece reto chapado como formato original sem opção duplicada', async ({ page }) => {
   await openAssistant(page);
   await send(page, 'quero ver alianças de prata 925');
   const model = page.locator('button[data-ring-model]').first();
   await expect(model).toBeVisible();
   await model.click();
 
-  const rounded = page.getByRole('button', { name: 'Abaulado (externo)' });
-  await expect(rounded).toBeVisible();
-  await rounded.click();
+  await expect(page.getByRole('button', { name: 'Abaulado (externo)' })).toBeVisible();
+  await expect(page.getByRole('button', { name: 'Reto/chapado — formato original' })).toBeVisible();
+  await expect(page.getByRole('button', { name: 'Chanfrado/quinado (externo)' })).toBeVisible();
+  await expect(page.getByRole('button', { name: 'Manter o formato do modelo' })).toHaveCount(0);
 
+  await page.getByRole('button', { name: 'Reto/chapado — formato original' }).click();
   await expect(page.getByRole('button', { name: /Anatômico — mais arredondado/ })).toBeVisible();
   await expect(page.getByRole('button', { name: /Semianatômico — leve arredondamento/ })).toBeVisible();
   await expect(page.getByRole('button', { name: /Reto — parte interna plana/ })).toBeVisible();
