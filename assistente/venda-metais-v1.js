@@ -5,9 +5,9 @@
   const state = { busy: false, lastReply: -1 };
 
   const replies = [
-    "Sim! Compramos ouro e prata. A avaliação considera o teor, o peso e as características da peça. Você pode enviar os detalhes para o setor responsável orientar os próximos passos.",
-    "Compramos, sim, ouro e prata. Primeiro a equipe avalia o material e o peso para informar o valor corretamente. Vou deixar o contato direto do setor de avaliação.",
-    "Sim, você pode vender seu ouro ou sua prata para nós. O valor é definido após a avaliação do teor e do peso da peça. O setor responsável pode orientar você diretamente."
+    "Perfeito! Compramos ouro e prata. A avaliação é feita presencialmente em Curitiba e considera o teor, o peso e as características da peça. Após a aprovação, o pagamento é realizado na hora.",
+    "Entendi — a peça é sua e você quer vender. Compramos ouro e prata, com avaliação presencial em Curitiba conforme teor e peso. O responsável pode orientar você e combinar o atendimento.",
+    "Sim, avaliamos ouro e prata para compra. A análise é presencial em Curitiba e o valor depende do teor e do peso da peça. Vou deixar o contato direto do responsável pela avaliação."
   ];
 
   const normalize = (value) => String(value || "")
@@ -16,7 +16,9 @@
     .replace(/[\u0300-\u036f]/g, "")
     .replace(/[^a-z0-9\s]/g, " ")
     .replace(/\s+/g, " ")
-    .trim();
+    .trim()
+    .replace(/\bto\b|\btou\b/g, "estou")
+    .replace(/\bpra\b/g, "para");
 
   const includesAny = (text, list) => list.some((item) => text.includes(item));
 
@@ -31,23 +33,44 @@
     return alliance && ownMaterial;
   }
 
+  function lastBotText(){
+    const bubbles = [...document.querySelectorAll("#messages .row:not(.user) .bubble")];
+    return normalize(bubbles.at(-1)?.textContent || "");
+  }
+
+  function isOwnershipFollowUp(text){
+    const shortOwnership = /^(?:sim )?(?:e |eh )?(?:meu|minha|meus|minhas|o meu|a minha|meu mesmo|minha mesmo|e minha peca|e meu ouro)$/.test(text);
+    if(!shortOwnership) return false;
+    const previous = lastBotText();
+    return includesAny(previous, [
+      "avaliar uma peca sua", "vender uma peca sua", "quer vender a sua",
+      "comprar uma joia ou vender", "ver joias da loja ou avaliar",
+      "procura uma joia ou quer vender"
+    ]) || window.__coordenadorCentralV1?.state?.intent === "sell_metals";
+  }
+
+  function looksLikeStoreOffering(text){
+    return /^(?:voces |voce |a loja )?(?:tem|vende|vendem|possui|possuem)\b/.test(text) && /\b(?:para vender|a venda)\b/.test(text);
+  }
+
   function classify(text){
     if(!text || text.length > 220 || isAllianceUse(text)) return false;
+    if(isOwnershipFollowUp(text)) return true;
 
     const material = /\b(ouro|prata|joia|joias|peca|pecas|corrente|correntes|anel|aneis|alianca|aliancas)\b/.test(text);
     if(!material) return false;
 
-    const firstPersonSell = /\b(eu|me|meu|minha|meus|minhas|tenho|quero|queria|gostaria|posso|consigo|preciso)\b/.test(text) &&
+    const firstPersonSell = /\b(eu|me|meu|minha|meus|minhas|tenho|estou|possuo|comigo|quero|queria|gostaria|posso|consigo|preciso)\b/.test(text) &&
       /\b(vender|vendo|venda|avaliar|avaliacao)\b/.test(text);
+
+    const ownedForSale = /\b(estou com|tenho|possuo|trouxe|levei)\b.*\b(ouro|prata|joia|joias|peca|pecas)\b.*\b(?:para vender|para avaliar)\b/.test(text);
 
     const sellToStorePhrase = includesAny(text, [
       "te vender ouro", "te vender prata", "vender ouro para voces", "vender prata para voces",
-      "vender ouro pra voces", "vender prata pra voces", "vender ouro para voce",
-      "vender prata para voce", "vender ouro pra voce", "vender prata pra voce",
-      "tem como vender ouro", "tem como vender prata", "posso vender ouro", "posso vender prata",
-      "quero vender ouro", "quero vender prata", "tenho ouro para vender", "tenho prata para vender",
-      "tenho ouro pra vender", "tenho prata pra vender", "levar ouro para vender",
-      "levar prata para vender", "levar ouro pra vender", "levar prata pra vender"
+      "vender ouro para voce", "vender prata para voce", "tem como vender ouro", "tem como vender prata",
+      "posso vender ouro", "posso vender prata", "quero vender ouro", "quero vender prata",
+      "tenho ouro para vender", "tenho prata para vender", "estou com ouro para vender",
+      "estou com prata para vender", "levar ouro para vender", "levar prata para vender"
     ]);
 
     const storeBuys = /\b(voces|vcs|voce|a loja)\s+(compram|compra|aceitam|pegam|avaliam)\b/.test(text) ||
@@ -60,7 +83,10 @@
       "avaliar minha prata", "avaliar minhas joias", "avaliar minha joia"
     ]);
 
-    return firstPersonSell || sellToStorePhrase || storeBuys || priceForSelling;
+    const directOwnedSale = material && /\b(?:vender|avaliar)\b/.test(text) &&
+      /\b(meu|minha|meus|minhas|tenho|estou|possuo|comigo)\b/.test(text) && !looksLikeStoreOffering(text);
+
+    return firstPersonSell || ownedForSale || sellToStorePhrase || storeBuys || priceForSelling || directOwnedSale;
   }
 
   function pickReply(){
@@ -71,8 +97,18 @@
     return replies[index];
   }
 
+  function conversationContext(raw){
+    const userMessages = [...document.querySelectorAll("#messages .row.user .bubble")]
+      .map((bubble) => String(bubble.textContent || "").trim())
+      .filter(Boolean)
+      .slice(-3);
+    const current = String(raw || "").trim();
+    if(current && userMessages.at(-1) !== current) userMessages.push(current);
+    return userMessages.slice(-3).join(" | ") || current;
+  }
+
   function whatsappUrl(raw){
-    const message = `Olá! Quero avaliar ouro ou prata para venda. Minha dúvida: ${raw}`;
+    const message = `Olá! Quero avaliar ouro ou prata para venda.\n\nResumo da conversa: ${conversationContext(raw)}`;
     return `https://api.whatsapp.com/send/?phone=${EVALUATION_PHONE}&text=${encodeURIComponent(message)}&type=phone_number&app_absent=0`;
   }
 
@@ -125,7 +161,7 @@
     link.href = whatsappUrl(raw);
     link.target = "_blank";
     link.rel = "noopener noreferrer";
-    link.textContent = "Avaliar ouro ou prata";
+    link.textContent = "Falar com o responsável pela avaliação";
     card.appendChild(link);
     messages.appendChild(card);
     messages.scrollTop = messages.scrollHeight;
@@ -137,7 +173,7 @@
     const input = document.querySelector("#question");
     if(input) input.value = "";
     addMessage(escapeHtml(raw), "user");
-    await new Promise((resolve) => setTimeout(resolve, 240));
+    await new Promise((resolve) => setTimeout(resolve, 220));
     addMessage(pickReply());
     addButton(raw);
     state.busy = false;
@@ -158,5 +194,5 @@
     }, true);
   });
 
-  window.__vendaMetaisV1 = { normalize, classify, replies };
+  window.__vendaMetaisV1 = {normalize, classify, isOwnershipFollowUp, replies, whatsappUrl};
 })();
