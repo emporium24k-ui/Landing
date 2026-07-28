@@ -1,6 +1,6 @@
 const { test, expect } = require('@playwright/test');
 
-// Esta suíte valida os mesmos fluxos em celular e computador, incluindo imagens reais do catálogo.
+// Validação final do build 59 em celular e computador, incluindo imagens reais do catálogo.
 async function openAssistant(page){
   await page.goto('/assistente/?build=browser-test');
   await expect(page.locator('#question')).toBeVisible();
