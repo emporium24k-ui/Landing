@@ -43,6 +43,41 @@
     }catch(_){/* mantém o link criado pela camada principal */}
   }
 
+  function resolveTarget(api, text, current){
+    const explicit = api.correctionTarget(text);
+    if(explicit) return explicit;
+
+    if(text.includes("conforto interno") || text.includes("interno reto")) return "comfort";
+    if(current?.stage === "internal_comfort" && /\b(reto|reta)\b/.test(text)) return "comfort";
+    if(/\bformato\b/.test(text) || /\b(reto|reta)\b/.test(text)) return "format";
+    return null;
+  }
+
+  function removeContinuationCards(){
+    document.querySelectorAll('#messages [data-correction-continue="1"]').forEach((card) => card.remove());
+    document.querySelectorAll("#messages .action-card").forEach((card) => {
+      if(normalize(card.textContent).includes("continuar com este modelo")) card.remove();
+    });
+  }
+
+  function handleEditClick(event){
+    const button = event.target.closest?.("button");
+    const api = window.__correcoesContextoV1;
+    if(!button || !api) return;
+
+    const action = button.dataset.correctionAction;
+    if(action){
+      removeContinuationCards();
+      if(action === "format") api.state.pendingField = "format";
+      else if(action === "model") api.state.pendingField = null;
+      return;
+    }
+
+    if(button.dataset.correctionField){
+      api.state.pendingField = null;
+    }
+  }
+
   function handleCorrection(event){
     const form = event.target.closest?.("#composer");
     const input = document.querySelector("#question");
@@ -66,7 +101,7 @@
       return;
     }
 
-    const target = api.correctionTarget(text);
+    const target = resolveTarget(api, text, current);
     const signal = api.correctionSignal(text);
     const engravingPlacement = current?.stage === "engraving" && target === "engraving" &&
       ["em ambas", "nas duas", "nos dois"].some((term) => text.includes(term));
@@ -93,12 +128,16 @@
     }
   }
 
-  // Este arquivo é carregado antes dos fluxos específicos. O listener precisa ser
-  // registrado imediatamente no document para vencer os tratadores de etapa.
+  // Este arquivo é carregado antes dos fluxos específicos. Os listeners precisam ser
+  // registrados imediatamente no document para vencer os tratadores de etapa.
   document.addEventListener("submit", handleCorrection, true);
+  document.addEventListener("click", handleEditClick, true);
 
   window.__correcoesPrioridadeV1 = Object.freeze({
     handleCorrection,
+    handleEditClick,
+    resolveTarget,
+    removeContinuationCards,
     oldPersonalizedLinks,
     removeOldPersonalizedCards,
     linkMessage,
