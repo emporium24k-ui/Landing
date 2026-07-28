@@ -1,6 +1,6 @@
 const { test, expect } = require('@playwright/test');
 
-// Validação final do build 59 em celular e computador, incluindo imagens reais do catálogo.
+// Valida o assistente em celular e computador, incluindo as ilustrações dos formatos.
 async function openAssistant(page){
   await page.goto('/assistente/?build=browser-test');
   await expect(page.locator('#question')).toBeVisible();
@@ -61,30 +61,41 @@ test('aliança de prata não recebe frete grátis', async ({ page }) => {
   await expect(page.getByText(/não é grátis|calculado conforme o CEP/i).last()).toBeVisible();
 });
 
-test('modelo usa uma única escolha de formato e segue direto para os aros', async ({ page }) => {
+test('escolhas de formato mostram desenhos e seguem direto para os aros', async ({ page }) => {
   await openAssistant(page);
   await send(page, 'quero ver alianças de prata 925');
   const model = page.locator('button[data-ring-model]').first();
   await expect(model).toBeVisible();
   await model.click();
 
-  await expect(page.getByRole('button', { name: 'Abaulado' })).toBeVisible();
-  await expect(page.getByRole('button', { name: 'Reto/chapado — formato original' })).toBeVisible();
-  await expect(page.getByRole('button', { name: 'Chanfrado/quinado' })).toBeVisible();
+  const abaulado = page.getByRole('button', { name: 'Abaulado' });
+  const reto = page.getByRole('button', { name: 'Reto/chapado — formato original' });
+  const chanfrado = page.getByRole('button', { name: 'Chanfrado/quinado' });
+  await expect(abaulado).toBeVisible();
+  await expect(reto).toBeVisible();
+  await expect(chanfrado).toBeVisible();
+  await expect(abaulado.locator('svg')).toBeVisible();
+  await expect(reto.locator('svg')).toBeVisible();
+  await expect(chanfrado.locator('svg')).toBeVisible();
+  await expect(page.locator('button[data-format-visual-ready="1"]')).toHaveCount(3);
   await expect(page.getByRole('button', { name: 'Manter o formato do modelo' })).toHaveCount(0);
 
-  await page.getByRole('button', { name: 'Abaulado' }).click();
+  await abaulado.click();
   await expect(page.getByRole('button', { name: 'Ainda não sei os aros' })).toBeVisible();
   await expect(page.locator('button[data-conversation-internal-comfort]')).toHaveCount(0);
   await expect(page.getByText(/Agora escolha o conforto interno/i)).toHaveCount(0);
 });
 
-test('explica e mostra os três tipos de conforto interno quando o cliente pergunta', async ({ page }) => {
+test('pergunta mista mostra desenhos externos e internos', async ({ page }) => {
   await openAssistant(page);
-  await send(page, 'qual a diferença entre anatômica, semianatômica e reta?');
-  await expect(page.getByText('Conforto interno das alianças', { exact: true })).toBeVisible();
+  await send(page, 'qual a diferença entre abaulado, semianatômico e interno reto?');
+  await expect(page.getByText('Formatos visuais das alianças', { exact: true })).toBeVisible();
+  await expect(page.getByText('Parte interna das alianças', { exact: true })).toBeVisible();
+  await expect(page.locator('[data-profile-visual]')).toHaveCount(3);
+  await expect(page.locator('[data-comfort-visual]')).toHaveCount(3);
+  await expect(page.locator('[data-profile-visual] svg')).toHaveCount(3);
+  await expect(page.locator('[data-comfort-visual] svg')).toHaveCount(3);
   await expect(page.getByText('Anatômico', { exact: true })).toBeVisible();
   await expect(page.getByText('Semianatômico', { exact: true })).toBeVisible();
-  await expect(page.getByText('Reto', { exact: true })).toBeVisible();
-  await expect(page.getByText(/parte interna mais arredondada/i)).toBeVisible();
+  await expect(page.getByText('Interno reto', { exact: true })).toBeVisible();
 });
