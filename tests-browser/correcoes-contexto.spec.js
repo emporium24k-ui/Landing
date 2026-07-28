@@ -6,6 +6,7 @@ async function openAssistant(page){
   await expect(page.locator('#question')).toBeVisible();
   await expect.poll(async () => page.evaluate(() => Boolean(
     window.__correcoesContextoV1 &&
+    window.__correcoesPrioridadeV1 &&
     window.__catalogoConversaV2 &&
     window.__EMP24K_ROUTING__
   ))).toBe(true);
@@ -61,7 +62,8 @@ test('corrige a gravação depois do resumo sem perder modelo, formato ou aros',
   expect(after.engraving).toMatch(/para sempre.*ambas as alianças/i);
 
   const href = await page.locator('[data-correction-continue="1"] a').getAttribute('href');
-  expect(decodeURIComponent(href)).toMatch(/Gravação:.*para sempre.*ambas as alianças/i);
+  const whatsappMessage = new URL(href).searchParams.get('text');
+  expect(whatsappMessage).toMatch(/Gravação:.*para sempre.*ambas as alianças/i);
 });
 
 test('oferece botões para alterar modelo, formato, aros ou gravação', async ({ page }) => {
@@ -111,6 +113,9 @@ test('troca de modelo ou material reabre o catálogo para recalcular o valor', a
 test('atualiza um projeto personalizado quando o cliente corrige a ideia', async ({ page }) => {
   await openAssistant(page);
   await send(page, 'quero criar um pingente personalizado');
+  await expect(page.getByText(/Me conte qual peça deseja|Me conte.*detalhes/i).last()).toBeVisible();
+  await expect(page.getByRole('link', { name: /Enviar ideia ao atendimento|Enviar projeto pelo WhatsApp/ }).last()).toBeVisible();
+
   await send(page, 'pingente em ouro 18k com iniciais e uma pedra');
   await expect(page.getByRole('link', { name: /Enviar ideia ao atendimento|Enviar projeto pelo WhatsApp/ }).last()).toBeVisible();
 
@@ -119,7 +124,9 @@ test('atualiza um projeto personalizado quando o cliente corrige a ideia', async
   const corrected = page.getByRole('link', { name: 'Enviar projeto corrigido pelo WhatsApp' });
   await expect(corrected).toBeVisible();
   await expect(corrected).toHaveAttribute('href', /phone=5541998518452/);
-  expect(decodeURIComponent(await corrected.getAttribute('href'))).toMatch(/prata 925 sem pedra/i);
+  const correctedMessage = new URL(await corrected.getAttribute('href')).searchParams.get('text');
+  expect(correctedMessage).toMatch(/prata 925 sem pedra/i);
+  await expect(page.getByRole('link', { name: /Enviar ideia ao atendimento|Enviar projeto pelo WhatsApp/ })).toHaveCount(0);
 });
 
 test('mudança entre fabricar com ouro e abater no valor remove a ação antiga', async ({ page }) => {
