@@ -9,12 +9,14 @@ const root = path.resolve(__dirname, "..");
 const read = (file) => fs.readFileSync(path.join(root, file), "utf8");
 const index = read("assistente/index.html");
 const configSource = read("assistente/config-negocio-v1.js");
+const core = read("assistente/core-intencoes-v1.js");
 const coordinator = read("assistente/coordenador-central-v1.js");
 const topCta = read("assistente/top-cta-v1.js");
 const visualCatalog = read("assistente/catalogo-loja-visual-v1.js");
 const officialCatalog = read("assistente/catalogo-oficial-v1.js");
 const comfort = read("assistente/conforto-interno-v1.js");
 const formatFlow = read("assistente/formato-externo-v1.js");
+const metalSales = read("assistente/venda-metais-v1.js");
 const catalogConversation = read("assistente/catalogo-conversa-v2.js");
 const recovery = read("assistente/recuperacao-conversa-v1.js");
 const session = read("assistente/sessao-conversa-v1.js");
@@ -41,7 +43,7 @@ const order = [
   "config-negocio-v1.js", "core-intencoes-v1.js", "sessao-conversa-v1.js", "coordenador-central-v1.js",
   "metricas-v1.js", "analytics-bridge-v1.js", "top-cta-v1.js", "catalogo-loja-dados.js",
   "roteamento-legado-v1.js", "catalogo-loja-visual-v1.js", "conforto-interno-v1.js",
-  "catalogo-dados-oficiais.js", "catalogo-aliancas-v1.js", "catalogo-oficial-v1.js",
+  "venda-metais-v1.js", "catalogo-dados-oficiais.js", "catalogo-aliancas-v1.js", "catalogo-oficial-v1.js",
   "formato-externo-v1.js", "catalogo-conversa-v2.js", "rota-produtos-site-v1.js",
   "recuperacao-conversa-v1.js", "app-concise-v3.js"
 ];
@@ -57,6 +59,18 @@ assert.ok(configSource.includes('maxCharacters: 15'), "Limite de gravação prec
 assert.ok(configSource.includes('silverAlliancesFree: false'), "Alianças de prata não podem ter frete grátis");
 assert.ok(configSource.includes('silverAlliancePromotionsMention: false'), "Promoções não podem ser mencionadas para prata");
 assert.ok(configSource.includes('allianceGoldKaratsAvailable: Object.freeze(["10k", "18k"])'), "Teores disponíveis das alianças precisam ser 10k e 18k");
+
+assert.ok(core.includes('to:"estou"') && core.includes('pra:"para"'), "Linguagem informal de venda precisa ser normalizada");
+assert.ok(core.includes("directOwnedSale") && core.includes("directMetalForSale"), "Núcleo precisa reconhecer posse e intenção de venda");
+assert.ok(core.includes('previousIntent === "sell_metals"'), "Respostas curtas precisam herdar o contexto de venda");
+assert.ok(index.includes('core-intencoes-v1.js?v=20260728-61'), "Página precisa carregar o núcleo corrigido de venda");
+
+assert.ok(metalSales.includes('"estou com ouro para vender"'), "Fluxo de avaliação precisa reconhecer a frase reportada pelo usuário");
+assert.ok(metalSales.includes("isOwnershipFollowUp"), "Fluxo precisa entender respostas curtas como minha ou meu");
+assert.ok(metalSales.includes("avaliar uma peca sua"), "Fluxo precisa reconhecer a pergunta ambígua anterior para recuperar o lead");
+assert.ok(metalSales.includes('const EVALUATION_PHONE = "5541998518452"'), "Avaliação precisa seguir para o telefone do chefe");
+assert.ok(metalSales.includes("Falar com o responsável pela avaliação"), "Lead de venda precisa receber ação clara de avaliação");
+assert.ok(index.includes('venda-metais-v1.js?v=20260728-61'), "Página precisa carregar o fluxo corrigido de venda de metais");
 
 assert.ok(topCta.includes("contacts.boss"), "Botão superior deve usar o telefone central do chefe");
 assert.ok(!topCta.includes("Math.random"), "Botão superior não pode distribuir o contato aleatoriamente");
@@ -112,4 +126,4 @@ assert.ok(analytics.includes("window.dataLayer"), "Eventos precisam estar prepar
 assert.ok(analytics.includes("assistant_whatsapp_click"), "Clique no WhatsApp precisa gerar evento de analytics");
 assert.ok(syncWorkflow.includes('cron: "40 8 * * *"'), "Catálogo da loja precisa ser sincronizado diariamente");
 
-console.log(`${expectedFallbacks.length + order.length + 55} invariantes verificadas com sucesso.`);
+console.log(`${expectedFallbacks.length + order.length + 66} invariantes verificadas com sucesso.`);
