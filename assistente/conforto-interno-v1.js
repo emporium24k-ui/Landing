@@ -9,7 +9,9 @@
     .replace(/\s+/g, " ")
     .trim();
 
-  const matches = (text) => /(anatomica|anatomico|semi anatomica|semi anatomico|semianatomica|semianatomico|interno reto|parte interna reta|confort fit|comfort fit|conforto interno)/.test(text);
+  const internalMatches = (text) => /(anatomica|anatomico|semi anatomica|semi anatomico|semianatomica|semianatomico|interno reto|parte interna reta|confort fit|comfort fit|conforto interno)/.test(text);
+  const externalMatches = (text) => /(abaulada|abaulado|chanfrada|chanfrado|quinada|quinado|chapada|chapado|formato da alianca|formatos da alianca)/.test(text);
+  const matches = (text) => internalMatches(text) || externalMatches(text);
   const clock = () => new Intl.DateTimeFormat("pt-BR", {hour:"2-digit", minute:"2-digit"}).format(new Date());
   const escapeHtml = (value) => String(value || "").replace(/[&<>"']/g, (char) => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[char]));
 
@@ -40,59 +42,92 @@
     messages.scrollTop = messages.scrollHeight;
   }
 
-  function diagramSvg(type){
-    const inner = type === "anatômico"
-      ? "M20 58 Q60 20 100 58"
-      : type === "semianatômico"
-        ? "M20 58 Q60 38 100 58"
-        : "M20 58 L100 58";
-    return `<svg viewBox="0 0 120 82" role="img" aria-label="Corte interno ${type}" style="width:100%;max-width:150px;height:auto;display:block;margin:auto">
-      <defs>
-        <linearGradient id="gold-${type}" x1="0" y1="0" x2="1" y2="1">
-          <stop offset="0" stop-color="#fff0a8"/><stop offset=".45" stop-color="#d4a345"/><stop offset="1" stop-color="#8d621e"/>
-        </linearGradient>
-      </defs>
-      <path d="M16 64 Q60 8 104 64" fill="none" stroke="url(#gold-${type})" stroke-width="18" stroke-linecap="round"/>
-      <path d="${inner}" fill="none" stroke="#fff8dc" stroke-width="5" stroke-linecap="round"/>
+  function internalDiagram(type){
+    const cavity = type === "anatomico"
+      ? "M24 78 Q90 28 156 78 L156 100 H24 Z"
+      : type === "semianatomico"
+        ? "M24 78 Q90 52 156 78 L156 100 H24 Z"
+        : "M24 66 H156 V100 H24 Z";
+    return `<svg viewBox="0 0 180 112" role="img" aria-label="Corte interno ${type}" style="display:block;width:100%;height:104px;background:#fff;border-radius:12px">
+      <path d="M14 98 L22 40 Q90 10 158 40 L166 98 Z" fill="#d9aa48" stroke="#f6dc8a" stroke-width="3"/>
+      <path d="${cavity}" fill="#0e1c14" stroke="#f7ecd0" stroke-width="2"/>
+      <path d="M12 101 H168" stroke="#d7d0bd" stroke-width="2"/>
     </svg>`;
   }
 
-  function addVisual(){
+  function externalDiagram(type){
+    const shape = type === "abaulado"
+      ? '<path d="M18 78 Q90 15 162 78 L162 96 L18 96 Z" fill="#d9aa48" stroke="#f6dc8a" stroke-width="3"/>'
+      : type === "chanfrado"
+        ? '<path d="M30 24 H150 L166 44 V96 H14 V44 Z" fill="#d9aa48" stroke="#f6dc8a" stroke-width="3"/>'
+        : '<rect x="16" y="30" width="148" height="66" rx="5" fill="#d9aa48" stroke="#f6dc8a" stroke-width="3"/>';
+    return `<svg viewBox="0 0 180 112" role="img" aria-label="Formato ${type}" style="display:block;width:100%;height:104px;background:#fff;border-radius:12px">
+      ${shape}
+      <path d="M12 101 H168" stroke="#d7d0bd" stroke-width="2"/>
+    </svg>`;
+  }
+
+  function makePanel(title, items, dataAttribute){
+    const sections = items.map((item) => `
+      <section ${dataAttribute}="${item.key}" style="text-align:center;padding:10px;border:1px solid rgba(245,223,152,.16);border-radius:14px;background:rgba(255,255,255,.035)">
+        ${item.svg}
+        <strong style="display:block;color:#f5df98;margin-top:8px">${item.label}</strong>
+        <small style="display:block;color:#adbbb2;line-height:1.4;margin-top:4px">${item.description}</small>
+      </section>`).join("");
+    return `<article class="action-card" style="max-width:720px;padding:16px;border-color:rgba(215,173,80,.32);background:linear-gradient(145deg,rgba(28,43,34,.98),rgba(17,28,22,.98))">
+      <div style="font-weight:900;color:#f5df98;text-align:center;font-size:15px;margin-bottom:14px">${title}</div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px">${sections}</div>
+    </article>`;
+  }
+
+  function addInternalVisual(){
     const messages = document.querySelector("#messages");
     if(!messages) return;
-    const card = document.createElement("article");
-    card.className = "action-card";
-    card.style.cssText = "max-width:680px;padding:16px;border-color:rgba(215,173,80,.32);background:linear-gradient(145deg,rgba(28,43,34,.98),rgba(17,28,22,.98))";
-    card.innerHTML = `
-      <div style="font-weight:900;color:#f5df98;text-align:center;font-size:15px;margin-bottom:14px">Conforto interno das alianças</div>
-      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(145px,1fr));gap:12px">
-        <section style="text-align:center;padding:12px;border:1px solid rgba(245,223,152,.16);border-radius:14px;background:rgba(255,255,255,.035)">
-          ${diagramSvg("anatômico")}
-          <strong style="display:block;color:#f5df98;margin-top:8px">Anatômico</strong>
-          <small style="display:block;color:#adbbb2;line-height:1.4;margin-top:4px">Parte interna mais arredondada</small>
-        </section>
-        <section style="text-align:center;padding:12px;border:1px solid rgba(245,223,152,.16);border-radius:14px;background:rgba(255,255,255,.035)">
-          ${diagramSvg("semianatômico")}
-          <strong style="display:block;color:#f5df98;margin-top:8px">Semianatômico</strong>
-          <small style="display:block;color:#adbbb2;line-height:1.4;margin-top:4px">Parte interna levemente arredondada</small>
-        </section>
-        <section style="text-align:center;padding:12px;border:1px solid rgba(245,223,152,.16);border-radius:14px;background:rgba(255,255,255,.035)">
-          ${diagramSvg("reto")}
-          <strong style="display:block;color:#f5df98;margin-top:8px">Reto</strong>
-          <small style="display:block;color:#adbbb2;line-height:1.4;margin-top:4px">Parte interna plana</small>
-        </section>
-      </div>`;
-    messages.appendChild(card);
+    const wrapper = document.createElement("div");
+    wrapper.innerHTML = makePanel("Parte interna das alianças", [
+      {key:"anatomico", label:"Anatômico", description:"Interior bem arredondado.", svg:internalDiagram("anatomico")},
+      {key:"semianatomico", label:"Semianatômico", description:"Interior levemente arredondado.", svg:internalDiagram("semianatomico")},
+      {key:"reto", label:"Interno reto", description:"Interior plano e tradicional.", svg:internalDiagram("reto")}
+    ], "data-comfort-visual");
+    messages.appendChild(wrapper.firstElementChild);
     messages.scrollTop = messages.scrollHeight;
+  }
+
+  function addExternalVisual(){
+    const messages = document.querySelector("#messages");
+    if(!messages) return;
+    const wrapper = document.createElement("div");
+    wrapper.innerHTML = makePanel("Formatos visuais das alianças", [
+      {key:"abaulado", label:"Abaulado", description:"Curvo e arredondado por fora.", svg:externalDiagram("abaulado")},
+      {key:"reto", label:"Reto/chapado", description:"Superfície externa plana.", svg:externalDiagram("reto")},
+      {key:"chanfrado", label:"Chanfrado/quinado", description:"Laterais inclinadas e marcadas.", svg:externalDiagram("chanfrado")}
+    ], "data-profile-visual");
+    messages.appendChild(wrapper.firstElementChild);
+    messages.scrollTop = messages.scrollHeight;
+  }
+
+  function addVisual(){
+    addInternalVisual();
   }
 
   async function answer(raw){
     const input = document.querySelector("#question");
+    const text = normalize(raw);
     if(input) input.value = "";
     addMessage(escapeHtml(raw), "user");
     await new Promise((resolve) => setTimeout(resolve, 180));
-    addMessage("O <strong>conforto interno</strong> é o formato da parte da aliança que encosta no dedo:<br><br><strong>Reto:</strong> parte interna plana e acabamento tradicional.<br><strong>Semianatômico:</strong> leve arredondamento interno, equilibrando perfil e conforto.<br><strong>Anatômico:</strong> interior mais arredondado, que tende a acomodar melhor o dedo, principalmente em alianças mais largas.<br><br>O formato externo pode continuar igual. A disponibilidade e eventual diferença de valor são confirmadas conforme o modelo escolhido.");
-    addVisual();
+
+    const showInternal = internalMatches(text);
+    const showExternal = externalMatches(text);
+
+    if(showExternal){
+      addMessage("Veja abaixo a diferença visual entre <strong>abaulado</strong>, <strong>reto/chapado</strong> e <strong>chanfrado/quinado</strong>.");
+      addExternalVisual();
+    }
+    if(showInternal){
+      addMessage("Veja também a diferença entre <strong>anatômico</strong>, <strong>semianatômico</strong> e <strong>interno reto</strong>. Essa comparação é explicativa; no fluxo da compra não fazemos uma segunda pergunta repetida.");
+      addInternalVisual();
+    }
     input?.focus();
   }
 
@@ -109,5 +144,5 @@
     }, true);
   });
 
-  window.__confortoInternoV1 = Object.freeze({matches, addVisual});
+  window.__confortoInternoV1 = Object.freeze({matches, internalMatches, externalMatches, addVisual, addInternalVisual, addExternalVisual});
 })();
