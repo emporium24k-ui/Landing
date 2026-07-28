@@ -1,1 +1,1 @@
-{"status":"passed","commit":"cf07267a0b56974f598eef6e1f715ebaea144b5d","tested_at":"2026-07-28T17:58:38Z","suites":["scripts/test_assistente_core.js","scripts/test_assistente_invariants.js"]}
+{"status":"passed","commit":"10c7a0b52de75aec7e6629d1d99393c9edab46fc","tested_at":"2026-07-28T19:12:06Z","suites":["scripts/test_assistente_core.js","scripts/test_assistente_invariants.js"]}
