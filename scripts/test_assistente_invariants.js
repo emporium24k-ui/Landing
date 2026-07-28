@@ -67,10 +67,13 @@ assert.ok(index.includes('core-intencoes-v1.js?v=20260728-61'), "Página precisa
 
 assert.ok(metalSales.includes('"estou com ouro para vender"'), "Fluxo de avaliação precisa reconhecer a frase reportada pelo usuário");
 assert.ok(metalSales.includes("isOwnershipFollowUp"), "Fluxo precisa entender respostas curtas como minha ou meu");
+assert.ok(metalSales.includes("previousUserText"), "Recuperação precisa consultar a mensagem anterior do cliente");
+assert.ok(metalSales.includes("bareForSale"), "Frases curtas como joias pra vender precisam ir direto para avaliação");
+assert.ok(metalSales.includes("syncCentralState"), "Recuperação precisa corrigir também a memória central");
 assert.ok(metalSales.includes("avaliar uma peca sua"), "Fluxo precisa reconhecer a pergunta ambígua anterior para recuperar o lead");
 assert.ok(metalSales.includes('const EVALUATION_PHONE = "5541998518452"'), "Avaliação precisa seguir para o telefone do chefe");
 assert.ok(metalSales.includes("Falar com o responsável pela avaliação"), "Lead de venda precisa receber ação clara de avaliação");
-assert.ok(index.includes('venda-metais-v1.js?v=20260728-61'), "Página precisa carregar o fluxo corrigido de venda de metais");
+assert.ok(index.includes('venda-metais-v1.js?v=20260728-62'), "Página precisa carregar o fluxo reforçado de venda de metais");
 
 assert.ok(topCta.includes("contacts.boss"), "Botão superior deve usar o telefone central do chefe");
 assert.ok(!topCta.includes("Math.random"), "Botão superior não pode distribuir o contato aleatoriamente");
@@ -126,4 +129,4 @@ assert.ok(analytics.includes("window.dataLayer"), "Eventos precisam estar prepar
 assert.ok(analytics.includes("assistant_whatsapp_click"), "Clique no WhatsApp precisa gerar evento de analytics");
 assert.ok(syncWorkflow.includes('cron: "40 8 * * *"'), "Catálogo da loja precisa ser sincronizado diariamente");
 
-console.log(`${expectedFallbacks.length + order.length + 66} invariantes verificadas com sucesso.`);
+console.log(`${expectedFallbacks.length + order.length + 69} invariantes verificadas com sucesso.`);
