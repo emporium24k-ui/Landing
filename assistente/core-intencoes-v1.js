@@ -15,7 +15,8 @@
     concerto:"conserto", concertar:"consertar", garatia:"garantia", endereso:"endereco",
     freti:"frete", sedx:"sedex", catao:"cartao", bolto:"boleto", piks:"pix",
     personalisado:"personalizado", personalisada:"personalizada", carter:"cartier",
-    cartie:"cartier", grummet:"grumet", groumet:"grumet"
+    cartie:"cartier", grummet:"grumet", groumet:"grumet", to:"estou", tou:"estou",
+    pra:"para"
   });
 
   const MODEL_TERMS = Object.freeze([
@@ -123,7 +124,19 @@
     if(customerGold && (alliance || anyPhrase(text,["fabricar","fazer","produzir"])))
       return {intent:"customer_gold_alliance", confidence:.99, text, entities};
 
-    if(anyPhrase(text, ["quero vender","gostaria de vender","tenho para vender","avaliar meu ouro","avaliar minha prata","quanto pagam","compram meu ouro","compram minha prata","vender ouro","vender prata"]) || /\bvoces compram (?:ouro|prata)\b/.test(text) || /\bquanto (?:voces )?pagam\b.*\b(ouro|prata)\b/.test(text))
+    const previousIntent = previous?.intent || previous?.lastIntent || null;
+    const ownershipFollowUp = /^(?:sim )?(?:e |eh )?(?:meu|minha|meus|minhas|o meu|a minha|meu mesmo|minha mesmo)$/.test(text);
+    if(previousIntent === "sell_metals" && ownershipFollowUp)
+      return {intent:"sell_metals", confidence:.99, text, entities:{...entities, product:previous.product || product || "ouro/prata", material:previous.material || material || null}};
+
+    const sellMaterial = /\b(ouro|prata|joia|joias|peca|pecas|corrente|correntes|anel|aneis|alianca|aliancas)\b/.test(text);
+    const sellLanguage = /\b(vender|vendo|avaliar|avaliacao)\b/.test(text) || /\bpara venda\b/.test(text);
+    const ownershipLanguage = /\b(eu|meu|minha|meus|minhas|tenho|estou|possuo|comigo|quero|gostaria|preciso)\b/.test(text);
+    const storeOfferingQuestion = /^(?:voces |voce |a loja )?(?:tem|vende|vendem|possui|possuem)\b/.test(text) && /\b(?:para vender|a venda)\b/.test(text);
+    const directOwnedSale = sellMaterial && sellLanguage && ownershipLanguage && !storeOfferingQuestion;
+    const directMetalForSale = /\b(?:estou com|tenho|possuo|carrego|trouxei?|levei)\b.*\b(ouro|prata|joia|joias|peca|pecas)\b.*\b(?:para vender|para avaliar)\b/.test(text);
+
+    if(directOwnedSale || directMetalForSale || anyPhrase(text, ["quero vender","gostaria de vender","tenho para vender","avaliar meu ouro","avaliar minha prata","quanto pagam","compram meu ouro","compram minha prata","vender ouro","vender prata"]) || /\bvoces compram (?:ouro|prata)\b/.test(text) || /\bquanto (?:voces )?pagam\b.*\b(ouro|prata)\b/.test(text))
       return {intent:"sell_metals", confidence:.99, text, entities};
 
     if(anyPhrase(text, ["conserto","consertar","reparar","soldar","quebrou","polimento","polir","pedra caiu"]))
