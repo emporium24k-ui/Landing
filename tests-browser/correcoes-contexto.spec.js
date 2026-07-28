@@ -77,21 +77,35 @@ test('oferece botões para alterar modelo, formato, aros ou gravação', async (
   await expect(review.getByRole('button', { name: 'Alterar gravação' })).toBeVisible();
 
   await review.getByRole('button', { name: 'Alterar aros' }).click();
+  await expect(page.getByRole('link', { name: 'Continuar com este modelo' })).toHaveCount(0);
   await send(page, 'aros 17 e 22');
   await expect(page.getByText(/Aros: 17 e 22/i).last()).toBeVisible();
   await expect(page.locator('[data-correction-continue="1"] a')).toBeVisible();
 });
 
-test('aceita correção de outra escolha enquanto ainda pergunta os aros', async ({ page }) => {
+test('aceita formato digitado e só recria o WhatsApp depois da nova escolha', async ({ page }) => {
+  await openAssistant(page);
+  await finishAllianceSelection(page);
+
+  await page.locator('[data-correction-review="1"]').getByRole('button', { name: 'Alterar formato' }).click();
+  await expect(page.getByRole('link', { name: 'Continuar com este modelo' })).toHaveCount(0);
+  await send(page, 'Chanfrado');
+
+  await expect(page.getByText(/Formato: Chanfrado\/quinado/i).last()).toBeVisible();
+  await expect(page.getByRole('link', { name: 'Continuar com este modelo' })).toBeVisible();
+  await expect(page.locator('button[data-correction-field="format"]')).toHaveCount(0);
+});
+
+test('aceita correção genérica de formato enquanto ainda pergunta os aros', async ({ page }) => {
   await openAssistant(page);
   await startAllianceSelection(page);
 
-  await send(page, 'na verdade prefiro chanfrado');
+  await send(page, 'na verdade quero mudar o formato para reto');
   const state = await page.evaluate(() => ({
     format:window.__catalogoConversaV2.flow.externalProfile,
     stage:window.__catalogoConversaV2.flow.stage
   }));
-  expect(state.format).toMatch(/Chanfrado/i);
+  expect(state.format).toMatch(/Reto/i);
   expect(state.stage).toBe('sizes');
   await expect(page.getByText(/Continuamos de onde paramos.*numerações/i).last()).toBeVisible();
 
