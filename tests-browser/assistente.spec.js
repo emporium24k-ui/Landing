@@ -1,6 +1,6 @@
 const { test, expect } = require('@playwright/test');
 
-// Esta suíte valida os mesmos fluxos em celular e computador.
+// Esta suíte valida os mesmos fluxos em celular e computador, incluindo o fluxo único de formato.
 async function openAssistant(page){
   await page.goto('/assistente/?build=browser-test');
   await expect(page.locator('#question')).toBeVisible();
