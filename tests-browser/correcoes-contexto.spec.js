@@ -126,6 +126,8 @@ test('atualiza um projeto personalizado quando o cliente corrige a ideia', async
   await expect(corrected).toBeVisible();
   await expect(corrected).toHaveAttribute('href', /phone=5541998518452/);
   const correctedMessage = new URL(await corrected.getAttribute('href')).searchParams.get('text');
+  expect(correctedMessage).toMatch(/pingente/i);
+  expect(correctedMessage).toMatch(/iniciais/i);
   expect(correctedMessage).toMatch(/prata 925 sem pedra/i);
   await expect(projectLink).toHaveCount(0);
 });
