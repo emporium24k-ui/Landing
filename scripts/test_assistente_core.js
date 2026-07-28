@@ -19,6 +19,10 @@ const cases = [
   ["minha aliança está apertada", "ring_resize"],
   ["preciso diminuir o aro", "ring_resize"],
   ["quero vender ouro", "sell_metals"],
+  ["estou com ouro pra vender", "sell_metals"],
+  ["tô com prata pra vender", "sell_metals"],
+  ["estou com uma peça de ouro para avaliar", "sell_metals"],
+  ["tenho uma corrente para vender", "sell_metals"],
   ["vcs conprao prata", "sell_metals"],
   ["quanto vocês pagam no ouro", "sell_metals"],
   ["preciso de polimento na aliança", "repair_service"],
@@ -62,10 +66,14 @@ for(const [message, expected] of cases){
   }
 }
 
-const followUp = core.classify("o frete é grátis?", {material:"prata 925", product:"alianca"});
-assert.equal(followUp.intent, "shipping");
-assert.equal(followUp.entities.material, "prata 925");
-assert.equal(followUp.entities.product, "alianca");
+const shippingFollowUp = core.classify("o frete é grátis?", {material:"prata 925", product:"alianca"});
+assert.equal(shippingFollowUp.intent, "shipping");
+assert.equal(shippingFollowUp.entities.material, "prata 925");
+assert.equal(shippingFollowUp.entities.product, "alianca");
+
+const ownershipFollowUp = core.classify("minha", {intent:"sell_metals", material:"ouro", product:"ouro/prata"});
+assert.equal(ownershipFollowUp.intent, "sell_metals");
+assert.equal(ownershipFollowUp.entities.material, "ouro");
 
 assert.equal(config.contacts.boss, "5541998518452");
 assert.deepEqual(config.rules.allianceGoldKaratsAvailable, ["10k", "18k"]);
@@ -79,4 +87,4 @@ if(failures){
   process.stderr.write(`\n${failures} teste(s) falharam.\n`);
   process.exit(1);
 }
-process.stdout.write(`\n${cases.length + 10} verificações concluídas com sucesso.\n`);
+process.stdout.write(`\n${cases.length + 12} verificações concluídas com sucesso.\n`);
