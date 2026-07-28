@@ -1,5 +1,6 @@
 const { test, expect } = require('@playwright/test');
 
+// Regressão da revisão 65: mudanças de escolha devem preservar o restante do pedido.
 async function openAssistant(page){
   await page.goto('/assistente/?build=correction-test-65');
   await expect(page.locator('#question')).toBeVisible();
