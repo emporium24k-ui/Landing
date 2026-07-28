@@ -14,6 +14,7 @@ on:
       - "assistente/catalogo-loja-visual-v1.js"
       - "assistente/catalogo-conversa-v2.js"
       - "assistente/conforto-interno-v1.js"
+      - "assistente/formato-externo-v1.js"
       - "assistente/recuperacao-conversa-v1.js"
       - "assistente/index.html"
       - "scripts/test_assistente_core.js"
@@ -54,6 +55,7 @@ jobs:
           node --check assistente/catalogo-loja-visual-v1.js
           node --check assistente/catalogo-conversa-v2.js
           node --check assistente/conforto-interno-v1.js
+          node --check assistente/formato-externo-v1.js
           node --check assistente/recuperacao-conversa-v1.js
           node --check scripts/test_assistente_core.js
           node --check scripts/test_assistente_invariants.js
