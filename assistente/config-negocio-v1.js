@@ -48,9 +48,13 @@
       }),
       payment: Object.freeze({
         pix: true,
-        creditCardMaximumInstallments: 12,
-        interestDependsOnSimulation: true,
-        boletoRequiresSimulation: true
+        pixDiscountPercent: 10,
+        boleto: true,
+        boletoDiscountPercent: 5,
+        boletoInstallments: false,
+        creditCardMaximumInstallments: 10,
+        creditCardInterestFree: true,
+        discountsMayNotCombineWithPromotions: true
       }),
       silverAlliancePromotionsMention: false,
       goldAllianceSellerDiscount: true,
