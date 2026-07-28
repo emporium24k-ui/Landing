@@ -1,6 +1,6 @@
 const { test, expect } = require('@playwright/test');
 
-// Esta suíte valida os mesmos fluxos em celular e computador, incluindo o fluxo único de formato.
+// Esta suíte valida os mesmos fluxos em celular e computador, incluindo imagens reais do catálogo.
 async function openAssistant(page){
   await page.goto('/assistente/?build=browser-test');
   await expect(page.locator('#question')).toBeVisible();
@@ -12,11 +12,11 @@ async function send(page, text){
   await page.locator('#composer').evaluate((form) => form.requestSubmit());
 }
 
-test('carrega e o atendimento superior usa o telefone do chefe', async ({ page }) => {
+test('carrega, usa o telefone do chefe e não mostra botão Nova', async ({ page }) => {
   await openAssistant(page);
   const url = await page.evaluate(() => window.__topCtaV1?.whatsappUrl?.());
   expect(url).toContain('phone=5541998518452');
-  await expect(page.locator('#newConversation')).toBeVisible();
+  await expect(page.locator('#newConversation')).toHaveCount(0);
 });
 
 test('busca específica mostra produtos ou pesquisa exata sem vendedor', async ({ page }) => {
@@ -42,16 +42,15 @@ test('personalizado coleta detalhes antes de mostrar WhatsApp', async ({ page })
   await expect(contact).toHaveAttribute('href', /phone=5541998518452/);
 });
 
-test('nova conversa limpa a interface e a memória', async ({ page }) => {
+test('catálogo de alianças mostra imagens realmente carregadas', async ({ page }) => {
   await openAssistant(page);
-  await send(page, 'oi boa tarde');
-  await expect(page.locator('.row.user')).toHaveCount(1);
-  await page.locator('#newConversation').click();
-  await page.waitForLoadState('domcontentloaded');
-  await expect(page.locator('#question')).toBeVisible();
-  await expect(page.locator('.row.user')).toHaveCount(0);
-  const stored = await page.evaluate(() => sessionStorage.getItem('emp24kAssistantStateV1'));
-  expect(stored).toBeNull();
+  await send(page, 'quero ver alianças de prata 925');
+  const imageButton = page.locator('button[data-official-catalog-image]').first();
+  const image = imageButton.locator('img');
+  await expect(imageButton).toBeVisible();
+  await expect(image).toBeVisible();
+  await expect.poll(async () => image.evaluate((node) => node.complete && node.naturalWidth > 0)).toBe(true);
+  await expect(imageButton).toHaveAttribute('data-image-loaded', '1');
 });
 
 test('aliança de prata não recebe frete grátis', async ({ page }) => {
