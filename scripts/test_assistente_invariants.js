@@ -13,6 +13,7 @@ const coordinator = read("assistente/coordenador-central-v1.js");
 const topCta = read("assistente/top-cta-v1.js");
 const visualCatalog = read("assistente/catalogo-loja-visual-v1.js");
 const comfort = read("assistente/conforto-interno-v1.js");
+const formatFlow = read("assistente/formato-externo-v1.js");
 const catalogConversation = read("assistente/catalogo-conversa-v2.js");
 const recovery = read("assistente/recuperacao-conversa-v1.js");
 const session = read("assistente/sessao-conversa-v1.js");
@@ -38,7 +39,8 @@ for(const file of expectedFallbacks){
 const order = [
   "config-negocio-v1.js", "core-intencoes-v1.js", "sessao-conversa-v1.js", "coordenador-central-v1.js",
   "metricas-v1.js", "analytics-bridge-v1.js", "top-cta-v1.js", "catalogo-loja-dados.js",
-  "roteamento-legado-v1.js", "catalogo-loja-visual-v1.js", "conforto-interno-v1.js", "rota-produtos-site-v1.js",
+  "roteamento-legado-v1.js", "catalogo-loja-visual-v1.js", "conforto-interno-v1.js",
+  "formato-externo-v1.js", "catalogo-conversa-v2.js", "rota-produtos-site-v1.js",
   "recuperacao-conversa-v1.js", "app-concise-v3.js"
 ];
 let previous = -1;
@@ -67,14 +69,17 @@ assert.ok(coordinator.includes("anexado no WhatsApp"), "Referências precisam se
 assert.ok(visualCatalog.includes("hasSpecificRequest"), "Catálogo visual precisa bloquear buscas vagas");
 assert.ok(visualCatalog.includes('product.category === "alianca"'), "Catálogo visual de produtos prontos não pode misturar alianças");
 assert.ok(comfort.includes("Conforto interno das alianças"), "Explicação visual de conforto interno precisa estar presente");
-assert.ok(comfort.includes("Anatômico") && comfort.includes("Semianatômico") && comfort.includes("Reto"), "Os três tipos de conforto interno precisam ser explicados");
-assert.ok(comfort.includes("addVisual"), "Conforto interno precisa ter comparação visual");
+assert.ok(comfort.includes("Anatômico") && comfort.includes("Semianatômico") && comfort.includes("Reto"), "Os três tipos de conforto interno precisam ser explicados quando perguntados");
+assert.ok(comfort.includes("addVisual"), "Conforto interno precisa ter comparação visual educativa");
 
-assert.ok(catalogConversation.includes("Abaulado (externo)"), "Escolha de alianças precisa oferecer formato externo abaulado");
-assert.ok(catalogConversation.includes("Chanfrado/quinado (externo)"), "Escolha de alianças precisa oferecer formato externo chanfrado ou quinado");
-assert.ok(catalogConversation.includes('flow.stage = "external_profile"'), "Formato externo precisa ser escolhido antes dos aros");
-assert.ok(catalogConversation.includes('flow.stage = "internal_comfort"'), "Conforto interno precisa ser uma etapa separada");
-assert.ok(catalogConversation.includes("Formato externo:") && catalogConversation.includes("Conforto interno:"), "Resumo do pedido precisa guardar formato externo e conforto interno");
+assert.ok(catalogConversation.includes('flow.stage = "external_profile"'), "Formato precisa ser escolhido antes dos aros");
+assert.ok(formatFlow.includes('button.textContent = "Abaulado"'), "Escolha de alianças precisa oferecer formato abaulado");
+assert.ok(formatFlow.includes('button.textContent = "Reto/chapado — formato original"'), "Reto e chapado precisam ser tratados como formato original");
+assert.ok(formatFlow.includes('button.textContent = "Chanfrado/quinado"'), "Escolha precisa oferecer chanfrado ou quinado");
+assert.ok(formatFlow.includes('flow.stage = "sizes"'), "Depois do formato o fluxo deve seguir diretamente para os aros");
+assert.ok(formatFlow.includes('button[data-conversation-internal-comfort]'), "A etapa antiga de conforto interno precisa ser removida caso apareça");
+assert.ok(formatFlow.includes('Formato: $1 |'), "Resumo e WhatsApp precisam guardar apenas uma escolha de formato");
+assert.ok(!formatFlow.includes('Agora escolha o <strong>conforto interno</strong>'), "Fluxo comercial não pode perguntar conforto interno novamente");
 
 assert.ok(recovery.includes("Falar com atendente"), "Recuperação deve oferecer atendimento humano");
 assert.ok(recovery.includes("config.contacts.boss"), "Recuperação deve usar o telefone do chefe");
@@ -93,4 +98,4 @@ assert.ok(analytics.includes("window.dataLayer"), "Eventos precisam estar prepar
 assert.ok(analytics.includes("assistant_whatsapp_click"), "Clique no WhatsApp precisa gerar evento de analytics");
 assert.ok(syncWorkflow.includes('cron: "40 8 * * *"'), "Catálogo da loja precisa ser sincronizado diariamente");
 
-console.log(`${expectedFallbacks.length + order.length + 38} invariantes verificadas com sucesso.`);
+console.log(`${expectedFallbacks.length + order.length + 42} invariantes verificadas com sucesso.`);
