@@ -114,10 +114,11 @@ test('atualiza um projeto personalizado quando o cliente corrige a ideia', async
   await openAssistant(page);
   await send(page, 'quero criar um pingente personalizado');
   await expect(page.getByText(/Me conte qual peça deseja|Me conte.*detalhes/i).last()).toBeVisible();
-  await expect(page.getByRole('link', { name: /Enviar ideia ao atendimento|Enviar projeto pelo WhatsApp/ }).last()).toBeVisible();
+  await expect(page.locator('.action-btn.wa')).toHaveCount(0);
 
   await send(page, 'pingente em ouro 18k com iniciais e uma pedra');
-  await expect(page.getByRole('link', { name: /Enviar ideia ao atendimento|Enviar projeto pelo WhatsApp/ }).last()).toBeVisible();
+  const projectLink = page.getByRole('link', { name: 'Enviar projeto pelo WhatsApp' });
+  await expect(projectLink).toBeVisible();
 
   await send(page, 'na verdade quero em prata 925 sem pedra');
   await expect(page.getByText(/Atualizei a descrição do projeto.*prata 925 sem pedra/i).last()).toBeVisible();
@@ -126,7 +127,7 @@ test('atualiza um projeto personalizado quando o cliente corrige a ideia', async
   await expect(corrected).toHaveAttribute('href', /phone=5541998518452/);
   const correctedMessage = new URL(await corrected.getAttribute('href')).searchParams.get('text');
   expect(correctedMessage).toMatch(/prata 925 sem pedra/i);
-  await expect(page.getByRole('link', { name: /Enviar ideia ao atendimento|Enviar projeto pelo WhatsApp/ })).toHaveCount(0);
+  await expect(projectLink).toHaveCount(0);
 });
 
 test('mudança entre fabricar com ouro e abater no valor remove a ação antiga', async ({ page }) => {
