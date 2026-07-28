@@ -1,7 +1,7 @@
 (() => {
   "use strict";
 
-  const BUILD = "20260727-57";
+  const BUILD = "20260727-58";
   const IDLE_MS = 30 * 60 * 1000;
   const LAST_ACTIVITY_KEY = "emp24kAssistantLastActivityV1";
   const SESSION_KEYS = [
