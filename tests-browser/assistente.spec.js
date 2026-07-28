@@ -1,6 +1,6 @@
 const { test, expect } = require('@playwright/test');
 
-// Validação final do build 60 em celular e computador, incluindo as ilustrações dos formatos.
+// Valida o assistente em celular e computador, incluindo formatos e proteção de leads.
 async function openAssistant(page){
   await page.goto('/assistente/?build=browser-test');
   await expect(page.locator('#question')).toBeVisible();
@@ -17,6 +17,28 @@ test('carrega, usa o telefone do chefe e não mostra botão Nova', async ({ page
   const url = await page.evaluate(() => window.__topCtaV1?.whatsappUrl?.());
   expect(url).toContain('phone=5541998518452');
   await expect(page.locator('#newConversation')).toHaveCount(0);
+});
+
+test('estou com ouro pra vender abre avaliação sem pergunta ambígua', async ({ page }) => {
+  await openAssistant(page);
+  await send(page, 'estou com ouro pra vender');
+  await expect(page.getByText(/Compramos ouro e prata|avaliamos ouro e prata/i).last()).toBeVisible();
+  const evaluation = page.getByRole('link', { name: 'Falar com o responsável pela avaliação' });
+  await expect(evaluation).toBeVisible();
+  await expect(evaluation).toHaveAttribute('href', /phone=5541998518452/);
+  await expect(page.getByText(/ver joias da loja ou avaliar|não consegui identificar/i)).toHaveCount(0);
+});
+
+test('resposta curta minha mantém contexto de venda da própria peça', async ({ page }) => {
+  await openAssistant(page);
+  await send(page, 'joias pra vender');
+  await expect(page.getByText(/comprar uma joia ou vender|ver joias da loja ou avaliar|procura uma joia ou quer vender/i).last()).toBeVisible();
+  await send(page, 'minha');
+  await expect(page.getByText(/a peça é sua|Compramos ouro e prata|avaliamos ouro e prata/i).last()).toBeVisible();
+  const evaluation = page.getByRole('link', { name: 'Falar com o responsável pela avaliação' });
+  await expect(evaluation).toBeVisible();
+  await expect(evaluation).toHaveAttribute('href', /phone=5541998518452/);
+  await expect(page.getByText(/Não consegui identificar exatamente/i)).toHaveCount(0);
 });
 
 test('busca específica mostra produtos ou pesquisa exata sem vendedor', async ({ page }) => {
