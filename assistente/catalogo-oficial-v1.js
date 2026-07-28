@@ -1,6 +1,7 @@
 (() => {
   "use strict";
 
+  const IMAGE_BUILD = "20260728-59";
   const OFFICIAL = window.__CATALOGO_OFICIAL_EMP24K__ || {};
   const catalogApi = window.__catalogoAliancasV1;
   if(!catalogApi?.CATALOG) return;
@@ -14,6 +15,7 @@
       }
       if(official.width) model.width = official.width;
       if(official.image) model.image = official.image;
+      if(official.image_source) model.imageSource = official.image_source;
       if(official.page) model.page = official.page;
       if(official.description) model.officialDescription = official.description;
 
@@ -28,6 +30,24 @@
     }
     byId.set(model.id, model);
   });
+
+  function absoluteImageUrl(value, cacheBust = false){
+    if(!value) return "";
+    try{
+      const url = new URL(value, document.baseURI);
+      if(cacheBust && url.origin === window.location.origin) url.searchParams.set("v", IMAGE_BUILD);
+      return url.toString();
+    }catch(_){
+      return String(value);
+    }
+  }
+
+  function imageSources(model){
+    return [...new Set([
+      absoluteImageUrl(model?.image, true),
+      absoluteImageUrl(model?.imageSource, false)
+    ].filter(Boolean))];
+  }
 
   function ensureModal(){
     let modal = document.querySelector("#officialRingImageModal");
@@ -55,11 +75,11 @@
     return modal;
   }
 
-  function openModal(model){
-    if(!model?.image) return;
+  function openModal(model, source){
+    if(!source) return;
     const modal = ensureModal();
     const image = modal.querySelector("[data-official-ring-modal-image]");
-    image.src = model.image;
+    image.src = source;
     image.alt = `Aliança modelo ${model.name}`;
     modal.querySelector("[data-official-ring-modal-title]").textContent = `Modelo ${model.name}`;
     modal.style.display = "grid";
@@ -67,27 +87,53 @@
   }
 
   function makeImage(model){
+    const sources = imageSources(model);
     const button = document.createElement("button");
     button.type = "button";
     button.dataset.officialCatalogImage = model.id;
     button.setAttribute("aria-label", `Ampliar foto do modelo ${model.name}`);
-    button.style.cssText = "display:block;width:100%;padding:0;border:1px solid rgba(218,176,83,.26);border-radius:14px;overflow:hidden;background:#fff;cursor:zoom-in";
+    button.style.cssText = "display:grid;width:100%;min-height:190px;padding:0;border:1px solid rgba(218,176,83,.26);border-radius:14px;overflow:hidden;background:#fff;place-items:center;cursor:zoom-in";
+
+    const status = document.createElement("span");
+    status.textContent = `Carregando foto do modelo ${model.name}…`;
+    status.style.cssText = "padding:22px;color:#473719;font-size:.84rem;text-align:center";
 
     const image = document.createElement("img");
-    image.src = model.image;
     image.alt = `Aliança modelo ${model.name} — foto oficial Emporium24k`;
     image.loading = "eager";
     image.decoding = "async";
-    image.style.cssText = "display:block;width:100%;height:auto;aspect-ratio:1/1;object-fit:cover;background:#fff";
+    image.style.cssText = "display:none;width:100%;height:clamp(210px,58vw,360px);object-fit:contain;background:#fff";
 
-    image.addEventListener("error", () => {
-      button.style.cssText += ";min-height:150px;display:grid;place-items:center;padding:18px;background:linear-gradient(135deg,rgba(218,176,83,.16),rgba(8,24,16,.96));color:#f3dda0;text-align:center";
-      button.innerHTML = `<span><strong>Modelo ${model.name}</strong><br><small>Toque para abrir a página oficial</small></span>`;
-      button.onclick = () => window.open(model.page, "_blank", "noopener,noreferrer");
-    }, {once:true});
+    let sourceIndex = 0;
+    let activeSource = "";
+    const showFallback = () => {
+      image.remove();
+      status.innerHTML = `<strong>Modelo ${model.name}</strong><br><small>Toque para abrir a página oficial</small>`;
+      button.style.cssText += ";background:linear-gradient(135deg,rgba(218,176,83,.16),rgba(8,24,16,.96));color:#f3dda0";
+      button.dataset.imageFallback = "1";
+    };
+    const tryNext = () => {
+      if(sourceIndex >= sources.length){
+        showFallback();
+        return;
+      }
+      activeSource = sources[sourceIndex++];
+      image.src = activeSource;
+    };
 
-    button.appendChild(image);
-    button.addEventListener("click", () => openModal(model));
+    image.addEventListener("load", () => {
+      status.remove();
+      image.style.display = "block";
+      button.dataset.imageLoaded = "1";
+    });
+    image.addEventListener("error", tryNext);
+
+    button.append(status, image);
+    button.addEventListener("click", () => {
+      if(button.dataset.imageLoaded === "1") openModal(model, activeSource);
+      else if(model.page) window.open(model.page, "_blank", "noopener,noreferrer");
+    });
+    tryNext();
     return button;
   }
 
@@ -114,7 +160,7 @@
     if(!model) return;
 
     refreshVisibleDetails(card, model);
-    if(!model.image || card.querySelector("[data-official-catalog-image]")) return;
+    if(card.querySelector("[data-official-catalog-image]")) return;
     card.querySelectorAll(".ring-photo-button,.ring-photo-placeholder,[data-ring-photo-v2],[data-catalog-photo-v3]").forEach((item) => item.remove());
     card.insertBefore(makeImage(model), card.firstChild);
     card.dataset.officialCatalogReady = "1";
@@ -136,12 +182,13 @@
       }));
     });
     observer.observe(messages, {childList:true, subtree:true});
-    document.addEventListener("click", () => queueMicrotask(() => scan(document)), true);
-    document.addEventListener("submit", () => queueMicrotask(() => scan(document)), true);
+    document.addEventListener("click", () => requestAnimationFrame(() => scan(document)), true);
+    document.addEventListener("submit", () => requestAnimationFrame(() => scan(document)), true);
+    [100, 350, 800, 1600, 3000].forEach((delay) => setTimeout(() => scan(document), delay));
   }
 
   if(document.readyState === "loading") document.addEventListener("DOMContentLoaded", boot, {once:true});
   else boot();
 
-  window.__catalogoOficialV1 = {OFFICIAL, byId, scan};
+  window.__catalogoOficialV1 = {OFFICIAL, byId, scan, imageSources, build:IMAGE_BUILD};
 })();
