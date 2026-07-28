@@ -21,6 +21,28 @@
     oldPersonalizedLinks().forEach((link) => link.closest(".action-card")?.remove());
   }
 
+  function linkMessage(link){
+    try{
+      return new URL(link.href).searchParams.get("text") || "";
+    }catch(_){
+      return "";
+    }
+  }
+
+  function preservePersonalizedDetails(previousMessage, correction){
+    const correctedLink = [...document.querySelectorAll('#messages a.action-btn[href*="api.whatsapp.com/send"]')]
+      .reverse()
+      .find((link) => normalize(link.textContent).includes("enviar projeto corrigido pelo whatsapp"));
+    if(!correctedLink || !previousMessage) return;
+
+    try{
+      const url = new URL(correctedLink.href);
+      const message = `${previousMessage}\n\nCorreção solicitada: ${correction}\nMantenha os demais detalhes do projeto que não foram alterados.`;
+      url.searchParams.set("text", message);
+      correctedLink.href = url.toString();
+    }catch(_){/* mantém o link criado pela camada principal */}
+  }
+
   function handleCorrection(event){
     const form = event.target.closest?.("#composer");
     const input = document.querySelector("#question");
@@ -63,7 +85,9 @@
       event.preventDefault();
       event.stopImmediatePropagation();
       input.value = "";
+      const previousMessage = linkMessage(personalizedLinks[personalizedLinks.length - 1]);
       api.updatePersonalized(raw);
+      preservePersonalizedDetails(previousMessage, raw);
       removeOldPersonalizedCards();
       input.focus();
     }
@@ -73,5 +97,11 @@
   // registrado imediatamente no document para vencer os tratadores de etapa.
   document.addEventListener("submit", handleCorrection, true);
 
-  window.__correcoesPrioridadeV1 = Object.freeze({handleCorrection, oldPersonalizedLinks, removeOldPersonalizedCards});
+  window.__correcoesPrioridadeV1 = Object.freeze({
+    handleCorrection,
+    oldPersonalizedLinks,
+    removeOldPersonalizedCards,
+    linkMessage,
+    preservePersonalizedDetails
+  });
 })();
